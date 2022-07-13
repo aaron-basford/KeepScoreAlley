@@ -64,6 +64,8 @@
             this.MatchTitle = new System.Windows.Forms.TextBox();
             this.CreateMatch = new System.Windows.Forms.Button();
             this.NextString = new System.Windows.Forms.Button();
+            this.menuStrip = new MenuStrip();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem("Help");
             this.SuspendLayout();
             // 
             // NumTeams
@@ -78,6 +80,7 @@
             this.NumTeams.Name = "NumTeams";
             this.NumTeams.Size = new System.Drawing.Size(121, 23);
             this.NumTeams.TabIndex = 0;
+            this.NumTeams.DropDownStyle = ComboBoxStyle.DropDownList;
             this.NumTeams.SelectedIndexChanged += new System.EventHandler(this.NumTeams_SelectedIndexChanged);
             // 
             // lbl_NumTeams
@@ -111,6 +114,7 @@
             this.NumBowlers.Name = "NumBowlers";
             this.NumBowlers.Size = new System.Drawing.Size(121, 23);
             this.NumBowlers.TabIndex = 5;
+            this.NumBowlers.DropDownStyle = ComboBoxStyle.DropDownList;
             this.NumBowlers.SelectedIndexChanged += new System.EventHandler(this.NumBowlers_SelectedIndexChanged);
             // 
             // lbl_NumStrings
@@ -140,6 +144,7 @@
             this.NumStrings.Name = "NumStrings";
             this.NumStrings.Size = new System.Drawing.Size(121, 23);
             this.NumStrings.TabIndex = 26;
+            this.NumStrings.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // Team1
             // 
@@ -359,6 +364,23 @@
             this.NextString.Size = new System.Drawing.Size(187, 23);
             this.NextString.TabIndex = 30;
             this.NextString.Click += new System.EventHandler(this.NextString_OnClick);
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.Help_OnClick);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1270, 24);
+            this.menuStrip.TabIndex = 2;
+            this.menuStrip.Text = "menuStrip";
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -400,8 +422,12 @@
             this.Controls.Add(this.MatchTitle);
             this.Controls.Add(this.CreateMatch);
             this.Controls.Add(this.NextString);
+            this.Controls.Add(this.menuStrip);
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "Main_Form";
             this.Text = "KeepScore";
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -445,5 +471,7 @@
         private TextBox MatchTitle;
         private Button CreateMatch;
         private Button NextString;
+        private MenuStrip menuStrip;
+        private ToolStripMenuItem helpToolStripMenuItem;
     }
 }

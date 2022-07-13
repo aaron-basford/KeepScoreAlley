@@ -677,6 +677,14 @@ namespace KeepScore
             match.Text = this.MatchTitle.Text;
 
             match.Show();
+
+            foreach (Control c in this.Controls)
+            {
+                if (c.Name != "NextString")
+                {
+                    c.Enabled = false;
+                }
+            }
         }
 
         private void displayTeam(Control teamArea, Team team)
@@ -685,14 +693,13 @@ namespace KeepScore
 
             if (currentString == 0)
             {
-                TextBox teamName = new TextBox();
+                Label teamName = new Label();
                 teamName.Text = team.name.ToUpper();
-                teamName.Location = new Point(20, 20);
+                teamName.Location = new Point(10, 10);
                 teamName.Size = new Size(300, 40);
-                teamName.TextAlign = HorizontalAlignment.Center;
+                teamName.TextAlign = ContentAlignment.MiddleCenter;
                 teamName.Enabled = false;
-                //firstTeamName.BackColor = Color.Red;
-                teamName.ForeColor = Color.Red;
+                teamName.Font = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
                 teamArea.Controls.Add(teamName);
 
                 Label stringTotalLabel = new Label();
@@ -742,7 +749,7 @@ namespace KeepScore
             {
                 bowlerCount++;
 
-                TextBox bowlerName = new TextBox();
+                Label bowlerName = new Label();
                 bowlerName.Text = teamBowler.name.ToUpper();
 
                 if (bowlerCount == 1)
@@ -755,15 +762,12 @@ namespace KeepScore
                 }
 
                 bowlerName.Size = new Size(100, 30);
-                bowlerName.TextAlign = HorizontalAlignment.Center;
-                bowlerName.ForeColor = Color.Red;
+                bowlerName.TextAlign = ContentAlignment.MiddleCenter;
+                bowlerName.Font = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
 
                 bowlerName.Enabled = false;
 
                 teamArea.Controls.Add(bowlerName);
-
-                //add the string to the team area
-                showNextString(teamArea, team);
 
                 teamBowler.matchTotal.Location = new Point(1030, (25 + (25 * bowlerCount)));
                 teamBowler.matchTotal.LostFocus += new System.EventHandler(teamBowler.calcBowlerMatchTotal);
@@ -781,6 +785,9 @@ namespace KeepScore
                 }
 
             }
+
+            //add the strings for all the bowlers on team to the team area
+            showNextString(teamArea, team);
         }
 
         private void NextString_OnClick(object sender, EventArgs e)
@@ -845,23 +852,39 @@ namespace KeepScore
                 for (int x = 0; x < in_team.bowlers[i].strings[currentString].game.Count; x++)
                 {
                     int boxIndex = x;
-                    in_team.bowlers[i].strings[currentString].game[x].Location = new Point(150 + (45 * x), (25 + (25 * (i + 1))));
-                    //in_team.bowlers[i].strings[currentString].game[x].Leave -= new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    in_team.bowlers[i].strings[currentString].game[x].Leave += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    //in_team.bowlers[i].strings[currentString].game[x].Leave -= new System.EventHandler(in_team.bowlers[i].strings[currentString].game[x].Box_TextChanged);
-                    //in_team.bowlers[i].strings[currentString].game[x].Leave += new System.EventHandler(in_team.bowlers[i].strings[currentString].game[x].Box_TextChanged);
-                    in_team.bowlers[i].strings[currentString].game[x].Leave += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Leave += new System.EventHandler(in_team.bowlers[i].calcBowlerMatchTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Leave += new System.EventHandler(in_team.Team_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(150 + (45 * x), (25 + (25 * (i + 1))));
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
+
+                    //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
 
                     in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x]);
                 }
 
                 //use offset of 11 since we know that all strings have 10 boxes and this will be after that
                 in_team.bowlers[i].strings[currentString].stringTotal.Location = new Point(600, (25 + (25 * (i + 1))));
-                in_team.bowlers[i].strings[currentString].stringTotal.Leave += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
                 in_control.Controls.Add(in_team.bowlers[i].strings[currentString].stringTotal);
             }
+        }
+
+        private void Help_OnClick(object sender, EventArgs e)
+        {
+            string Message = "*   Select the number of teams bowling in the match. \n";
+            Message += "*   The team names are optional, if no team names are needed, the fields can be left blank. \n";
+            Message += "*   Select the number of bowlers per team. \n";
+            Message += "*   Enter the names of the bowlers, these are required fields. \n";
+            Message += "*   Select the number of strings to be bowled in the match. \n";
+            Message += "*   Enter a match title, this is a required field. \n";
+            Message += "*   When the information is correct, click the Create Match button. This will create the score sheet. \n";
+            Message += "*   When done with each string, load the next string's score sheet using the Next String button. ";
+
+            MessageBox.Show(Message, "How to keep score", MessageBoxButtons.OK);
         }
     }
 }

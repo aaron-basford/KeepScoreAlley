@@ -11,8 +11,8 @@ namespace KeepScore
         Label spareImgLabel = new Label();
         Label strikeImgLabel = new Label();
 
-        Image spareImg = Image.FromFile("C:/Users/Aaron/source/repos/KeepScore/KeepScore/img/Spare.png");
-        Image strikeImg = Image.FromFile("C:/Users/Aaron/source/repos/KeepScore/KeepScore/img/Strike.png");
+        Image strikeImg = KeepScore.Properties.Resources.Strike;
+        Image spareImg = KeepScore.Properties.Resources.Spare;
 
         public int baseScore;
         public int boxTotal;
@@ -72,6 +72,7 @@ namespace KeepScore
             if (in_score.ToUpper() == "R")
             {
                 this.baseScore = 0;
+                this.markLoad = 0;
                 isStrike = false;
                 isSpare = false;
                 this.spareImgLabel.Hide();
@@ -119,7 +120,7 @@ namespace KeepScore
                             {
                                 this.baseScore = 0;
                                 this.Text = "";
-                                MessageBox.Show("Please enter a number, an X or a /.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 this.Focus();
                             }
                             isStrike = false;
@@ -143,15 +144,22 @@ namespace KeepScore
                         }
                         else
                         {
-                            this.markLoad = 0;
-                            this.Text = "";
-                            this.Focus();
+                            if (int.Parse(in_score) != markLoad)
+                            {
+                                this.markLoad = 0;
+                                this.Text = "";
+                                this.Focus();
+                            }
+                            else
+                            {
+                                this.Text = this.markLoad.ToString();
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         this.baseScore = 0;
-                        MessageBox.Show("Please enter a number, an X or a /.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.Focus();
                     }
                 }
