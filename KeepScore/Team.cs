@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KeepScore
+﻿namespace KeepScore
 {
     internal class Team
     {
         public string name;
-        public List<Bowler> bowlers; 
-        public TextBox teamTotal = new TextBox(); 
+        public List<Bowler> bowlers;
+        public TextBox teamTotal = new TextBox();
         public int teamNumber = 0;
 
         public Team()

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KeepScore
+﻿namespace KeepScore
 {
     internal class Bowler
     {
@@ -15,7 +9,7 @@ namespace KeepScore
         public Bowler(string in_name, int numStrings)
         {
             this.name = in_name;
-            
+
             for (int i = 0; i < numStrings; i++)
             {
                 this.strings.Add(new BowlingString());
@@ -31,7 +25,7 @@ namespace KeepScore
         {
             int bowlerMatchTotal = 0;
 
-            for(int i = 0; i < strings.Count; i++)
+            for (int i = 0; i < strings.Count; i++)
             {
                 bowlerMatchTotal += int.Parse(strings[i].stringTotal.Text);
             }

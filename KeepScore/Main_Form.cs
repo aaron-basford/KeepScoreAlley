@@ -134,7 +134,8 @@ namespace KeepScore
                     Team1_Bowler3.Hide();
                 }
 
-                if (NumBowlers.SelectedIndex >= 3) {
+                if (NumBowlers.SelectedIndex >= 3)
+                {
                     Team1_Bowler4.Enabled = true;
                     Team1_Bowler4.Show();
                 }
@@ -144,11 +145,13 @@ namespace KeepScore
                     Team1_Bowler4.Hide();
                 }
 
-                if (NumBowlers.SelectedIndex >= 4) {
+                if (NumBowlers.SelectedIndex >= 4)
+                {
                     Team1_Bowler5.Enabled = true;
                     Team1_Bowler5.Show();
                 }
-                else {
+                else
+                {
                     Team1_Bowler5.Enabled = false;
                     Team1_Bowler5.Hide();
                 }
@@ -348,7 +351,8 @@ namespace KeepScore
         private void NumTeams_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Show/Hide fields to enter team names
-            switch (NumTeams.SelectedIndex) {
+            switch (NumTeams.SelectedIndex)
+            {
                 case 0:
                     Team1.Enabled = true;
                     Team1.Show();
@@ -498,7 +502,7 @@ namespace KeepScore
 
             if (errMsg == "")
             {
-                if(NumTeams.SelectedIndex >= 0)
+                if (NumTeams.SelectedIndex >= 0)
                 {
                     bowlersNames.Clear();
 
@@ -848,7 +852,7 @@ namespace KeepScore
             for (int i = 0; i < in_team.bowlers.Count; i++)
             {
                 int bowlerIndex = i;
-                
+
                 for (int x = 0; x < in_team.bowlers[i].strings[currentString].game.Count; x++)
                 {
                     int boxIndex = x;

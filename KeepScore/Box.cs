@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KeepScore
+﻿namespace KeepScore
 {
     internal class Box : TextBox
     {
@@ -29,19 +23,19 @@ namespace KeepScore
             this.isStrike = isStrike;
             this.isSpare = isSpare;
 
-            this.Size = new Size(40,35);
+            this.Size = new Size(40, 35);
         }
 
         public Box(int in_boxNumber)
         {
-            this.isStrike=false;
-            this.isSpare=false;
+            this.isStrike = false;
+            this.isSpare = false;
             this.baseScore = 0;
             this.boxTotal = 0;
             this.markLoad = 0;
             this.boxNumber = in_boxNumber;
 
-            this.Size = new Size(40,35);
+            this.Size = new Size(40, 35);
             this.TextAlign = HorizontalAlignment.Center;
             this.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold, GraphicsUnit.Point);
 
@@ -52,7 +46,7 @@ namespace KeepScore
             spareImgLabel.Text = "";
             spareImgLabel.BackColor = Color.Transparent;
             spareImgLabel.Parent = this;
-            spareImgLabel.Location = new Point(0,0);
+            spareImgLabel.Location = new Point(0, 0);
 
             strikeImgLabel.Image = strikeImg;
             strikeImgLabel.AutoSize = false;
@@ -80,8 +74,8 @@ namespace KeepScore
                 this.Text = "";
                 this.Focus();
             }
-            else 
-            { 
+            else
+            {
                 if (!isStrike && !isSpare)
                 {
                     switch (in_score.ToUpper())
@@ -168,14 +162,16 @@ namespace KeepScore
             this.calcBoxTotal();
         }
 
-        public void calcBoxTotal() {
+        public void calcBoxTotal()
+        {
 
             if (this.isSpare || this.isStrike)
             {
                 this.boxTotal = 10 + this.markLoad;
             }
-            else { 
-                    this.boxTotal = this.baseScore;
+            else
+            {
+                this.boxTotal = this.baseScore;
             }
         }
 

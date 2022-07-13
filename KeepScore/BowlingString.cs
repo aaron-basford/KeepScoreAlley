@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KeepScore
+﻿namespace KeepScore
 {
     internal class BowlingString
     {
@@ -21,13 +15,14 @@ namespace KeepScore
 
             game = new List<Box>();
 
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 game.Add(new Box(i));
             }
         }
 
-        public int Calc_Total() {
+        public int Calc_Total()
+        {
 
             int total = 0;
 
@@ -59,7 +54,7 @@ namespace KeepScore
             {
                 //if we are resetting the box and this box is a spare or strike we have some decisions to make
                 //Otherwise we'll let this box reset itself
-                if (in_box.Text.ToUpper() == "R" && (in_box.isSpare || in_box.isStrike)) 
+                if (in_box.Text.ToUpper() == "R" && (in_box.isSpare || in_box.isStrike))
                 {
                     //if the previous box is spare or strike we need to subtract ten from the markLoad prop and give that box focus.
                     //Unless this is the first box of the string, then we just reset this box.
