@@ -8,8 +8,8 @@
 
   <Identity
     Name="983eadc3-7ddc-4fa0-9149-1e873f5e9d61"
-    Publisher="CN=Aaron Basford"
-    Version="1.0.0.0" />
+    Publisher="CN=Aaron"
+    Version="1.0.2.0" />
 
   <Properties>
     <DisplayName>PackagingProject</DisplayName>

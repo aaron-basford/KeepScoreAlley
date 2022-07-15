@@ -64,12 +64,18 @@
             this.MatchTitle = new System.Windows.Forms.TextBox();
             this.CreateMatch = new System.Windows.Forms.Button();
             this.NextString = new System.Windows.Forms.Button();
-            this.menuStrip = new MenuStrip();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem("Help");
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTeam1Bowlers = new System.Windows.Forms.Label();
+            this.lblTeam2Bowlers = new System.Windows.Forms.Label();
+            this.lblTeam3Bowlers = new System.Windows.Forms.Label();
+            this.lblTeam4Bowlers = new System.Windows.Forms.Label();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // NumTeams
             // 
+            this.NumTeams.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.NumTeams.FormattingEnabled = true;
             this.NumTeams.Items.AddRange(new object[] {
             "1",
@@ -80,7 +86,6 @@
             this.NumTeams.Name = "NumTeams";
             this.NumTeams.Size = new System.Drawing.Size(121, 23);
             this.NumTeams.TabIndex = 0;
-            this.NumTeams.DropDownStyle = ComboBoxStyle.DropDownList;
             this.NumTeams.SelectedIndexChanged += new System.EventHandler(this.NumTeams_SelectedIndexChanged);
             // 
             // lbl_NumTeams
@@ -103,6 +108,7 @@
             // 
             // NumBowlers
             // 
+            this.NumBowlers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.NumBowlers.FormattingEnabled = true;
             this.NumBowlers.Items.AddRange(new object[] {
             "1",
@@ -114,7 +120,6 @@
             this.NumBowlers.Name = "NumBowlers";
             this.NumBowlers.Size = new System.Drawing.Size(121, 23);
             this.NumBowlers.TabIndex = 5;
-            this.NumBowlers.DropDownStyle = ComboBoxStyle.DropDownList;
             this.NumBowlers.SelectedIndexChanged += new System.EventHandler(this.NumBowlers_SelectedIndexChanged);
             // 
             // lbl_NumStrings
@@ -128,6 +133,7 @@
             // 
             // NumStrings
             // 
+            this.NumStrings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.NumStrings.FormattingEnabled = true;
             this.NumStrings.Items.AddRange(new object[] {
             "1",
@@ -144,7 +150,6 @@
             this.NumStrings.Name = "NumStrings";
             this.NumStrings.Size = new System.Drawing.Size(121, 23);
             this.NumStrings.TabIndex = 26;
-            this.NumStrings.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // Team1
             // 
@@ -331,14 +336,14 @@
             this.Team4_Bowler1.Name = "Team4_Bowler1";
             this.Team4_Bowler1.Size = new System.Drawing.Size(186, 23);
             this.Team4_Bowler1.TabIndex = 21;
-            //
-            //lbl_MatchTitle
-            //
+            // 
+            // lbl_MatchTitle
+            // 
             this.lbl_MatchTitle.Location = new System.Drawing.Point(296, 309);
             this.lbl_MatchTitle.Name = "lbl_MatchTitle";
-            this.lbl_MatchTitle.Text = "Match Title";
             this.lbl_MatchTitle.Size = new System.Drawing.Size(66, 15);
             this.lbl_MatchTitle.TabIndex = 27;
+            this.lbl_MatchTitle.Text = "Match Title";
             // 
             // MatchTitle
             // 
@@ -346,46 +351,87 @@
             this.MatchTitle.Name = "MatchTitle";
             this.MatchTitle.Size = new System.Drawing.Size(281, 23);
             this.MatchTitle.TabIndex = 28;
-            //
-            //CreateMatch
-            //
+            // 
+            // CreateMatch
+            // 
             this.CreateMatch.Location = new System.Drawing.Point(742, 305);
             this.CreateMatch.Name = "CreateMatch";
-            this.CreateMatch.Text = "Create Match";
             this.CreateMatch.Size = new System.Drawing.Size(187, 23);
             this.CreateMatch.TabIndex = 29;
+            this.CreateMatch.Text = "Create Match";
             this.CreateMatch.Click += new System.EventHandler(this.CreateButton_OnClick);
-            //
-            //NextString
-            //
+            // 
+            // NextString
+            // 
             this.NextString.Location = new System.Drawing.Point(961, 305);
             this.NextString.Name = "NextString";
-            this.NextString.Text = "Next String";
             this.NextString.Size = new System.Drawing.Size(187, 23);
             this.NextString.TabIndex = 30;
+            this.NextString.Text = "Next String";
             this.NextString.Click += new System.EventHandler(this.NextString_OnClick);
             // 
-            // helpToolStripMenuItem1
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
-            this.helpToolStripMenuItem.Text = "Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.Help_OnClick);
-            // 
-            // menuStrip1
+            // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1270, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1267, 24);
             this.menuStrip.TabIndex = 2;
             this.menuStrip.Text = "menuStrip";
-            // Form1
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.Help_OnClick);
+            // 
+            // lblTeam1Bowlers
+            // 
+            this.lblTeam1Bowlers.AutoSize = true;
+            this.lblTeam1Bowlers.Location = new System.Drawing.Point(286, 133);
+            this.lblTeam1Bowlers.Name = "lblTeam1Bowlers";
+            this.lblTeam1Bowlers.Size = new System.Drawing.Size(13, 15);
+            this.lblTeam1Bowlers.TabIndex = 31;
+            this.lblTeam1Bowlers.Text = "1";
+            // 
+            // lblTeam2Bowlers
+            // 
+            this.lblTeam2Bowlers.AutoSize = true;
+            this.lblTeam2Bowlers.Location = new System.Drawing.Point(286, 172);
+            this.lblTeam2Bowlers.Name = "lblTeam2Bowlers";
+            this.lblTeam2Bowlers.Size = new System.Drawing.Size(13, 15);
+            this.lblTeam2Bowlers.TabIndex = 32;
+            this.lblTeam2Bowlers.Text = "2";
+            // 
+            // lblTeam3Bowlers
+            // 
+            this.lblTeam3Bowlers.AutoSize = true;
+            this.lblTeam3Bowlers.Location = new System.Drawing.Point(286, 212);
+            this.lblTeam3Bowlers.Name = "lblTeam3Bowlers";
+            this.lblTeam3Bowlers.Size = new System.Drawing.Size(13, 15);
+            this.lblTeam3Bowlers.TabIndex = 33;
+            this.lblTeam3Bowlers.Text = "3";
+            // 
+            // lblTeam4Bowlers
+            // 
+            this.lblTeam4Bowlers.AutoSize = true;
+            this.lblTeam4Bowlers.Location = new System.Drawing.Point(286, 252);
+            this.lblTeam4Bowlers.Name = "lblTeam4Bowlers";
+            this.lblTeam4Bowlers.Size = new System.Drawing.Size(13, 15);
+            this.lblTeam4Bowlers.TabIndex = 34;
+            this.lblTeam4Bowlers.Text = "4";
+            // 
+            // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1267, 450);
+            this.Controls.Add(this.lblTeam4Bowlers);
+            this.Controls.Add(this.lblTeam3Bowlers);
+            this.Controls.Add(this.lblTeam2Bowlers);
+            this.Controls.Add(this.lblTeam1Bowlers);
             this.Controls.Add(this.Team4_Bowler5);
             this.Controls.Add(this.Team4_Bowler4);
             this.Controls.Add(this.Team4_Bowler3);
@@ -473,5 +519,9 @@
         private Button NextString;
         private MenuStrip menuStrip;
         private ToolStripMenuItem helpToolStripMenuItem;
+        private Label lblTeam1Bowlers;
+        private Label lblTeam2Bowlers;
+        private Label lblTeam3Bowlers;
+        private Label lblTeam4Bowlers;
     }
 }

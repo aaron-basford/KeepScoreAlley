@@ -122,12 +122,35 @@
                         {
                             in_box.setBaseScore("10");
                             in_box.Text = "";
+                            in_box.DbleStrikeRightImglabel.Show();
+                            in_box.DbleStrikeLeftImglabel.Show();
                             in_box.Focus();
                         }
 
                         if (in_box.markLoad > 10)
                         {
+                            in_box.Text = (in_box.markLoad - 10).ToString();
+                            this.stringTotal.Focus();
+                        }
+                    }
+                    else if (in_box.boxNumber == 8 && in_box.isStrike) 
+                    {
+                        if (in_box.markLoad == 0)
+                        {
+                            in_box.setBaseScore(in_box.Text);
+                            this.game[in_box.boxNumber + 1].setBaseScore("X");
+                            in_box.Text = "";
+                            in_box.Focus();
+                        }
+                        else
+                        {
+                            in_box.setBaseScore(in_box.Text);
+                            this.game[in_box.boxNumber + 1].setBaseScore("X");
+                            this.game[in_box.boxNumber + 1].Text = "";
+                            this.game[in_box.boxNumber + 1].DbleStrikeRightImglabel.Show();
+                            this.game[in_box.boxNumber + 1].DbleStrikeLeftImglabel.Show();
                             in_box.Text = in_box.markLoad.ToString();
+                            this.game[in_box.boxNumber + 1].Focus();
                         }
                     }
                     else if (this.game[in_box.boxNumber + 1].isStrike)

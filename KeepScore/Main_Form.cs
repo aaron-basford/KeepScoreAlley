@@ -32,6 +32,11 @@ namespace KeepScore
             thirdTeam = new Team();
             fourthTeam = new Team();
 
+            lblTeam1Bowlers.Hide();
+            lblTeam2Bowlers.Hide();
+            lblTeam3Bowlers.Hide();
+            lblTeam4Bowlers.Hide();
+
             currentString = 0;
 
             //Hide the team name fields
@@ -101,6 +106,8 @@ namespace KeepScore
             //Create field to enter bowlers names
             if (NumTeams.SelectedIndex >= 0)
             {
+                lblTeam1Bowlers.Show();
+
                 if (NumBowlers.SelectedIndex >= 0)
                 {
                     Team1_Bowler1.Enabled = true;
@@ -163,6 +170,8 @@ namespace KeepScore
 
             if (NumTeams.SelectedIndex > 0)
             {
+                lblTeam2Bowlers.Show();
+
                 if (NumBowlers.SelectedIndex >= 0)
                 {
                     Team2_Bowler1.Enabled = true;
@@ -225,6 +234,8 @@ namespace KeepScore
 
             if (NumTeams.SelectedIndex > 1)
             {
+                lblTeam3Bowlers.Show();
+
                 if (NumBowlers.SelectedIndex >= 0)
                 {
                     Team3_Bowler1.Enabled = true;
@@ -287,6 +298,8 @@ namespace KeepScore
 
             if (NumTeams.SelectedIndex == 3)
             {
+                lblTeam4Bowlers.Show();
+
                 if (NumBowlers.SelectedIndex >= 0)
                 {
                     Team4_Bowler1.Enabled = true;
@@ -453,6 +466,7 @@ namespace KeepScore
                     Team1_Bowler4.Hide();
                     Team1_Bowler5.Enabled = false;
                     Team1_Bowler5.Hide();
+                    lblTeam1Bowlers.Hide();
                     break;
                 case 1:
                     Team2_Bowler1.Enabled = false;
@@ -465,6 +479,7 @@ namespace KeepScore
                     Team2_Bowler4.Hide();
                     Team2_Bowler5.Enabled = false;
                     Team2_Bowler5.Hide();
+                    lblTeam2Bowlers.Hide();
                     break;
                 case 2:
                     Team3_Bowler1.Enabled = false;
@@ -477,6 +492,7 @@ namespace KeepScore
                     Team3_Bowler4.Hide();
                     Team3_Bowler5.Enabled = false;
                     Team3_Bowler5.Hide();
+                    lblTeam3Bowlers.Hide();
                     break;
                 case 3:
                     Team4_Bowler1.Enabled = false;
@@ -489,6 +505,7 @@ namespace KeepScore
                     Team4_Bowler4.Hide();
                     Team4_Bowler5.Enabled = false;
                     Team4_Bowler5.Hide();
+                    lblTeam4Bowlers.Hide();
                     break;
             }
         }

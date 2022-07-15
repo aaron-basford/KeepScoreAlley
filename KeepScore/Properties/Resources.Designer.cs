@@ -63,6 +63,26 @@ namespace KeepScore.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dbl_Strike_Left {
+            get {
+                object obj = ResourceManager.GetObject("Dbl_Strike_Left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dbl_Strike_Right {
+            get {
+                object obj = ResourceManager.GetObject("Dbl_Strike_Right", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Spare {
             get {
                 object obj = ResourceManager.GetObject("Spare", resourceCulture);

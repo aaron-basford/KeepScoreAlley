@@ -2,11 +2,15 @@
 {
     internal class Box : TextBox
     {
-        Label spareImgLabel = new Label();
-        Label strikeImgLabel = new Label();
+        public Label spareImgLabel = new Label();
+        public Label strikeImgLabel = new Label();
+        public Label DbleStrikeRightImglabel = new Label();
+        public Label DbleStrikeLeftImglabel = new Label();
 
         Image strikeImg = KeepScore.Properties.Resources.Strike;
         Image spareImg = KeepScore.Properties.Resources.Spare;
+        Image dblStrikeLeft = KeepScore.Properties.Resources.Dbl_Strike_Left;
+        Image dblStrikeRight = KeepScore.Properties.Resources.Dbl_Strike_Right;
 
         public int baseScore;
         public int boxTotal;
@@ -57,8 +61,28 @@
             strikeImgLabel.Parent = this;
             strikeImgLabel.Location = new Point(28, 11);
 
+            DbleStrikeRightImglabel.Image = dblStrikeRight;
+            DbleStrikeRightImglabel.AutoSize = false;
+            DbleStrikeRightImglabel.Size = new Size(7, 7);
+            DbleStrikeRightImglabel.ImageAlign = ContentAlignment.MiddleCenter;
+            DbleStrikeRightImglabel.Text = "";
+            DbleStrikeRightImglabel.BackColor = Color.Transparent;
+            DbleStrikeRightImglabel.Parent = this;
+            DbleStrikeRightImglabel.Location = new Point(28, 0);
+
+            DbleStrikeLeftImglabel.Image = dblStrikeLeft;
+            DbleStrikeLeftImglabel.AutoSize = false;
+            DbleStrikeLeftImglabel.Size = new Size(8, 8);
+            DbleStrikeLeftImglabel.ImageAlign = ContentAlignment.MiddleCenter;
+            DbleStrikeLeftImglabel.Text = "";
+            DbleStrikeLeftImglabel.BackColor = Color.Transparent;
+            DbleStrikeLeftImglabel.Parent = this;
+            DbleStrikeLeftImglabel.Location = new Point(0, 11);
+
             this.spareImgLabel.Hide();
             this.strikeImgLabel.Hide();
+            this.DbleStrikeLeftImglabel.Hide();
+            this.DbleStrikeRightImglabel.Hide();
         }
 
         public void setBaseScore(string in_score)
@@ -71,6 +95,8 @@
                 isSpare = false;
                 this.spareImgLabel.Hide();
                 this.strikeImgLabel.Hide();
+                this.DbleStrikeLeftImglabel.Hide();
+                this.DbleStrikeRightImglabel.Hide();
                 this.Text = "";
                 this.Focus();
             }
