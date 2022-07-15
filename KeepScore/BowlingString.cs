@@ -50,6 +50,9 @@
 
         public void String_BoxTextChanged(object sender, EventArgs e, Box in_box)
         {
+            Boolean error = false;
+            string errMsg = "";
+
             if (in_box.Text != "")
             {
                 //if we are resetting the box and this box is a spare or strike we have some decisions to make
@@ -133,7 +136,7 @@
                             this.stringTotal.Focus();
                         }
                     }
-                    else if (in_box.boxNumber == 8 && in_box.isStrike) 
+                    else if (in_box.boxNumber == 8 && in_box.isStrike)
                     {
                         if (in_box.markLoad == 0)
                         {
@@ -185,9 +188,32 @@
                 }
                 else
                 {
-                    in_box.setBaseScore(in_box.Text);
+                    if (
+                        (in_box.boxNumber > 0)
+                        && ((in_box.Text.ToUpper() == "X" && (this.game[in_box.boxNumber - 1].isSpare || this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0) 
+                        || (in_box.Text.ToUpper() == "/" && (this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0))
+                        )
+                    {
+                        if (in_box.Text.ToUpper() == "/")
+                        {
+                            errMsg = "The previous box has a strike with a load on it, this box must be an open box.";
+                        }
+                        else
+                        {
+                            errMsg = "The previous box has a spare with a load on it, this box must be a spare or an open box.";
+                        }
 
-                    if (((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.Text != "")) && in_box.boxNumber < 9)
+                        MessageBox.Show(errMsg, "Score Entry Error", MessageBoxButtons.OK);
+                        in_box.Text = "";
+                        in_box.Focus();
+                        error = true;
+                    }
+                    else
+                    {
+                        in_box.setBaseScore(in_box.Text);
+                    }
+
+                    if (!error && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.Text != "")) && in_box.boxNumber < 9)
                     {
                         this.game[in_box.boxNumber + 1].Focus();
                     }
