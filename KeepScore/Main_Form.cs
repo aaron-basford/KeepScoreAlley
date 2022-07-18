@@ -24,7 +24,7 @@ namespace KeepScore
             this.BackColor = Color.White;
             this.ForeColor = Color.Black;
             this.Size = new System.Drawing.Size(1300, 400);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
             this.StartPosition = FormStartPosition.CenterScreen;
 
             firstTeam = new Team();

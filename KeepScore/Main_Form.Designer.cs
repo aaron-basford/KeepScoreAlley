@@ -427,6 +427,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1267, 450);
             this.Controls.Add(this.lblTeam4Bowlers);
             this.Controls.Add(this.lblTeam3Bowlers);
