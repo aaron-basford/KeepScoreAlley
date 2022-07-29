@@ -775,16 +775,17 @@ namespace KeepScore
 
                 if (bowlerCount == 1)
                 {
-                    bowlerName.Location = new Point(30, 50);
+                    bowlerName.Location = new Point(0, 50);
                 }
                 else
                 {
-                    bowlerName.Location = new Point(30, (25 + (25 * bowlerCount)));
+                    bowlerName.Location = new Point(0, (25 + (25 * bowlerCount)));
                 }
 
-                bowlerName.Size = new Size(100, 30);
+                bowlerName.Size = new Size(125, 25);
                 bowlerName.TextAlign = ContentAlignment.MiddleCenter;
-                bowlerName.Font = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
+                bowlerName.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold);
+                bowlerName.AutoSize = false;
 
                 bowlerName.Enabled = false;
 
