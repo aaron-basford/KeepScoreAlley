@@ -22,10 +22,12 @@
 
         public Team(string name, List<string> bowlers, int numStrings)
         {
+            //set default values
             this.name = name;
             this.bowlers = new List<Bowler>();
             this.teamTotal.Text = "0";
 
+            //iterate through all the bowlers entered and create them for this team
             for (int x = 0; x < bowlers.Count; x++)
             {
                 this.bowlers.Add(new Bowler(bowlers[x], numStrings));
@@ -36,6 +38,7 @@
         {
             int temp_teamTotal = 0;
 
+            //iterate through all the bowlers match totals to get teh team's total.
             for (int i = 0; i < bowlers.Count; i++)
             {
                 temp_teamTotal += int.Parse(this.bowlers[i].matchTotal.Text);

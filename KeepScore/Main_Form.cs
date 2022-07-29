@@ -103,7 +103,7 @@ namespace KeepScore
 
         private void NumBowlers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //Create field to enter bowlers names
+            //Create field to enter the bowlers names for all the teams
             if (NumTeams.SelectedIndex >= 0)
             {
                 lblTeam1Bowlers.Show();
@@ -361,6 +361,7 @@ namespace KeepScore
             }
         }
 
+        //call back function for when the user chooses a new value from the Number of teams drop down.
         private void NumTeams_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Show/Hide fields to enter team names
@@ -448,6 +449,7 @@ namespace KeepScore
                     break;
             }
 
+            //since the number of teams has changed, we need to update which bowlers' names fields are shown
             NumBowlers_SelectedIndexChanged(new object(), new EventArgs());
         }
 
@@ -510,21 +512,27 @@ namespace KeepScore
             }
         }
 
+        //call back for when the create match button is clicked.
         private void CreateButton_OnClick(object sender, EventArgs e)
         {
+            //set default values
             string errMsg = "";
             List<string> bowlersNames = new List<string>();
 
+            //call the validation method
             errMsg = validateMatchData();
 
+            //if there were no errors then create the match form and add the appropriate fields to it
             if (errMsg == "")
             {
                 if (NumTeams.SelectedIndex >= 0)
                 {
                     bowlersNames.Clear();
 
+                    //get the list of names for team 1
                     bowlersNames = populateBowlers(1);
 
+                    //if the first team has bowlers set up for it, then create the team
                     if (bowlersNames.Count > 0)
                     {
                         firstTeam = new Team(Team1.Text, bowlersNames, NumStrings.SelectedIndex + 1);
@@ -535,8 +543,10 @@ namespace KeepScore
                 {
                     bowlersNames.Clear();
 
+                    //get the list of bowlers for team 2
                     bowlersNames = populateBowlers(2);
 
+                    //if there are bowlers set up for it, then create the team
                     if (bowlersNames.Count > 0)
                     {
                         secondTeam = new Team(Team2.Text, bowlersNames, NumStrings.SelectedIndex + 1);
@@ -547,14 +557,19 @@ namespace KeepScore
                 {
                     bowlersNames.Clear();
 
+                    //get the list of bowlers for team 3
                     bowlersNames = populateBowlers(3);
 
+                    //if there are bowlers set up for it, then create the team
                     if (bowlersNames.Count > 0)
                     {
+                        //if the user set up 3 teams then the team name for the third team will come from the team 4 field
+                        //and use that to create the team
                         if (NumTeams.SelectedIndex == 2)
                         {
                             thirdTeam = new Team(Team4.Text, bowlersNames, NumStrings.SelectedIndex + 1);
                         }
+                        //get the team name from the team 3 field and use that to create the team
                         else
                         {
                             thirdTeam = new Team(Team3.Text, bowlersNames, NumStrings.SelectedIndex + 1);
@@ -566,14 +581,17 @@ namespace KeepScore
                 {
                     bowlersNames.Clear();
 
+                    //get the list of bowlers for team 4
                     bowlersNames = populateBowlers(4);
 
+                    //if there are bowlers set up for it, then create the team
                     if (bowlersNames.Count > 0)
                     {
                         fourthTeam = new Team(Team4.Text, bowlersNames, NumStrings.SelectedIndex + 1);
                     }
                 }
 
+                //now that we have all our teams set up, create the match form
                 CreateMatchForm();
             }
             else
@@ -615,6 +633,7 @@ namespace KeepScore
             {
                 bowlerErrMsg = "";
 
+                //check all the active bowler name fields
                 for (int y = 1; y < 6; y++)
                 {
                     controlName = "Team" + x + "_Bowler" + y;
@@ -641,6 +660,7 @@ namespace KeepScore
             TextBox tempTextBox = new TextBox();
             string controlName = "";
 
+            //iterate through the active fields of bowler names and add them to the list.
             for (int x = 1; x < 6; x++)
             {
                 controlName = "Team" + teamNum + "_Bowler" + x;
@@ -652,15 +672,19 @@ namespace KeepScore
                 }
             }
 
+            //return the list of bowler's names
             return bowlers;
         }
 
         private void CreateMatchForm()
         {
+            //create a new match form
             Match match = new Match();
 
+            //if the first team has bowlers then set up the team name label and display the team on the match form we just created
             if (firstTeam.bowlers.Count > 0)
             {
+                //depending on the number of bowlers, the size of the fields will change
                 this.teamOne.Size = new Size(1200, 100 + (16 * firstTeam.bowlers.Count));
                 this.teamOne.Location = new Point(20, 20);
                 this.teamOne.BackColor = Color.Red;
@@ -668,8 +692,10 @@ namespace KeepScore
                 match.Controls.Add(teamOne);
             }
 
+            //if the second team has bowlers then set up the team name label and display the team on the match form we just created
             if (secondTeam.bowlers.Count > 0)
             {
+                //depending on the number of bowlers, the size of the fields will change
                 this.teamTwo.Size = new Size(1200, 100 + (16 * secondTeam.bowlers.Count));
                 this.teamTwo.Location = new Point(20, 125 + (16 * firstTeam.bowlers.Count));
                 this.teamTwo.BackColor = Color.Blue;
@@ -677,8 +703,10 @@ namespace KeepScore
                 match.Controls.Add(teamTwo);
             }
 
+            //if the third team has bowlers then set up the team name label and display the team on the match form we just created
             if (thirdTeam.bowlers.Count > 0)
             {
+                //depending on the number of bowlers, the size of the fields will change
                 this.teamThree.Size = new Size(1200, 100 + (16 * thirdTeam.bowlers.Count));
                 this.teamThree.Location = new Point(20, 263 + (16 * secondTeam.bowlers.Count));
                 this.teamThree.BackColor = Color.Green;
@@ -686,8 +714,10 @@ namespace KeepScore
                 match.Controls.Add(teamThree);
             }
 
+            //if the fourth team has bowlers then set up the team name label and display the team on the match form we just created
             if (fourthTeam.bowlers.Count > 0)
             {
+                //depending on the number of bowlers, the size of the fields will change
                 this.teamFour.Size = new Size(1200, 100 + (16 * fourthTeam.bowlers.Count));
                 this.teamFour.Location = new Point(20, 400 + (16 * thirdTeam.bowlers.Count));
                 this.teamFour.BackColor = Color.Purple;
@@ -695,10 +725,13 @@ namespace KeepScore
                 match.Controls.Add(teamFour);
             }
 
+            //set the form title to the match title entered on the main form
             match.Text = this.MatchTitle.Text;
 
+            //show the form
             match.Show();
 
+            //disable all the controls on the form except the next string button
             foreach (Control c in this.Controls)
             {
                 if (c.Name != "NextString")
@@ -712,8 +745,10 @@ namespace KeepScore
         {
             int bowlerCount = 0;
 
+            //is this the first string of the match?
             if (currentString == 0)
             {
+                //set up the label for the team name
                 Label teamName = new Label();
                 teamName.Text = team.name.ToUpper();
                 teamName.Location = new Point(10, 10);
@@ -723,6 +758,7 @@ namespace KeepScore
                 teamName.Font = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
                 teamArea.Controls.Add(teamName);
 
+                //set up the label for the string total
                 Label stringTotalLabel = new Label();
                 stringTotalLabel.Size = new Size(50, 20);
                 stringTotalLabel.Location = new Point(598, 20);
@@ -731,6 +767,7 @@ namespace KeepScore
                 stringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalLabel);
 
+                //set up the label for the previous strings area
                 Label prevStringsLabel = new Label();
                 prevStringsLabel.Size = new Size(130, 20);
                 prevStringsLabel.Location = new Point(750, 20);
@@ -739,6 +776,7 @@ namespace KeepScore
                 prevStringsLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
                 teamArea.Controls.Add(prevStringsLabel);
 
+                //set up the label for the bowler match total
                 Label bowlerTotalLabel = new Label();
                 bowlerTotalLabel.Size = new Size(55, 20);
                 bowlerTotalLabel.Location = new Point(1025, 20);
@@ -747,6 +785,7 @@ namespace KeepScore
                 bowlerTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerTotalLabel);
 
+                //if the team has more than one bowler we need to change the size of the box and the font so it stands out
                 if (team.bowlers.Count > 1)
                 {
                     Label teamTotalLabel = new Label();
@@ -758,6 +797,7 @@ namespace KeepScore
                     {
                         teamTotalLabel.Size = new Size(100, 30 + (2 * team.bowlers.Count));
                     }
+                    //because c# is stupid, you have to specify a float by using a trailing f
                     teamTotalLabel.Font = new Font(FontFamily.GenericSansSerif, (10 + (2 * (team.bowlers.Count * 0.62F))), FontStyle.Bold, GraphicsUnit.Pixel);
                     teamTotalLabel.Location = new Point(1070, 20 + (2 * team.bowlers.Count));
                     teamTotalLabel.Text = "Team Total";
@@ -766,6 +806,7 @@ namespace KeepScore
                 }
             }
 
+            //show a string for every bowler on the team
             foreach (Bowler teamBowler in team.bowlers)
             {
                 bowlerCount++;
@@ -773,15 +814,18 @@ namespace KeepScore
                 Label bowlerName = new Label();
                 bowlerName.Text = teamBowler.name.ToUpper();
 
+                //if this is the first bowler on the team set the field at a static location
                 if (bowlerCount == 1)
                 {
                     bowlerName.Location = new Point(0, 50);
                 }
+                //if this an additional bowler we need to calculate where in the control to display the information
                 else
                 {
                     bowlerName.Location = new Point(0, (25 + (25 * bowlerCount)));
                 }
 
+                //set up the label for the bowlers name
                 bowlerName.Size = new Size(125, 25);
                 bowlerName.TextAlign = ContentAlignment.MiddleCenter;
                 bowlerName.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold);
@@ -789,13 +833,17 @@ namespace KeepScore
 
                 bowlerName.Enabled = false;
 
+                //add the label to the team control.
                 teamArea.Controls.Add(bowlerName);
 
+                //set the display location of the bowler's match total
                 teamBowler.matchTotal.Location = new Point(1030, (25 + (25 * bowlerCount)));
                 teamBowler.matchTotal.LostFocus += new System.EventHandler(teamBowler.calcBowlerMatchTotal);
 
+                //add the bowler's match total to the team control
                 teamArea.Controls.Add(teamBowler.matchTotal);
 
+                //if the team has more than one bowler we need to setup the text box for the team total to be larger to hold more digits and to stand out
                 if (team.bowlers.Count > 1)
                 {
                     team.teamTotal.Size = new Size((40 + (10 * bowlerCount)), (35 + (5 * bowlerCount)));
@@ -812,12 +860,15 @@ namespace KeepScore
             showNextString(teamArea, team);
         }
 
+        //call back for the next string button
         private void NextString_OnClick(object sender, EventArgs e)
         {
+            //validate that we aren't on the last string
             if ((currentString) < NumStrings.SelectedIndex)
             {
                 currentString++;
 
+                //if there are bowlers on the first team, hide the string we just finished and show the next string
                 if (firstTeam.bowlers.Count > 0)
                 {
                     hidePreviousString(firstTeam);
@@ -825,6 +876,7 @@ namespace KeepScore
                     showNextString(teamOne, firstTeam);
                 }
 
+                //if there are bowlers on the second team, hide the string we just finished and show the next string
                 if (secondTeam.bowlers.Count > 0)
                 {
                     hidePreviousString(secondTeam);
@@ -832,6 +884,7 @@ namespace KeepScore
                     showNextString(teamTwo, secondTeam);
                 }
 
+                //if there are bowlers on the third team, hide the string we just finished and show the next string
                 if (thirdTeam.bowlers.Count > 0)
                 {
                     hidePreviousString(thirdTeam);
@@ -839,6 +892,7 @@ namespace KeepScore
                     showNextString(teamThree, thirdTeam);
                 }
 
+                //if there are bowlers on the fourth team, hide the string we just finished and show the next string
                 if (fourthTeam.bowlers.Count > 0)
                 {
                     hidePreviousString(fourthTeam);
@@ -854,40 +908,52 @@ namespace KeepScore
 
         private void hidePreviousString(Team in_team)
         {
+            //iterate through the bowlers of the team
             for (int i = 0; i < in_team.bowlers.Count; i++)
             {
+                //iterate through the boxes of the string just finished for the bowler and hide them
                 for (int y = 0; y < in_team.bowlers[i].strings[currentString - 1].game.Count; y++)
                 {
                     in_team.bowlers[i].strings[currentString - 1].game[y].Hide();
                 }
 
+                //move the string total for the bowler to the previous string area
                 in_team.bowlers[i].strings[currentString - 1].stringTotal.Location = new Point(620 + (40 * currentString), (49 + (25 * i + 1)));
             }
         }
 
         private void showNextString(Control in_control, Team in_team)
         {
+            //iterate through all the bowlers
             for (int i = 0; i < in_team.bowlers.Count; i++)
             {
                 int bowlerIndex = i;
 
+                //iterate through all the boxes for this bowlers next string and show them
                 for (int x = 0; x < in_team.bowlers[i].strings[currentString].game.Count; x++)
                 {
                     int boxIndex = x;
+                    //we need to calculate where the location of each box will be displayed on the control.
+                    //we will use the the bowlers number (i) and the box number (x) to calculate the offset we need
                     in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(150 + (45 * x), (25 + (25 * (i + 1))));
+                    
+                    //set up the call backs for each box so we can validate and calculate the boxes score, the string total, bowler's match total and the team's match total
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
 
+                    //eventually when I get the key press functionality working I'll need to register the callbacks differently.
                     //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
 
+                    //add the box to the team control
                     in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x]);
                 }
 
+                //set up the display information for the string total of the new string.
                 //use offset of 11 since we know that all strings have 10 boxes and this will be after that
                 in_team.bowlers[i].strings[currentString].stringTotal.Location = new Point(600, (25 + (25 * (i + 1))));
                 in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
