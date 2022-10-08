@@ -5,14 +5,22 @@
         public List<Box> game;
 
         public TextBox stringTotal = new TextBox();
+        public TextBox totalHDCP = new TextBox();
+        public int HDCP = 0;
+        public int boxesPerTurn = 1;
 
         public BowlingString()
         {
             //set the display size and location of the string total textbox
-            this.stringTotal.Size = new Size(35, 35);
+            this.stringTotal.Size = new Size(100, 50);
             this.stringTotal.TextAlign = HorizontalAlignment.Center;
             this.stringTotal.Text = "0";
-            this.stringTotal.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+            this.stringTotal.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+
+            this.totalHDCP.Size = new Size(100, 50);
+            this.totalHDCP.TextAlign = HorizontalAlignment.Center;
+            this.totalHDCP.Text = "0";
+            this.totalHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
 
             game = new List<Box>();
 
@@ -48,6 +56,10 @@
             }
 
             this.stringTotal.Text = total.ToString();
+
+            total += HDCP;
+
+            this.totalHDCP.Text = total.ToString();
         }
 
         public delegate void StringBoxTextChanged(Box in_box);

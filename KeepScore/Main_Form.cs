@@ -1,17 +1,12 @@
 namespace KeepScore
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public partial class Main_Form : Form
     {
         private Team firstTeam;
         private Control teamOne = new Control();
-        private Team secondTeam;
-        private Control teamTwo = new Control();
-        private Team thirdTeam;
-        private Control teamThree = new Control();
-        private Team fourthTeam;
-        private Control teamFour = new Control();
         private int currentString;
 
         public Main_Form()
@@ -28,488 +23,17 @@ namespace KeepScore
             this.StartPosition = FormStartPosition.CenterScreen;
 
             firstTeam = new Team();
-            secondTeam = new Team();
-            thirdTeam = new Team();
-            fourthTeam = new Team();
-
-            lblTeam1Bowlers.Hide();
-            lblTeam2Bowlers.Hide();
-            lblTeam3Bowlers.Hide();
-            lblTeam4Bowlers.Hide();
-
+            
             currentString = 0;
 
-            //Hide the team name fields
-            Team1.Enabled = false;
-            Team1.Hide();
-            lbl_Versus1.Enabled = false;
-            lbl_Versus1.Hide();
-            Team2.Enabled = false;
-            Team2.Hide();
-            Team3.Enabled = false;
-            Team3.Hide();
-            lbl_Versus2.Enabled = false;
-            lbl_Versus2.Hide();
-            Team4.Enabled = false;
-            Team4.Hide();
+            this.numBoxesPerTurn.SelectedIndex = 0;
+            this.NumStrings.SelectedIndex = 0;
 
-            //Hide the bowler name fields.
-            Team1_Bowler1.Enabled = false;
-            Team1_Bowler1.Hide();
-            Team1_Bowler2.Enabled = false;
-            Team1_Bowler2.Hide();
-            Team1_Bowler3.Enabled = false;
-            Team1_Bowler3.Hide();
-            Team1_Bowler4.Enabled = false;
-            Team1_Bowler4.Hide();
-            Team1_Bowler5.Enabled = false;
-            Team1_Bowler5.Hide();
+            this.Show();
 
-            Team2_Bowler1.Enabled = false;
-            Team2_Bowler1.Hide();
-            Team2_Bowler2.Enabled = false;
-            Team2_Bowler2.Hide();
-            Team2_Bowler3.Enabled = false;
-            Team2_Bowler3.Hide();
-            Team2_Bowler4.Enabled = false;
-            Team2_Bowler4.Hide();
-            Team2_Bowler5.Enabled = false;
-            Team2_Bowler5.Hide();
+            Form startMenuInstructions = new startMenuInstr();
+            startMenuInstructions.Show();
 
-            Team3_Bowler1.Enabled = false;
-            Team3_Bowler1.Hide();
-            Team3_Bowler2.Enabled = false;
-            Team3_Bowler2.Hide();
-            Team3_Bowler3.Enabled = false;
-            Team3_Bowler3.Hide();
-            Team3_Bowler4.Enabled = false;
-            Team3_Bowler4.Hide();
-            Team3_Bowler5.Enabled = false;
-            Team3_Bowler5.Hide();
-
-            Team4_Bowler1.Enabled = false;
-            Team4_Bowler1.Hide();
-            Team4_Bowler2.Enabled = false;
-            Team4_Bowler2.Hide();
-            Team4_Bowler3.Enabled = false;
-            Team4_Bowler3.Hide();
-            Team4_Bowler4.Enabled = false;
-            Team4_Bowler4.Hide();
-            Team4_Bowler5.Enabled = false;
-            Team4_Bowler5.Hide();
-
-            //firstString.Show();
-        }
-
-        private void NumBowlers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //Create field to enter the bowlers names for all the teams
-            if (NumTeams.SelectedIndex >= 0)
-            {
-                lblTeam1Bowlers.Show();
-
-                if (NumBowlers.SelectedIndex >= 0)
-                {
-                    Team1_Bowler1.Enabled = true;
-                    Team1_Bowler1.Show();
-                }
-                else
-                {
-                    Team1_Bowler1.Enabled = false;
-                    Team1_Bowler1.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 1)
-                {
-                    Team1_Bowler2.Enabled = true;
-                    Team1_Bowler2.Show();
-                }
-                else
-                {
-                    Team1_Bowler2.Enabled = false;
-                    Team1_Bowler2.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 2)
-                {
-                    Team1_Bowler3.Enabled = true;
-                    Team1_Bowler3.Show();
-                }
-                else
-                {
-                    Team1_Bowler3.Enabled = false;
-                    Team1_Bowler3.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 3)
-                {
-                    Team1_Bowler4.Enabled = true;
-                    Team1_Bowler4.Show();
-                }
-                else
-                {
-                    Team1_Bowler4.Enabled = false;
-                    Team1_Bowler4.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 4)
-                {
-                    Team1_Bowler5.Enabled = true;
-                    Team1_Bowler5.Show();
-                }
-                else
-                {
-                    Team1_Bowler5.Enabled = false;
-                    Team1_Bowler5.Hide();
-                }
-            }
-            else
-            {
-                HideAllBowlersByTeam(0);
-            }
-
-            if (NumTeams.SelectedIndex > 0)
-            {
-                lblTeam2Bowlers.Show();
-
-                if (NumBowlers.SelectedIndex >= 0)
-                {
-                    Team2_Bowler1.Enabled = true;
-                    Team2_Bowler1.Show();
-                }
-                else
-                {
-                    Team2_Bowler1.Enabled = false;
-                    Team2_Bowler1.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 1)
-                {
-                    Team2_Bowler2.Enabled = true;
-                    Team2_Bowler2.Show();
-                }
-                else
-                {
-                    Team2_Bowler2.Enabled = false;
-                    Team2_Bowler2.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 2)
-                {
-                    Team2_Bowler3.Enabled = true;
-                    Team2_Bowler3.Show();
-                }
-                else
-                {
-                    Team2_Bowler3.Enabled = false;
-                    Team2_Bowler3.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 3)
-                {
-                    Team2_Bowler4.Enabled = true;
-                    Team2_Bowler4.Show();
-                }
-                else
-                {
-                    Team2_Bowler4.Enabled = false;
-                    Team2_Bowler4.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 4)
-                {
-                    Team2_Bowler5.Enabled = true;
-                    Team2_Bowler5.Show();
-                }
-                else
-                {
-                    Team2_Bowler5.Enabled = false;
-                    Team2_Bowler5.Hide();
-                }
-            }
-            else
-            {
-                HideAllBowlersByTeam(1);
-            }
-
-            if (NumTeams.SelectedIndex > 1)
-            {
-                lblTeam3Bowlers.Show();
-
-                if (NumBowlers.SelectedIndex >= 0)
-                {
-                    Team3_Bowler1.Enabled = true;
-                    Team3_Bowler1.Show();
-                }
-                else
-                {
-                    Team3_Bowler1.Enabled = false;
-                    Team3_Bowler1.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 1)
-                {
-                    Team3_Bowler2.Enabled = true;
-                    Team3_Bowler2.Show();
-                }
-                else
-                {
-                    Team3_Bowler2.Enabled = false;
-                    Team3_Bowler2.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 2)
-                {
-                    Team3_Bowler3.Enabled = true;
-                    Team3_Bowler3.Show();
-                }
-                else
-                {
-                    Team3_Bowler3.Enabled = false;
-                    Team3_Bowler3.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 3)
-                {
-                    Team3_Bowler4.Enabled = true;
-                    Team3_Bowler4.Show();
-                }
-                else
-                {
-                    Team3_Bowler4.Enabled = false;
-                    Team3_Bowler4.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 4)
-                {
-                    Team3_Bowler5.Enabled = true;
-                    Team3_Bowler5.Show();
-                }
-                else
-                {
-                    Team3_Bowler5.Enabled = false;
-                    Team3_Bowler5.Hide();
-                }
-            }
-            else
-            {
-                HideAllBowlersByTeam(2);
-            }
-
-            if (NumTeams.SelectedIndex == 3)
-            {
-                lblTeam4Bowlers.Show();
-
-                if (NumBowlers.SelectedIndex >= 0)
-                {
-                    Team4_Bowler1.Enabled = true;
-                    Team4_Bowler1.Show();
-                }
-                else
-                {
-                    Team4_Bowler1.Enabled = false;
-                    Team4_Bowler1.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 1)
-                {
-                    Team4_Bowler2.Enabled = true;
-                    Team4_Bowler2.Show();
-                }
-                else
-                {
-                    Team4_Bowler2.Enabled = false;
-                    Team4_Bowler2.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 2)
-                {
-                    Team4_Bowler3.Enabled = true;
-                    Team4_Bowler3.Show();
-                }
-                else
-                {
-                    Team4_Bowler3.Enabled = false;
-                    Team4_Bowler3.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 3)
-                {
-                    Team4_Bowler4.Enabled = true;
-                    Team4_Bowler4.Show();
-                }
-                else
-                {
-                    Team4_Bowler4.Enabled = false;
-                    Team4_Bowler4.Hide();
-                }
-
-                if (NumBowlers.SelectedIndex >= 4)
-                {
-                    Team4_Bowler5.Enabled = true;
-                    Team4_Bowler5.Show();
-                }
-                else
-                {
-                    Team4_Bowler5.Enabled = false;
-                    Team4_Bowler5.Hide();
-                }
-            }
-            else
-            {
-                HideAllBowlersByTeam(3);
-            }
-        }
-
-        //call back function for when the user chooses a new value from the Number of teams drop down.
-        private void NumTeams_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //Show/Hide fields to enter team names
-            switch (NumTeams.SelectedIndex)
-            {
-                case 0:
-                    Team1.Enabled = true;
-                    Team1.Show();
-                    lbl_Versus1.Enabled = false;
-                    lbl_Versus1.Hide();
-                    Team2.ResetText();
-                    Team2.Enabled = false;
-                    Team2.Hide();
-                    Team3.ResetText();
-                    Team3.Enabled = false;
-                    Team3.Hide();
-                    lbl_Versus2.Enabled = false;
-                    lbl_Versus2.Hide();
-                    Team4.ResetText();
-                    Team4.Enabled = false;
-                    Team4.Hide();
-                    break;
-                case 1:
-                    Team1.Enabled = true;
-                    Team1.Show();
-                    lbl_Versus1.Enabled = true;
-                    lbl_Versus1.Show();
-                    Team2.Enabled = true;
-                    Team2.Show();
-                    Team3.ResetText();
-                    Team3.Enabled = false;
-                    Team3.Hide();
-                    lbl_Versus2.Enabled = false;
-                    lbl_Versus2.Hide();
-                    Team4.ResetText();
-                    Team4.Enabled = false;
-                    Team4.Hide();
-                    break;
-                case 2:
-                    Team1.Enabled = true;
-                    Team1.Show();
-                    lbl_Versus1.Enabled = true;
-                    lbl_Versus2.Show();
-                    Team2.Enabled = true;
-                    Team2.Show();
-                    Team3.ResetText();
-                    Team3.Enabled = false;
-                    Team3.Hide();
-                    lbl_Versus2.Enabled = true;
-                    lbl_Versus2.Show();
-                    Team4.Enabled = true;
-                    Team4.Show();
-                    break;
-                case 3:
-                    Team1.Enabled = true;
-                    Team1.Show();
-                    lbl_Versus1.Enabled = true;
-                    lbl_Versus1.Show();
-                    Team2.Enabled = true;
-                    Team2.Show();
-                    Team3.Enabled = true;
-                    Team3.Show();
-                    lbl_Versus2.Enabled = true;
-                    lbl_Versus2.Show();
-                    Team4.Enabled = true;
-                    Team4.Show();
-                    break;
-                default:
-                    Team1.ResetText();
-                    Team1.Enabled = false;
-                    Team1.Hide();
-                    lbl_Versus1.Enabled = false;
-                    lbl_Versus1.Hide();
-                    Team2.ResetText();
-                    Team2.Enabled = false;
-                    Team2.Hide();
-                    Team3.ResetText();
-                    Team3.Enabled = false;
-                    Team3.Hide();
-                    lbl_Versus2.Enabled = false;
-                    lbl_Versus2.Hide();
-                    Team4.ResetText();
-                    Team4.Enabled = false;
-                    Team4.Hide();
-                    break;
-            }
-
-            //since the number of teams has changed, we need to update which bowlers' names fields are shown
-            NumBowlers_SelectedIndexChanged(new object(), new EventArgs());
-        }
-
-        private void HideAllBowlersByTeam(int in_SelectedIndex)
-        {
-            switch (in_SelectedIndex)
-            {
-                case 0:
-                    Team1_Bowler1.Enabled = false;
-                    Team1_Bowler1.Hide();
-                    Team1_Bowler2.Enabled = false;
-                    Team1_Bowler2.Hide();
-                    Team1_Bowler3.Enabled = false;
-                    Team1_Bowler3.Hide();
-                    Team1_Bowler4.Enabled = false;
-                    Team1_Bowler4.Hide();
-                    Team1_Bowler5.Enabled = false;
-                    Team1_Bowler5.Hide();
-                    lblTeam1Bowlers.Hide();
-                    break;
-                case 1:
-                    Team2_Bowler1.Enabled = false;
-                    Team2_Bowler1.Hide();
-                    Team2_Bowler2.Enabled = false;
-                    Team2_Bowler2.Hide();
-                    Team2_Bowler3.Enabled = false;
-                    Team2_Bowler3.Hide();
-                    Team2_Bowler4.Enabled = false;
-                    Team2_Bowler4.Hide();
-                    Team2_Bowler5.Enabled = false;
-                    Team2_Bowler5.Hide();
-                    lblTeam2Bowlers.Hide();
-                    break;
-                case 2:
-                    Team3_Bowler1.Enabled = false;
-                    Team3_Bowler1.Hide();
-                    Team3_Bowler2.Enabled = false;
-                    Team3_Bowler2.Hide();
-                    Team3_Bowler3.Enabled = false;
-                    Team3_Bowler3.Hide();
-                    Team3_Bowler4.Enabled = false;
-                    Team3_Bowler4.Hide();
-                    Team3_Bowler5.Enabled = false;
-                    Team3_Bowler5.Hide();
-                    lblTeam3Bowlers.Hide();
-                    break;
-                case 3:
-                    Team4_Bowler1.Enabled = false;
-                    Team4_Bowler1.Hide();
-                    Team4_Bowler2.Enabled = false;
-                    Team4_Bowler2.Hide();
-                    Team4_Bowler3.Enabled = false;
-                    Team4_Bowler3.Hide();
-                    Team4_Bowler4.Enabled = false;
-                    Team4_Bowler4.Hide();
-                    Team4_Bowler5.Enabled = false;
-                    Team4_Bowler5.Hide();
-                    lblTeam4Bowlers.Hide();
-                    break;
-            }
         }
 
         //call back for when the create match button is clicked.
@@ -525,7 +49,7 @@ namespace KeepScore
             //if there were no errors then create the match form and add the appropriate fields to it
             if (errMsg == "")
             {
-                if (NumTeams.SelectedIndex >= 0)
+                if (Team1_Bowler1.Text != "")
                 {
                     bowlersNames.Clear();
 
@@ -535,59 +59,7 @@ namespace KeepScore
                     //if the first team has bowlers set up for it, then create the team
                     if (bowlersNames.Count > 0)
                     {
-                        firstTeam = new Team(Team1.Text, bowlersNames, NumStrings.SelectedIndex + 1);
-                    }
-                }
-
-                if (NumTeams.SelectedIndex >= 1)
-                {
-                    bowlersNames.Clear();
-
-                    //get the list of bowlers for team 2
-                    bowlersNames = populateBowlers(2);
-
-                    //if there are bowlers set up for it, then create the team
-                    if (bowlersNames.Count > 0)
-                    {
-                        secondTeam = new Team(Team2.Text, bowlersNames, NumStrings.SelectedIndex + 1);
-                    }
-                }
-
-                if (NumTeams.SelectedIndex >= 2)
-                {
-                    bowlersNames.Clear();
-
-                    //get the list of bowlers for team 3
-                    bowlersNames = populateBowlers(3);
-
-                    //if there are bowlers set up for it, then create the team
-                    if (bowlersNames.Count > 0)
-                    {
-                        //if the user set up 3 teams then the team name for the third team will come from the team 4 field
-                        //and use that to create the team
-                        if (NumTeams.SelectedIndex == 2)
-                        {
-                            thirdTeam = new Team(Team4.Text, bowlersNames, NumStrings.SelectedIndex + 1);
-                        }
-                        //get the team name from the team 3 field and use that to create the team
-                        else
-                        {
-                            thirdTeam = new Team(Team3.Text, bowlersNames, NumStrings.SelectedIndex + 1);
-                        }
-                    }
-                }
-
-                if (NumTeams.SelectedIndex == 3)
-                {
-                    bowlersNames.Clear();
-
-                    //get the list of bowlers for team 4
-                    bowlersNames = populateBowlers(4);
-
-                    //if there are bowlers set up for it, then create the team
-                    if (bowlersNames.Count > 0)
-                    {
-                        fourthTeam = new Team(Team4.Text, bowlersNames, NumStrings.SelectedIndex + 1);
+                        firstTeam = new Team("TeamName", bowlersNames, NumStrings.SelectedIndex + 1);
                     }
                 }
 
@@ -608,44 +80,49 @@ namespace KeepScore
             List<string> bowlersNames = new List<string>();
             TextBox tempTextBox = new TextBox();
             string controlName = "";
-
-            if (NumTeams.SelectedIndex == -1)
-            {
-                errMsg += "Please select the number of teams in this match.\n";
-            }
-
-            if (NumBowlers.SelectedIndex == -1)
-            {
-                errMsg += "Please select the number of bowlers per team in this match.\n";
-            }
+            int nameCount = 0;
 
             if (NumStrings.SelectedIndex == -1)
             {
                 errMsg += "Please select the number of strings for this match.\n";
             }
 
-            if (MatchTitle.Text == "")
-            {
-                errMsg += "Please enter a title for this match.\n";
-            }
+            bowlerErrMsg = "";
 
-            for (int x = 1; x < 5; x++)
+            //check all the active bowler name fields
+            for (int y = 1; y < 6; y++)
             {
                 bowlerErrMsg = "";
+                controlName = "Team1_Bowler" + y;
+                tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
 
-                //check all the active bowler name fields
-                for (int y = 1; y < 6; y++)
+                if (tempTextBox.Text != "")
                 {
-                    controlName = "Team" + x + "_Bowler" + y;
+                    nameCount++;
+                }
+
+                if (nameCount == 0)
+                {
+                    bowlerErrMsg = "Please enter at least one bowler's name.\n";
+                }
+
+                try
+                {
+                    controlName = "Team2_Bowler" + y;
                     tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
 
-                    if (tempTextBox.Enabled)
-                    {
-                        if (tempTextBox.Text == "")
+                    if (tempTextBox.Text != "") { 
+                        nameCount = int.Parse(tempTextBox.Text);
+
+                        if (nameCount > 51 || nameCount < 0)
                         {
-                            bowlerErrMsg = "Please enter all the bowler's names for team " + x + ".\n";
+                            bowlerErrMsg = "Bowler " + y + " has a handicap that is out of bounds, please enter a value between 0 and 50.\n\n";
                         }
-                    }
+                     }
+                }
+                catch (Exception e)
+                {
+                    bowlerErrMsg = "Bowler " + y + " has a non numeric handicap.\n\n";
                 }
 
                 errMsg += bowlerErrMsg;
@@ -666,7 +143,7 @@ namespace KeepScore
                 controlName = "Team" + teamNum + "_Bowler" + x;
                 tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
 
-                if (tempTextBox.Enabled)
+                if (tempTextBox.Text.Trim() != "")
                 {
                     bowlers.Add(tempTextBox.Text);
                 }
@@ -680,53 +157,24 @@ namespace KeepScore
         {
             //create a new match form
             Match match = new Match();
+            Rectangle screen = Screen.PrimaryScreen.WorkingArea;
+            match.Location = new Point(0, 0);
+            int w = screen.Width;
+            int h = Convert.ToInt32(screen.Height * 0.96);
+            match.Size = new Size(w, h);
+            match.MaximizeBox = true;
+            match.AutoScroll = true;
 
             //if the first team has bowlers then set up the team name label and display the team on the match form we just created
             if (firstTeam.bowlers.Count > 0)
             {
                 //depending on the number of bowlers, the size of the fields will change
-                this.teamOne.Size = new Size(1200, 100 + (16 * firstTeam.bowlers.Count));
-                this.teamOne.Location = new Point(20, 20);
+                this.teamOne.Size = match.Size;
+                this.teamOne.Location = new Point(0, 20);
                 this.teamOne.BackColor = Color.Red;
                 displayTeam(teamOne, firstTeam);
                 match.Controls.Add(teamOne);
             }
-
-            //if the second team has bowlers then set up the team name label and display the team on the match form we just created
-            if (secondTeam.bowlers.Count > 0)
-            {
-                //depending on the number of bowlers, the size of the fields will change
-                this.teamTwo.Size = new Size(1200, 100 + (16 * secondTeam.bowlers.Count));
-                this.teamTwo.Location = new Point(20, 125 + (16 * firstTeam.bowlers.Count));
-                this.teamTwo.BackColor = Color.Blue;
-                displayTeam(teamTwo, secondTeam);
-                match.Controls.Add(teamTwo);
-            }
-
-            //if the third team has bowlers then set up the team name label and display the team on the match form we just created
-            if (thirdTeam.bowlers.Count > 0)
-            {
-                //depending on the number of bowlers, the size of the fields will change
-                this.teamThree.Size = new Size(1200, 100 + (16 * thirdTeam.bowlers.Count));
-                this.teamThree.Location = new Point(20, 263 + (16 * secondTeam.bowlers.Count));
-                this.teamThree.BackColor = Color.Green;
-                displayTeam(teamThree, thirdTeam);
-                match.Controls.Add(teamThree);
-            }
-
-            //if the fourth team has bowlers then set up the team name label and display the team on the match form we just created
-            if (fourthTeam.bowlers.Count > 0)
-            {
-                //depending on the number of bowlers, the size of the fields will change
-                this.teamFour.Size = new Size(1200, 100 + (16 * fourthTeam.bowlers.Count));
-                this.teamFour.Location = new Point(20, 400 + (16 * thirdTeam.bowlers.Count));
-                this.teamFour.BackColor = Color.Purple;
-                displayTeam(teamFour, fourthTeam);
-                match.Controls.Add(teamFour);
-            }
-
-            //set the form title to the match title entered on the main form
-            match.Text = this.MatchTitle.Text;
 
             //show the form
             match.Show();
@@ -739,70 +187,93 @@ namespace KeepScore
                     c.Enabled = false;
                 }
             }
+
+            firstTeam.bowlers[0].strings[currentString].game[0].Focus();
+
+            Form scoreSheetInstructions = new scoreSheetInstr();
+            scoreSheetInstructions.Show();
         }
 
         private void displayTeam(Control teamArea, Team team)
         {
             int bowlerCount = 0;
+            string controlName = "";
+            TextBox tempTextBox = new TextBox();
+
 
             //is this the first string of the match?
             if (currentString == 0)
             {
-                //set up the label for the team name
-                Label teamName = new Label();
-                teamName.Text = team.name.ToUpper();
-                teamName.Location = new Point(10, 10);
-                teamName.Size = new Size(300, 40);
-                teamName.TextAlign = ContentAlignment.MiddleCenter;
-                teamName.Enabled = false;
-                teamName.Font = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
-                teamArea.Controls.Add(teamName);
+                //set up the label for the bowler's handicap
+                Label bowlerHDCP = new Label();
+                bowlerHDCP.Size = new Size(300, 40);
+                bowlerHDCP.Location = new Point(300, 10);
+                bowlerHDCP.Text = "HDCP";
+                bowlerHDCP.TextAlign = ContentAlignment.MiddleCenter;
+                bowlerHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+                teamArea.Controls.Add(bowlerHDCP);
+                bowlerHDCP.Enabled = false;
 
                 //set up the label for the string total
                 Label stringTotalLabel = new Label();
-                stringTotalLabel.Size = new Size(50, 20);
-                stringTotalLabel.Location = new Point(598, 20);
+                stringTotalLabel.Size = new Size(120, 40);
+                stringTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.825), 10);
                 stringTotalLabel.Text = "Total";
                 stringTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
-                stringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+                stringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalLabel);
+                stringTotalLabel.Enabled = false;
+
+                //set up the label for the string total w/hdcp
+                Label stringTotalHDCPLabel = new Label();
+                stringTotalHDCPLabel.Size = new Size(150, 40);
+                stringTotalHDCPLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.895), 10);
+                stringTotalHDCPLabel.Text = "HDCP";
+                stringTotalHDCPLabel.TextAlign = ContentAlignment.MiddleLeft;
+                stringTotalHDCPLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+                teamArea.Controls.Add(stringTotalHDCPLabel);
+                stringTotalHDCPLabel.Enabled = false;
 
                 //set up the label for the previous strings area
                 Label prevStringsLabel = new Label();
-                prevStringsLabel.Size = new Size(130, 20);
-                prevStringsLabel.Location = new Point(750, 20);
+                prevStringsLabel.Size = new Size(400, 60);
+                prevStringsLabel.Location = new Point(10, Convert.ToInt32(teamArea.Height * 0.60));
                 prevStringsLabel.Text = "Previous Strings";
                 prevStringsLabel.TextAlign = ContentAlignment.MiddleCenter;
-                prevStringsLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+                prevStringsLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(prevStringsLabel);
+                prevStringsLabel.Enabled = false;
 
                 //set up the label for the bowler match total
                 Label bowlerTotalLabel = new Label();
-                bowlerTotalLabel.Size = new Size(55, 20);
-                bowlerTotalLabel.Location = new Point(1025, 20);
-                bowlerTotalLabel.Text = "Match Total";
+                bowlerTotalLabel.Size = new Size(400, 60);
+                bowlerTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), Convert.ToInt32(teamArea.Height * 0.60));
+                bowlerTotalLabel.Text = "Match Totals";
                 bowlerTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
-                bowlerTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+                bowlerTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerTotalLabel);
+                bowlerTotalLabel.Enabled = false;
 
                 //if the team has more than one bowler we need to change the size of the box and the font so it stands out
                 if (team.bowlers.Count > 1)
                 {
                     Label teamTotalLabel = new Label();
-                    if (team.bowlers.Count == 2)
-                    {
-                        teamTotalLabel.Size = new Size(100, 30);
-                    }
-                    else
-                    {
-                        teamTotalLabel.Size = new Size(100, 30 + (2 * team.bowlers.Count));
-                    }
-                    //because c# is stupid, you have to specify a float by using a trailing f
-                    teamTotalLabel.Font = new Font(FontFamily.GenericSansSerif, (10 + (2 * (team.bowlers.Count * 0.62F))), FontStyle.Bold, GraphicsUnit.Pixel);
-                    teamTotalLabel.Location = new Point(1070, 20 + (2 * team.bowlers.Count));
-                    teamTotalLabel.Text = "Team Total";
+                    teamTotalLabel.Size = new Size(400, 60);
+                    teamTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    teamTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.60), Convert.ToInt32(teamArea.Height * 0.45));
+                    teamTotalLabel.Text = "Team Match Totals";
                     teamTotalLabel.TextAlign = ContentAlignment.MiddleCenter;
                     teamArea.Controls.Add(teamTotalLabel);
+                    teamTotalLabel.Enabled = false;
+
+                    Label teamStringTotalLabel = new Label();
+                    teamStringTotalLabel.Size = new Size(400, 60);
+                    teamStringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    teamStringTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.60), Convert.ToInt32(teamArea.Height * 0.38));
+                    teamStringTotalLabel.Text = "Team String Totals";
+                    teamStringTotalLabel.TextAlign = ContentAlignment.MiddleCenter;
+                    teamArea.Controls.Add(teamStringTotalLabel);
+                    teamStringTotalLabel.Enabled = false;
                 }
             }
 
@@ -812,52 +283,127 @@ namespace KeepScore
                 bowlerCount++;
 
                 Label bowlerName = new Label();
+                Label prevStringsBowlerName = new Label();
+
                 bowlerName.Text = teamBowler.name.ToUpper();
+                prevStringsBowlerName.Text = teamBowler.name.ToUpper();
 
                 //if this is the first bowler on the team set the field at a static location
                 if (bowlerCount == 1)
                 {
-                    bowlerName.Location = new Point(0, 50);
+                    bowlerName.Location = new Point(0, 70);
+                    prevStringsBowlerName.Location = new Point(20, (Convert.ToInt32(teamOne.Height * 0.60) + (60 * bowlerCount)));
+                    teamBowler.handicap.Text = Team2_Bowler1.Text;
+
+                    //set the display of the bowler's handicap
+                    teamBowler.handicap.Location = new Point(400, 85);
+                    teamBowler.handicap.Enabled = false;
                 }
                 //if this an additional bowler we need to calculate where in the control to display the information
                 else
                 {
-                    bowlerName.Location = new Point(0, (25 + (25 * bowlerCount)));
+                    bowlerName.Location = new Point(0, (15 + (60 * bowlerCount)));
+                    prevStringsBowlerName.Location = new Point(20, (Convert.ToInt32(teamOne.Height * 0.60) + (60 * bowlerCount)));
+
+                    controlName = "Team2_Bowler" + bowlerCount;
+                    tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
+                    teamBowler.handicap.Text = tempTextBox.Text;
+
+                    //set the display of the bowler's handicap
+                    teamBowler.handicap.Location = new Point(400, (25 + (60 * bowlerCount)));
+                    teamBowler.handicap.Enabled = false;
                 }
 
+                teamArea.Controls.Add(teamBowler.handicap);
+
                 //set up the label for the bowlers name
-                bowlerName.Size = new Size(125, 25);
-                bowlerName.TextAlign = ContentAlignment.MiddleCenter;
-                bowlerName.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold);
+                bowlerName.Size = new Size(300, 70);
+                prevStringsBowlerName.Size = new Size(300, 75);
+                bowlerName.TextAlign = ContentAlignment.MiddleLeft;
+                prevStringsBowlerName.TextAlign = ContentAlignment.MiddleLeft;
+                bowlerName.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold);
+                prevStringsBowlerName.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold);
                 bowlerName.AutoSize = false;
+                prevStringsBowlerName.AutoSize = false;
 
                 bowlerName.Enabled = false;
+                prevStringsBowlerName.Enabled = false;
 
                 //add the label to the team control.
                 teamArea.Controls.Add(bowlerName);
+                teamArea.Controls.Add(prevStringsBowlerName);
 
                 //set the display location of the bowler's match total
-                teamBowler.matchTotal.Location = new Point(1030, (25 + (25 * bowlerCount)));
+                teamBowler.matchTotal.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), (Convert.ToInt32(teamArea.Height * 0.61) + (60 * bowlerCount)));
                 teamBowler.matchTotal.LostFocus += new System.EventHandler(teamBowler.calcBowlerMatchTotal);
+                teamBowler.matchTotal.Enabled = false;
+
+                teamBowler.matchTotalHDCP.Location = new Point(Convert.ToInt32(teamArea.Width * 0.90), (Convert.ToInt32(teamArea.Height * 0.61) + (60 * bowlerCount)));
+                teamBowler.matchTotalHDCP.Enabled = false;
 
                 //add the bowler's match total to the team control
                 teamArea.Controls.Add(teamBowler.matchTotal);
+                teamArea.Controls.Add(teamBowler.matchTotalHDCP);
 
                 //if the team has more than one bowler we need to setup the text box for the team total to be larger to hold more digits and to stand out
                 if (team.bowlers.Count > 1)
                 {
-                    team.teamTotal.Size = new Size((40 + (10 * bowlerCount)), (35 + (5 * bowlerCount)));
+                    team.teamTotal.Size = new Size(100, 100);
                     team.teamTotal.TextAlign = HorizontalAlignment.Center;
-                    team.teamTotal.Font = new Font(FontFamily.GenericSansSerif, (10 + (5 * bowlerCount)), FontStyle.Bold, GraphicsUnit.Pixel);
-                    team.teamTotal.Location = new Point(1110 - (7 * bowlerCount), (25 + (13 * bowlerCount)));
+                    team.teamTotal.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    team.teamTotal.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), Convert.ToInt32(teamArea.Height * 0.45));
                     team.teamTotal.LostFocus += new System.EventHandler(team.Team_CalcTotal);
                     teamArea.Controls.Add(team.teamTotal);
+                    team.teamTotal.Enabled = false;
+
+                    team.teamTotalHDCP.Size = new Size(100, 100);
+                    team.teamTotalHDCP.TextAlign = HorizontalAlignment.Center;
+                    team.teamTotalHDCP.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    team.teamTotalHDCP.Location = new Point(Convert.ToInt32(teamArea.Width * 0.90), Convert.ToInt32(teamArea.Height * 0.45));
+                    team.teamTotalHDCP.LostFocus += new System.EventHandler(team.Team_CalcTotal);
+                    team.teamTotalHDCP.Text = "0";
+                    teamArea.Controls.Add(team.teamTotalHDCP);
+                    team.teamTotalHDCP.Enabled = false;
+
+                    team.teamStringTotal.TextAlign = HorizontalAlignment.Center;
+                    team.teamStringTotal.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    team.teamStringTotal.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), Convert.ToInt32(teamArea.Height * 0.38));
+                    team.teamStringTotal.LostFocus += new System.EventHandler(team.Team_CalcTotal);
+                    team.teamStringTotal.Size = new Size(100, 100);
+                    team.teamStringTotal.Text = "0";
+                    teamArea.Controls.Add(team.teamStringTotal);
+                    team.teamStringTotal.Enabled = false;
+
+                    team.teamStringTotalHDCP.Size = new Size(100, 100);
+                    team.teamStringTotalHDCP.TextAlign = HorizontalAlignment.Center;
+                    team.teamStringTotalHDCP.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                    team.teamStringTotalHDCP.Location = new Point(Convert.ToInt32(teamArea.Width * 0.90), Convert.ToInt32(teamArea.Height * 0.38));
+                    team.teamStringTotalHDCP.Text = "0";
+                    team.teamStringTotalHDCP.LostFocus += new System.EventHandler(team.Team_CalcTotal);
+                    teamArea.Controls.Add(team.teamStringTotalHDCP);
+                    team.teamStringTotalHDCP.Enabled = false;
                 }
 
             }
 
+            //add a button to show the next string.
+            Button nextString = new Button();
+            nextString.Name = "NextStringBtn";
+            nextString.Size = new Size(300, 50);
+            nextString.BackColor = Color.White;
+            nextString.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold, GraphicsUnit.Pixel);
+            nextString.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.55));
+            nextString.Text = "Next String";
+            nextString.TextAlign = ContentAlignment.MiddleCenter;
+            //nextString.TabIndex = 10 * team.bowlers.Count;
+            nextString.Click += new System.EventHandler(NextString_OnClick);
+            nextString.Show();
+            teamArea.Controls.Add(nextString);
+
             //add the strings for all the bowlers on team to the team area
             showNextString(teamArea, team);
+
+            team.bowlers[0].strings[currentString].game[0].Focus();
         }
 
         //call back for the next string button
@@ -874,30 +420,6 @@ namespace KeepScore
                     hidePreviousString(firstTeam);
 
                     showNextString(teamOne, firstTeam);
-                }
-
-                //if there are bowlers on the second team, hide the string we just finished and show the next string
-                if (secondTeam.bowlers.Count > 0)
-                {
-                    hidePreviousString(secondTeam);
-
-                    showNextString(teamTwo, secondTeam);
-                }
-
-                //if there are bowlers on the third team, hide the string we just finished and show the next string
-                if (thirdTeam.bowlers.Count > 0)
-                {
-                    hidePreviousString(thirdTeam);
-
-                    showNextString(teamThree, thirdTeam);
-                }
-
-                //if there are bowlers on the fourth team, hide the string we just finished and show the next string
-                if (fourthTeam.bowlers.Count > 0)
-                {
-                    hidePreviousString(fourthTeam);
-
-                    showNextString(teamFour, fourthTeam);
                 }
             }
             else
@@ -918,7 +440,10 @@ namespace KeepScore
                 }
 
                 //move the string total for the bowler to the previous string area
-                in_team.bowlers[i].strings[currentString - 1].stringTotal.Location = new Point(620 + (40 * currentString), (49 + (25 * i + 1)));
+                in_team.bowlers[i].strings[currentString - 1].stringTotal.Location = new Point(400 + (108 * currentString), (Convert.ToInt32(teamOne.Height * 0.665) + (60 * i + 1)));
+                in_team.bowlers[i].strings[currentString - 1].totalHDCP.Hide();
+                in_team.teamStringTotalHDCP.Text = "0";
+                in_team.teamStringTotal.Text = "0";
             }
         }
 
@@ -935,13 +460,15 @@ namespace KeepScore
                     int boxIndex = x;
                     //we need to calculate where the location of each box will be displayed on the control.
                     //we will use the the bowlers number (i) and the box number (x) to calculate the offset we need
-                    in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(150 + (45 * x), (25 + (25 * (i + 1))));
-                    
+                    in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(510 + (108 * x), (25 + (60 * (i + 1))));
+                   
                     //set up the call backs for each box so we can validate and calculate the boxes score, the string total, bowler's match total and the team's match total
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(this.Team_CalcStringTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
 
                     //eventually when I get the key press functionality working I'll need to register the callbacks differently.
                     //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
@@ -951,25 +478,75 @@ namespace KeepScore
 
                     //add the box to the team control
                     in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x]);
+
+                    in_team.bowlers[i].strings[currentString].boxesPerTurn = int.Parse(this.numBoxesPerTurn.Text);
                 }
 
                 //set up the display information for the string total of the new string.
                 //use offset of 11 since we know that all strings have 10 boxes and this will be after that
-                in_team.bowlers[i].strings[currentString].stringTotal.Location = new Point(600, (25 + (25 * (i + 1))));
-                in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                in_team.bowlers[i].strings[currentString].stringTotal.Location = new Point(Convert.ToInt32(in_control.Width * 0.83), (25 + (60 * (i + 1))));
+                //in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                //in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(this.Team_CalcStringTotal);
                 in_control.Controls.Add(in_team.bowlers[i].strings[currentString].stringTotal);
+                in_team.bowlers[i].strings[currentString].stringTotal.Enabled = false;
+
+                in_team.bowlers[i].strings[currentString].totalHDCP.Location = new Point(Convert.ToInt32(in_control.Width * 0.90), (25 + (60 * (i + 1))));
+                //in_team.bowlers[i].strings[currentString].totalHDCP.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                in_team.bowlers[i].strings[currentString].totalHDCP.Enabled = false;
+
+                //in_team.boxesPerTurn = int.Parse(this.numBoxesPerTurn.Text);
+                in_control.Controls.Add(in_team.bowlers[i].strings[currentString].totalHDCP);
+
+                if (in_team.bowlers[i].handicap.Text != "")
+                {
+                    in_team.bowlers[i].strings[currentString].HDCP = Convert.ToInt32(in_team.bowlers[i].handicap.Text);
+                    in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal(new Object(), new EventArgs());
+                    in_team.bowlers[i].calcBowlerMatchTotal(new Object(), new EventArgs());
+                    in_team.Team_CalcTotal(new Object(), new EventArgs());
+                    this.Team_CalcStringTotal(new Object(), new EventArgs());
+                }
+
+                in_team.bowlers[in_team.bowlers.Count - 1].strings[currentString].game[9].Validated += new System.EventHandler(this.Activate_NextStringButton);
+            }
+
+            Team_CalcStringTotal(new object(), new EventArgs());
+            in_team.bowlers[0].strings[currentString].game[0].Focus();
+        }
+
+        public void Team_CalcStringTotal(object sender, EventArgs e)
+        {
+            int temp_teamStringTotal = 0;
+            int temp_teamStringTotalHDCP = 0;
+
+            //iterate through all the bowlers match totals to get the team's total.
+            for (int i = 0; i < firstTeam.bowlers.Count; i++)
+            {
+                temp_teamStringTotal += int.Parse(firstTeam.bowlers[i].strings[currentString].stringTotal.Text);
+                temp_teamStringTotalHDCP += int.Parse(firstTeam.bowlers[i].strings[currentString].totalHDCP.Text);
+            }
+
+            firstTeam.teamStringTotal.Text = temp_teamStringTotal.ToString();
+            firstTeam.teamStringTotalHDCP.Text = temp_teamStringTotalHDCP.ToString();
+
+        }
+
+        public void Activate_NextStringButton(object sender, EventArgs e)
+        {
+            if (firstTeam.bowlers[firstTeam.bowlers.Count - 1].strings[currentString].game[9].Text != "") {
+                string controlName = "NextStringBtn";
+                Button tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
+                tempButton.Focus();
             }
         }
 
         private void Help_OnClick(object sender, EventArgs e)
         {
-            string Message = "*   Select the number of teams bowling in the match. \n";
-            Message += "*   The team names are optional, if no team names are needed, the fields can be left blank. \n";
-            Message += "*   Select the number of bowlers per team. \n";
-            Message += "*   Enter the names of the bowlers, these are required fields. \n";
+            string Message = "*   Use the TAB key to go to the next field. Up and down arrows can be used in drop down fields. \n";
+            Message += "*   Enter the names of the bowlers, if fewer than 5, leave fields blank. \n";
+            Message += "*   Enter the handicap for each bowler bowling, if this is open bowling, you can leave them blank. \n";
             Message += "*   Select the number of strings to be bowled in the match. \n";
-            Message += "*   Enter a match title, this is a required field. \n";
-            Message += "*   When the information is correct, click the Create Match button. This will create the score sheet. \n";
+            Message += "*   Select the number of boxes each bowler will bowl during their turn. \n";
+            Message += "*   When the information is correct, click/press enter on the Create Score Sheet button. \n";
             Message += "*   When done with each string, load the next string's score sheet using the Next String button. ";
 
             MessageBox.Show(Message, "How to keep score", MessageBoxButtons.OK);

@@ -5,6 +5,9 @@
         public string name;
         public List<Bowler> bowlers;
         public TextBox teamTotal = new TextBox();
+        public TextBox teamTotalHDCP = new TextBox();
+        public TextBox teamStringTotal = new TextBox();
+        public TextBox teamStringTotalHDCP = new TextBox();
         public int teamNumber = 0;
 
         public Team()
@@ -37,14 +40,141 @@
         public void Team_CalcTotal(object sender, EventArgs e)
         {
             int temp_teamTotal = 0;
+            int temp_teamTotalHDCP = 0;
 
-            //iterate through all the bowlers match totals to get teh team's total.
+            //iterate through all the bowlers match totals to get the team's total.
             for (int i = 0; i < bowlers.Count; i++)
             {
                 temp_teamTotal += int.Parse(this.bowlers[i].matchTotal.Text);
+                temp_teamTotalHDCP += int.Parse(this.bowlers[i].matchTotalHDCP.Text);
             }
 
             this.teamTotal.Text = temp_teamTotal.ToString();
+            this.teamTotalHDCP.Text = temp_teamTotalHDCP.ToString();
+        }
+
+        public void Team_NextBowlersTurn(object sender, EventArgs e, int boxIndex, int bowlerIndex, int currentString, int boxesPerTurn)
+        {
+            int boxesToMove = 0;
+
+            if (boxesPerTurn > 0)
+            {
+                //if this box is a mark and the next box is a mark, check to see if the next box would trigger the end of a turn.
+                if ( (boxIndex < 9) && boxesPerTurn > 1 &&
+                     (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isSpare || this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isStrike) &&
+                     ((boxIndex + 2) % boxesPerTurn == 0)
+                   )
+                {
+                    boxIndex++;
+                }
+
+                //if this is the last box of this bowler's turn and it's a mark (strike or spare) and there's no load
+                //  or this is the last box of the bowler's turn and it's not a mark (strike or spare)
+                if (    (((boxIndex + 1) % boxesPerTurn == 0) && 
+                        ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) || (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)) &&
+                        (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text == "")) ||
+                        (((boxIndex + 1) % boxesPerTurn == 0) && 
+                        ((!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) && (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)))
+                )
+                {
+                    //is this the last box of the string?
+                    if (boxIndex == 9)
+                    {
+                        if ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare || this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike) &&
+                            this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text != "")
+                        {
+                            if (bowlerIndex + 1 < this.bowlers.Count) {
+                                boxesToMove = Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn);
+
+                                if ( !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isSpare && 
+                                     !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isStrike &&
+                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Text == ""
+                                   ) 
+                                {
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Focus();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare && !this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike){
+                                if (bowlerIndex + 1 < this.bowlers.Count) {
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        //is this the last bowler on the team?
+                        //if not advance to next bowler
+                        if (bowlerIndex + 1 < this.bowlers.Count)
+                        {
+                            if ((boxIndex + 1) - boxesPerTurn != 0) {
+                                this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+
+                            }
+                            else { 
+                                this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].Focus();
+                            }
+                        }
+                        //if it is the last bowler we need to see if the first bowler was on a mark
+                        else
+                        {
+                            //if it's a spare, put the focus on the same box we ended on
+                            if (this.bowlers[0].strings[currentString].game[boxIndex].isSpare)
+                            {
+                                this.bowlers[0].strings[currentString].game[(boxIndex)].Focus();
+                            }
+                            //if it's a strike, we need to know of the box before that was also a strike
+                            else if (this.bowlers[0].strings[currentString].game[boxIndex].isStrike){
+                                if (this.bowlers[0].strings[currentString].game[boxIndex - 1].isStrike)
+                                {
+                                    this.bowlers[0].strings[currentString].game[(boxIndex - 1)].Focus();
+                                }
+                                else
+                                {
+                                    this.bowlers[0].strings[currentString].game[boxIndex].Focus();
+                                }
+                            }
+                            else
+                            {
+                                this.bowlers[0].strings[currentString].game[(boxIndex + 1)].Focus();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private int Team_calcNumBoxesToMoveTo( int boxIndex, int bowlerIndex, int currentString, int boxesPerTurn)
+        {
+            int numBoxes = 0;
+
+            if (this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].isSpare)
+            {
+                //this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].Focus();
+                numBoxes = boxesPerTurn + 1;
+            }
+            else if (this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].isStrike) {
+                //is this a double strike
+                if (boxIndex > 1 && this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 2].isStrike)
+                {
+                    //this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 2].Focus();
+                    numBoxes = boxesPerTurn + 2;
+                }
+                else
+                {
+                    //this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].Focus();
+                    numBoxes = boxesPerTurn + 1;
+                }
+            }
+            else
+            {
+                //this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].Focus();
+                numBoxes = boxesPerTurn;
+            }
+
+            return numBoxes;
         }
     }
 }
