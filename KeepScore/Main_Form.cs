@@ -564,6 +564,11 @@ namespace KeepScore
                 {
                     c.Text = "";
                     c.Enabled = true;
+
+                    if (c.Name == "Team1_Bowler1")
+                    {
+                        c.Focus();
+                    }
                 }
 
                 if (c is ComboBox)
