@@ -28,6 +28,7 @@ namespace KeepScore
             Message += "*      X - denotes a strike.\n";
             Message += "*      / - denotes a spare.\n";
             Message += "*      R - Will reset the box, this is needed if a spare or strike need to be corrected.\n";
+            Message += "*      S - Enter/exit score correct mode\n";
             Message += "*      Any number between 0 and 10.\n";
             Message += "*   To correct an open box, just back space over the number in the box and re-enter the score.\n";
             Message += "*   To correct a load/fill on a single mark, back space/delete the load/fill; re-enter the correct value.\n";

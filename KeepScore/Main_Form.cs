@@ -6,7 +6,7 @@ namespace KeepScore
     public partial class Main_Form : Form
     {
         private Team firstTeam;
-        private Control teamOne = new Control();
+        private Control teamOne;
         private int currentString;
 
         public Main_Form()
@@ -23,7 +23,7 @@ namespace KeepScore
             this.StartPosition = FormStartPosition.CenterScreen;
 
             firstTeam = new Team();
-            
+
             currentString = 0;
 
             this.numBoxesPerTurn.SelectedIndex = 0;
@@ -111,14 +111,14 @@ namespace KeepScore
                     controlName = "Team2_Bowler" + y;
                     tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
 
-                    if (tempTextBox.Text != "") { 
+                    if (tempTextBox.Text != "") {
                         nameCount = int.Parse(tempTextBox.Text);
 
                         if (nameCount > 51 || nameCount < 0)
                         {
                             bowlerErrMsg = "Bowler " + y + " has a handicap that is out of bounds, please enter a value between 0 and 50.\n\n";
                         }
-                     }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -157,6 +157,7 @@ namespace KeepScore
         {
             //create a new match form
             Match match = new Match();
+            teamOne = new Control();
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             match.Location = new Point(0, 0);
             int w = screen.Width;
@@ -164,6 +165,8 @@ namespace KeepScore
             match.Size = new Size(w, h);
             match.MaximizeBox = true;
             match.AutoScroll = true;
+
+            match.FormClosed += resetMainForm;
 
             //if the first team has bowlers then set up the team name label and display the team on the match form we just created
             if (firstTeam.bowlers.Count > 0)
@@ -461,13 +464,14 @@ namespace KeepScore
                     //we need to calculate where the location of each box will be displayed on the control.
                     //we will use the the bowlers number (i) and the box number (x) to calculate the offset we need
                     in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(510 + (108 * x), (25 + (60 * (i + 1))));
-                   
+
                     //set up the call backs for each box so we can validate and calculate the boxes score, the string total, bowler's match total and the team's match total
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(this.Team_CalcStringTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
 
                     //eventually when I get the key press functionality working I'll need to register the callbacks differently.
@@ -550,6 +554,39 @@ namespace KeepScore
             Message += "*   When done with each string, load the next string's score sheet using the Next String button. ";
 
             MessageBox.Show(Message, "How to keep score", MessageBoxButtons.OK);
+        }
+
+        public void resetMainForm(object sender, FormClosedEventArgs e)
+        {
+            foreach (Control c in this.Controls)
+            {
+                if (c is TextBox)
+                {
+                    c.Text = "";
+                    c.Enabled = true;
+                }
+
+                if (c is ComboBox)
+                {
+                    ComboBox comboBox = (ComboBox)c;
+
+                    comboBox.SelectedIndex = 0;
+                    comboBox.Enabled = true;
+                }
+
+                if (c is Button)
+                {
+                    c.Enabled = true;
+                }
+
+                if (c is Label)
+                {
+                    c.Enabled = true;
+                }
+            }
+
+            Form startMenuInstructions = new startMenuInstr();
+            startMenuInstructions.Show();
         }
     }
 }

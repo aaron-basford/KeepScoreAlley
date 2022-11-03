@@ -136,6 +136,9 @@
                                 this.Text = "";
                                 this.Focus();
                                 break;
+                            case "S":
+                                //this is score correct mode, don't do anything
+                                break;
                             //it's neither a strike or a spare so it's an open box
                             default:
                                 try

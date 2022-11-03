@@ -9,6 +9,7 @@
         public TextBox teamStringTotal = new TextBox();
         public TextBox teamStringTotalHDCP = new TextBox();
         public int teamNumber = 0;
+        public Boolean scoreCorrect = false;
 
         public Team()
         {
@@ -58,7 +59,7 @@
             int boxesToMove = 0;
             Boolean isDoubeStrike = false;
 
-            if (boxesPerTurn > 0)
+            if (boxesPerTurn > 0 && !scoreCorrect)
             {
                 //if this box is a mark and the next box is a mark, check to see if the next box would trigger the end of a turn.
                 if ( (boxIndex < 9) && boxesPerTurn > 1 &&
@@ -185,6 +186,23 @@
 
 
             return numBoxes;
+        }
+
+        public void toggleScoreCorrectMode(object sender, EventArgs e, Box in_box)
+        {
+            if (in_box.Text.ToUpper() == "S")
+            {
+                if (scoreCorrect)
+                {
+                    scoreCorrect = false;
+                    in_box.Text = "";
+                    in_box.Focus();
+                }
+                else
+                {
+                    scoreCorrect = true;
+                }
+            }
         }
     }
 }
