@@ -157,6 +157,7 @@ namespace KeepScore
         {
             //create a new match form
             Match match = new Match();
+            match.Name = "MatchForm";
             teamOne = new Control();
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             match.Location = new Point(0, 0);
@@ -398,7 +399,6 @@ namespace KeepScore
             nextString.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.55));
             nextString.Text = "Next String";
             nextString.TextAlign = ContentAlignment.MiddleCenter;
-            //nextString.TabIndex = 10 * team.bowlers.Count;
             nextString.Click += new System.EventHandler(NextString_OnClick);
             nextString.Show();
             teamArea.Controls.Add(nextString);
@@ -466,19 +466,22 @@ namespace KeepScore
                     in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(510 + (108 * x), (25 + (60 * (i + 1))));
 
                     //set up the call backs for each box so we can validate and calculate the boxes score, the string total, bowler's match total and the team's match total
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(this.Team_CalcStringTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
-
-                    //eventually when I get the key press functionality working I'll need to register the callbacks differently.
-                    //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    //in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(in_team.Team_CalcTotal);
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler(this.Team_CalcStringTotal);
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
+
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.Team_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(this.Team_CalcStringTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
+                    in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.handleArrowsToNav(s, e, boxIndex, bowlerIndex, currentString));
 
                     //add the box to the team control
                     in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x]);

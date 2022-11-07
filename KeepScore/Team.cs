@@ -1,4 +1,6 @@
-﻿namespace KeepScore
+﻿using System.Windows.Forms;
+
+namespace KeepScore
 {
     internal class Team
     {
@@ -57,9 +59,9 @@
         public void Team_NextBowlersTurn(object sender, EventArgs e, int boxIndex, int bowlerIndex, int currentString, int boxesPerTurn)
         {
             int boxesToMove = 0;
-            Boolean isDoubeStrike = false;
+            Boolean isDoubleStrike = false;
 
-            if (boxesPerTurn > 0 && !scoreCorrect)
+            if (boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled)
             {
                 //if this box is a mark and the next box is a mark, check to see if the next box would trigger the end of a turn.
                 if ( (boxIndex < 9) && boxesPerTurn > 1 &&
@@ -68,7 +70,21 @@
                    )
                 {
                     boxIndex++;
-                    isDoubeStrike = true;
+                    //if the next box is a strike and the last box was a strike then it's a double
+                    if (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].isStrike)
+                    {
+                        isDoubleStrike = true;
+                    }
+                }
+                //special case for triple strike and end of turn
+                else if (boxIndex < 8 && boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled 
+                        && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)
+                        && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isStrike)
+                        && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 2].isStrike)
+                        && ((boxIndex+3) % boxesPerTurn == 0))
+                {
+                    boxIndex = boxIndex + 2;
+                    isDoubleStrike=true;
                 }
 
                 //if this is the last box of this bowler's turn and it's a mark (strike or spare) and there's no load
@@ -101,8 +117,27 @@
                         else
                         {
                             if (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare && !this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike){
+                                //is this the last bowler on the team?
                                 if (bowlerIndex + 1 < this.bowlers.Count) {
                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+                                }
+                                else
+                                {
+                                    Form form1 = Application.OpenForms["MatchForm"];
+                                    foreach (Control control in form1.Controls)
+                                    {
+                                        foreach (Control control1 in control.Controls)
+                                        {
+                                            if (control1.GetType() == typeof(Button))
+                                            {
+                                                Button button = control1 as Button;
+                                                if (button.Name == "NextStringBtn")
+                                                {
+                                                    button.Focus();
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -115,13 +150,25 @@
                             //is this the end of this bowlers first turn?
                             if ((boxIndex + 1) - boxesPerTurn != 0)
                             {
-                                this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+                                boxesToMove = Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn);
+
+                                if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].boxTotal == 0)
+                                {
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Focus();
+                                }  
                             }
                             else
                             {
-                                if (isDoubeStrike &&
-                                    this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].Text != ""
-                                   )
+                                //is this a triple strike?
+                                if (isDoubleStrike && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].isStrike
+                                    && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike && (boxIndex + 1) % boxesPerTurn == 0)
+                                {
+                                    //if the box we are supposed to be moving too already has a value in it, then are are starting the next turn, not finishing a turn
+                                    if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].boxTotal == 0) {
+                                        this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].Focus();
+                                    }
+                                }
+                                else if (isDoubleStrike && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].Text != "")
                                 {
                                     this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Focus();
                                 }
@@ -156,6 +203,11 @@
                             }
                         }
                     }
+                }
+                //fail safe, if there is text in the box and this is the last box, we need to move onto the next bowler.
+                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text != "")
+                {
+                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
                 }
             }
         }
@@ -203,6 +255,42 @@
                     scoreCorrect = true;
                 }
             }
+        }
+
+        public void handleArrowsToNav(object sender, KeyEventArgs e, int in_boxIndex, int in_bowlerIndex, int in_currentString)
+        {
+            if (in_bowlerIndex == this.bowlers.Count - 1 && e.KeyCode == Keys.Down)
+            {
+                this.bowlers[0].strings[in_currentString].game[in_boxIndex].Focus();
+            }
+            else if (in_bowlerIndex == 0 && e.KeyCode == Keys.Up)
+            {
+                this.bowlers[this.bowlers.Count -1].strings[in_currentString].game[in_boxIndex].Focus();
+            }
+            else if (in_boxIndex == 9 && e.KeyCode == Keys.Right)
+            {
+                this.bowlers[in_bowlerIndex].strings[in_currentString].game[0].Focus();
+            }
+            else if (in_boxIndex == 0 && e.KeyCode == Keys.Left)
+            {
+                this.bowlers[in_bowlerIndex].strings[in_currentString].game[9].Focus();
+            }
+            else
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.Left: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex - 1].Focus();
+                        break;
+                    case Keys.Right: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex + 1].Focus();
+                        break;
+                    case Keys.Up: this.bowlers[in_bowlerIndex -1].strings[in_currentString].game[in_boxIndex].Focus();
+                        break;
+                    case Keys.Down: this.bowlers[in_bowlerIndex + 1].strings[in_currentString].game[in_boxIndex].Focus();
+                        break;
+                }
+            }
+
+
         }
     }
 }

@@ -8,6 +8,7 @@
         public TextBox totalHDCP = new TextBox();
         public int HDCP = 0;
         public int boxesPerTurn = 1;
+        public Boolean eventHandled = false;
 
         public BowlingString()
         {
@@ -88,15 +89,17 @@
                             in_box.setBaseScore(in_box.Text);
 
                             //reset the previous box
-                            //this.game[in_box.boxNumber - 1].setBaseScore("-10");
                             this.game[in_box.boxNumber - 1].markLoad = 0;
+                            this.eventHandled = true;
                             this.game[in_box.boxNumber - 1].Text = "";
+                            this.eventHandled = false;
                             this.game[in_box.boxNumber - 1].calcBoxTotal();
 
                             //reset the box before that
-                            //this.game[in_box.boxNumber - 2].setBaseScore("-10");
                             this.game[in_box.boxNumber - 2].markLoad = 10;
-                            this.game[in_box.boxNumber - 2].Text = "";
+                            this.eventHandled = true;
+                            this.game[in_box.boxNumber - 1].Text = "";
+                            this.eventHandled = false;
                             this.game[in_box.boxNumber - 2].calcBoxTotal();
                             this.game[in_box.boxNumber - 2].Focus();
                         }
@@ -109,7 +112,9 @@
                             //reset the previous box
                             //this.game[in_box.boxNumber - 1].setBaseScore("-10");
                             this.game[in_box.boxNumber - 1].markLoad = 0;
+                            this.eventHandled = true;
                             this.game[in_box.boxNumber - 1].Text = "";
+                            this.eventHandled = false;
                             this.game[in_box.boxNumber - 1].calcBoxTotal();
                             this.game[in_box.boxNumber - 1].Focus();
                         }
@@ -148,8 +153,10 @@
                         //put the curor back in the last box so the last ball can be entered.
                         if (in_box.markLoad < 20)
                         {
+                            this.eventHandled = true;
                             in_box.setBaseScore("10");
                             in_box.Text = "";
+                            this.eventHandled = false;
                             in_box.DbleStrikeRightImglabel.Show();
                             in_box.DbleStrikeLeftImglabel.Show();
                             in_box.Focus();
@@ -158,7 +165,9 @@
                         //if mark load is greater than 10, then the string is over, put the load value in the box and move focus to the string total
                         if (in_box.markLoad > 10)
                         {
+                            this.eventHandled = true;
                             in_box.Text = (in_box.markLoad - 10).ToString();
+                            this.eventHandled = false;
                             this.stringTotal.Focus();
                         }
                     }
@@ -169,9 +178,11 @@
                         //call the set base score method for this box and the next box so base and mark load values get set.
                         if (in_box.markLoad == 0)
                         {
+                            this.eventHandled = true;
                             in_box.setBaseScore(in_box.Text);
                             this.game[in_box.boxNumber + 1].setBaseScore("X");
                             in_box.Text = "";
+                            this.eventHandled = false;
                             in_box.Focus();
                         }
                         //The mark load is not 0 so this must be a triple strike 
@@ -180,12 +191,14 @@
                         //set the focus to the last (next) box so the user can enter the score for the last ball
                         else
                         {
+                            this.eventHandled = true;
                             in_box.setBaseScore(in_box.Text);
                             this.game[in_box.boxNumber + 1].setBaseScore("X");
                             this.game[in_box.boxNumber + 1].Text = "";
                             this.game[in_box.boxNumber + 1].DbleStrikeRightImglabel.Show();
                             this.game[in_box.boxNumber + 1].DbleStrikeLeftImglabel.Show();
                             in_box.Text = in_box.markLoad.ToString();
+                            this.eventHandled = false;
                             this.game[in_box.boxNumber + 1].Focus();
                         }
                     }
@@ -198,19 +211,23 @@
                         //let's put the cursor in the next box so the user can enter the score for the last ball of that box.
                         if (in_box.boxNumber < 8)
                         {
+                            this.eventHandled = true;
                             this.game[in_box.boxNumber + 2].setBaseScore(in_box.Text);
                             this.game[in_box.boxNumber + 1].setBaseScore(in_box.Text);
                             this.game[in_box.boxNumber + 1].Text = "";
                             this.game[in_box.boxNumber + 1].Focus();
                             in_box.setBaseScore("10");
+                            this.eventHandled = false;
                         }
                         //This is the ninth box (we shouldn't hit this, but let's be careful)
                         //call the set base score method for the next (last) box
                         else
                         {
+                            this.eventHandled = true;
                             this.game[in_box.boxNumber + 1].setBaseScore("10");
                             in_box.setBaseScore("10");
                             in_box.Text = "";
+                            this.eventHandled = false;
                         }
 
                         //if mark load is ten or less, this must be a double strike, so set the focus to this box 
@@ -225,9 +242,11 @@
                     //focus so the user can enter the last ball of this box.
                     else
                     {
+                        this.eventHandled = true;
                         this.game[in_box.boxNumber + 1].setBaseScore(in_box.Text);
                         in_box.setBaseScore("10");
                         in_box.Text = "";
+                        this.eventHandled = false;
                         in_box.Focus();
                     }
                 }
@@ -253,14 +272,37 @@
                         }
 
                         MessageBox.Show(errMsg, "Score Entry Error", MessageBoxButtons.OK);
+                        this.eventHandled = true;
                         in_box.Text = "";
+                        this.eventHandled = false;
                         in_box.Focus();
                         error = true;
                     }
                     //all is good, call the set base score method we update everything ok.
                     else
                     {
+                        //we could be entering a load on a mark, if there was a previous load, we must be correcting an error, so zero out the load.
+                        if (in_box.isSpare && in_box.markLoad > 0)
+                        {
+                            in_box.markLoad = 0;
+                        }
+                        else if (in_box.isStrike)
+                        {
+                            //not the last box and the next box isn't a strike, reset load to 0
+                            if (in_box.boxNumber < 9 && !this.game[in_box.boxNumber + 1].isStrike && in_box.markLoad > 0)
+                            {
+                                in_box.markLoad = 0;
+                            }
+                            //not the last box and the next box is a strike reset load to 10
+                            else if(in_box.boxNumber < 9 && this.game[in_box.boxNumber + 1].isStrike && in_box.markLoad > 10)
+                            {
+                                in_box.markLoad = 10;
+                            }
+                            this.eventHandled = true;
+                        }
+
                         in_box.setBaseScore(in_box.Text);
+                        this.eventHandled = false;
                     }
 
                     //if there was no error and this box is done set the focus to the next box.
@@ -278,23 +320,29 @@
         }
 
         //Eventually I want to get this working so the users can use the enter key as well as the tab key, but I'm having an issue getting it to work.
-        public void String_KeyPress(object sender, KeyEventArgs e, Box in_box)
+        public void String_KeyPress(object sender, EventArgs e, Box in_box)
         {
             int outParse;
 
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
-            {
-                if ((in_box.Text == "/" || in_box.Text.ToUpper() == "X" || in_box.Text.ToUpper() == "R") || int.TryParse(in_box.Text, out outParse))
+            if (!eventHandled) { 
+                if ((in_box.Text == "/" || in_box.Text.ToUpper() == "X" || in_box.Text.ToUpper() == "R" || in_box.Text.ToUpper() == "S" || in_box.Text.ToUpper() == "*") || int.TryParse(in_box.Text, out outParse))
                 {
+                    if (in_box.Text == "*")
+                    {
+                        in_box.Text = "10";
+                    }
                     String_BoxTextChanged(sender, new EventArgs(), in_box);
                     BowlingString_CalcTotal(sender, new EventArgs());
                 }
                 else
                 {
-                    in_box.baseScore = 0;
-                    in_box.Text = "";
-                    MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    in_box.Focus();
+                    if (in_box.Text != "")
+                    { 
+                        in_box.baseScore = 0;
+                        in_box.Text = "";
+                        MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        in_box.Focus();
+                    }
                 }
             }
         }

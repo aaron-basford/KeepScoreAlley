@@ -158,10 +158,13 @@
                                 //if we didn't get a number, an r, a slash or an x then error
                                 catch (Exception e)
                                 {
-                                    this.baseScore = 0;
-                                    this.Text = "";
-                                    MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    this.Focus();
+                                    if (in_score != "")
+                                    {
+                                        this.baseScore = 0;
+                                        this.Text = "";
+                                        MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        this.Focus();
+                                    }
                                 }
 
                                 isStrike = false;
@@ -174,7 +177,7 @@
                     {
                         try
                         {
-                            if ((int.Parse(in_score) > -1 && int.Parse(in_score) < 11) || in_score.ToUpper() == "R" || in_score.ToUpper() == "X" || in_score.ToUpper() == "/") {
+                            if (in_score.ToUpper() == "R" || in_score.ToUpper() == "X" || in_score.ToUpper() == "/" || (int.Parse(in_score) > -1 && int.Parse(in_score) < 21)) {
                             //if this a strike or spare and they put a strike or spare on it then set the mark load to 10
                                 if (in_score.ToUpper() == "X" || in_score.ToUpper() == "/")
                                 {
@@ -214,9 +217,12 @@
                         }
                         catch (Exception e)
                         {
-                            this.baseScore = 0;
-                            MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            this.Focus();
+                            if (in_score != "")
+                            {
+                                this.baseScore = 0;
+                                MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                this.Focus();
+                            }
                         }
                     }
                 }

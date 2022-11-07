@@ -1,4 +1,6 @@
-﻿namespace KeepScore
+﻿using System.Windows.Forms;
+
+namespace KeepScore
 {
     public partial class Match : Form
     {
