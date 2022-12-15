@@ -2,6 +2,7 @@ namespace KeepScore
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Security.Cryptography.X509Certificates;
 
     public partial class Main_Form : Form
     {
@@ -33,6 +34,12 @@ namespace KeepScore
 
             Form startMenuInstructions = new startMenuInstr();
             startMenuInstructions.Show();
+
+            foreach (Control ctrl in this.Controls)
+            {
+                ctrl.GotFocus += highLightField;
+                ctrl.LostFocus += unHighLightField;
+            }
 
         }
 
@@ -192,6 +199,8 @@ namespace KeepScore
                 }
             }
 
+            
+
             firstTeam.bowlers[0].strings[currentString].game[0].Focus();
 
             Form scoreSheetInstructions = new scoreSheetInstr();
@@ -203,6 +212,8 @@ namespace KeepScore
             int bowlerCount = 0;
             string controlName = "";
             TextBox tempTextBox = new TextBox();
+            Label scoreInstructions = new Label();
+            String scoreInstructionsText = "";
 
 
             //is this the first string of the match?
@@ -210,13 +221,25 @@ namespace KeepScore
             {
                 //set up the label for the bowler's handicap
                 Label bowlerHDCP = new Label();
-                bowlerHDCP.Size = new Size(300, 40);
-                bowlerHDCP.Location = new Point(300, 10);
+                bowlerHDCP.Size = new Size(200, 40);
+                bowlerHDCP.Location = new Point(355, 10);
                 bowlerHDCP.Text = "HDCP";
                 bowlerHDCP.TextAlign = ContentAlignment.MiddleCenter;
                 bowlerHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerHDCP);
                 bowlerHDCP.Enabled = false;
+
+                for (int x = 0; x < 10; x++)
+                {
+                    Label BoxNumLbl = new Label();
+                    BoxNumLbl.Size = new Size(70, 40);
+                    BoxNumLbl.Location = new Point((535 + (x * 106)), 10);
+                    BoxNumLbl.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+                    BoxNumLbl.Text = (x + 1).ToString();
+                    BoxNumLbl.TextAlign = ContentAlignment.MiddleCenter;
+                    BoxNumLbl.Enabled = false;
+                    teamArea.Controls.Add(BoxNumLbl);
+                }
 
                 //set up the label for the string total
                 Label stringTotalLabel = new Label();
@@ -322,7 +345,7 @@ namespace KeepScore
 
                 //set up the label for the bowlers name
                 bowlerName.Size = new Size(300, 70);
-                prevStringsBowlerName.Size = new Size(300, 75);
+                prevStringsBowlerName.Size = new Size(300, 70);
                 bowlerName.TextAlign = ContentAlignment.MiddleLeft;
                 prevStringsBowlerName.TextAlign = ContentAlignment.MiddleLeft;
                 bowlerName.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold);
@@ -340,10 +363,12 @@ namespace KeepScore
                 //set the display location of the bowler's match total
                 teamBowler.matchTotal.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), (Convert.ToInt32(teamArea.Height * 0.61) + (60 * bowlerCount)));
                 teamBowler.matchTotal.LostFocus += new System.EventHandler(teamBowler.calcBowlerMatchTotal);
-                teamBowler.matchTotal.Enabled = false;
+                //teamBowler.matchTotal.Enabled = false;
+                teamBowler.matchTotal.TabStop = false;
 
                 teamBowler.matchTotalHDCP.Location = new Point(Convert.ToInt32(teamArea.Width * 0.90), (Convert.ToInt32(teamArea.Height * 0.61) + (60 * bowlerCount)));
-                teamBowler.matchTotalHDCP.Enabled = false;
+                //teamBowler.matchTotalHDCP.Enabled = false;
+                teamBowler.matchTotalHDCP.TabStop = false;
 
                 //add the bowler's match total to the team control
                 teamArea.Controls.Add(teamBowler.matchTotal);
@@ -358,7 +383,8 @@ namespace KeepScore
                     team.teamTotal.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), Convert.ToInt32(teamArea.Height * 0.45));
                     team.teamTotal.LostFocus += new System.EventHandler(team.Team_CalcTotal);
                     teamArea.Controls.Add(team.teamTotal);
-                    team.teamTotal.Enabled = false;
+                    //team.teamTotal.Enabled = false;
+                    team.teamTotal.TabStop = false;
 
                     team.teamTotalHDCP.Size = new Size(100, 100);
                     team.teamTotalHDCP.TextAlign = HorizontalAlignment.Center;
@@ -367,7 +393,8 @@ namespace KeepScore
                     team.teamTotalHDCP.LostFocus += new System.EventHandler(team.Team_CalcTotal);
                     team.teamTotalHDCP.Text = "0";
                     teamArea.Controls.Add(team.teamTotalHDCP);
-                    team.teamTotalHDCP.Enabled = false;
+                    //team.teamTotalHDCP.Enabled = false;
+                    team.teamTotalHDCP.TabStop = false;
 
                     team.teamStringTotal.TextAlign = HorizontalAlignment.Center;
                     team.teamStringTotal.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -376,7 +403,8 @@ namespace KeepScore
                     team.teamStringTotal.Size = new Size(100, 100);
                     team.teamStringTotal.Text = "0";
                     teamArea.Controls.Add(team.teamStringTotal);
-                    team.teamStringTotal.Enabled = false;
+                    //team.teamStringTotal.Enabled = false;
+                    team.teamStringTotal.TabStop = false;
 
                     team.teamStringTotalHDCP.Size = new Size(100, 100);
                     team.teamStringTotalHDCP.TextAlign = HorizontalAlignment.Center;
@@ -385,10 +413,23 @@ namespace KeepScore
                     team.teamStringTotalHDCP.Text = "0";
                     team.teamStringTotalHDCP.LostFocus += new System.EventHandler(team.Team_CalcTotal);
                     teamArea.Controls.Add(team.teamStringTotalHDCP);
-                    team.teamStringTotalHDCP.Enabled = false;
+                    //team.teamStringTotalHDCP.Enabled = false;
+                    team.teamStringTotalHDCP.TabStop = false;
                 }
 
             }
+
+            //add instructions
+            scoreInstructionsText = "Enter the score 0 - 9, '*' for a ten, '/' for a spare and 'x' for a strike.\n";
+            scoreInstructionsText = scoreInstructionsText + "Use arrows to navigate to frames needing score correcting.\n";
+            scoreInstructionsText = scoreInstructionsText + "To correct a spare or strike, enter an 'r' in that frame to reset.\n";
+            scoreInstructions.Visible = true;
+            scoreInstructions.Text = scoreInstructionsText;
+            scoreInstructions.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.38)); ;
+            scoreInstructions.Size = new Size(1100, 150);
+            scoreInstructions.Font = new Font(FontFamily.GenericSansSerif, 25, FontStyle.Bold);
+            scoreInstructions.Enabled = false;
+            teamArea.Controls.Add(scoreInstructions);
 
             //add a button to show the next string.
             Button nextString = new Button();
@@ -492,14 +533,17 @@ namespace KeepScore
                 //set up the display information for the string total of the new string.
                 //use offset of 11 since we know that all strings have 10 boxes and this will be after that
                 in_team.bowlers[i].strings[currentString].stringTotal.Location = new Point(Convert.ToInt32(in_control.Width * 0.83), (25 + (60 * (i + 1))));
-                //in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
-                //in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(this.Team_CalcStringTotal);
+                in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                in_team.bowlers[i].strings[currentString].stringTotal.Validated += new System.EventHandler(this.Team_CalcStringTotal);
                 in_control.Controls.Add(in_team.bowlers[i].strings[currentString].stringTotal);
-                in_team.bowlers[i].strings[currentString].stringTotal.Enabled = false;
+                //in_team.bowlers[i].strings[currentString].stringTotal.Enabled = false;
+                in_team.bowlers[i].strings[currentString].stringTotal.TabStop = false;
 
                 in_team.bowlers[i].strings[currentString].totalHDCP.Location = new Point(Convert.ToInt32(in_control.Width * 0.90), (25 + (60 * (i + 1))));
-                //in_team.bowlers[i].strings[currentString].totalHDCP.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
-                in_team.bowlers[i].strings[currentString].totalHDCP.Enabled = false;
+                in_team.bowlers[i].strings[currentString].totalHDCP.Validated += new System.EventHandler(in_team.bowlers[i].strings[currentString].BowlingString_CalcTotal);
+                in_team.bowlers[i].strings[currentString].totalHDCP.Validated += new System.EventHandler(this.Team_CalcStringTotal);
+                //in_team.bowlers[i].strings[currentString].totalHDCP.Enabled = false;
+                in_team.bowlers[i].strings[currentString].totalHDCP.TabStop = false;
 
                 //in_team.boxesPerTurn = int.Parse(this.numBoxesPerTurn.Text);
                 in_control.Controls.Add(in_team.bowlers[i].strings[currentString].totalHDCP);
@@ -595,6 +639,30 @@ namespace KeepScore
 
             Form startMenuInstructions = new startMenuInstr();
             startMenuInstructions.Show();
+        }
+
+        public void highLightField(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            if (ctrl is TextBox || ctrl is Button)
+            {
+                ctrl.BackColor = Color.Yellow;
+            }
+            else
+            {
+                ComboBox tempDropDown = new ComboBox();
+                tempDropDown = ctrl as ComboBox;
+                tempDropDown.DroppedDown = true;
+            }
+
+        }
+
+        public void unHighLightField(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            if (ctrl is TextBox || ctrl is Button) {
+                ctrl.BackColor = Color.White;
+            }
         }
     }
 }

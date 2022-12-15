@@ -125,6 +125,15 @@
                         in_box.setBaseScore(in_box.Text);
                     }
                 }
+                //else if (in_box.isSpare && in_box.isStrike && in_box.Text == "*")
+                //{
+                //    errMsg = "10 is not a valid load for a spare or strike, please enter either / for spare or an X for a strike.";
+                //    Form errorMessage = new Form();
+                //    errorMessage.Text = errMsg;
+                //    errorMessage.ShowDialog();
+                //    in_box.Text = "";
+                //    in_box.Focus();
+                //}
                 //are we on a spare and they loaded it with a strike or a strike and they loaded it with a spare?
                 else if ((in_box.isSpare && in_box.Text.ToUpper() == "X") || (in_box.isStrike && in_box.Text.ToUpper() == "/"))
                 {
@@ -327,12 +336,19 @@
             if (!eventHandled) { 
                 if ((in_box.Text == "/" || in_box.Text.ToUpper() == "X" || in_box.Text.ToUpper() == "R" || in_box.Text.ToUpper() == "S" || in_box.Text.ToUpper() == "*") || int.TryParse(in_box.Text, out outParse))
                 {
-                    if (in_box.Text == "*")
-                    {
-                        in_box.Text = "10";
+                    if ((in_box.isSpare || in_box.isStrike) && in_box.Text == "*") {
+                        in_box.Text = "";
+                        MessageBox.Show("10 is not valid as a load, please enter a / for a spare or an X for a strike.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        in_box.Focus();
                     }
-                    String_BoxTextChanged(sender, new EventArgs(), in_box);
-                    BowlingString_CalcTotal(sender, new EventArgs());
+                    else {
+                        if (in_box.Text == "*")
+                        {
+                            in_box.Text = "10";
+                        }
+                        String_BoxTextChanged(sender, new EventArgs(), in_box);
+                        BowlingString_CalcTotal(sender, new EventArgs());
+                    }
                 }
                 else
                 {
@@ -340,7 +356,7 @@
                     { 
                         in_box.baseScore = 0;
                         in_box.Text = "";
-                        MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Please enter a number less than ten, * for a 10, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         in_box.Focus();
                     }
                 }

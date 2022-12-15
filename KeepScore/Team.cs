@@ -61,7 +61,7 @@ namespace KeepScore
             int boxesToMove = 0;
             Boolean isDoubleStrike = false;
 
-            if (boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled)
+            if (boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled && this.bowlers.Count() > 1)
             {
                 //if this box is a mark and the next box is a mark, check to see if the next box would trigger the end of a turn.
                 if ( (boxIndex < 9) && boxesPerTurn > 1 &&
