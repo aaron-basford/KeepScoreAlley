@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackagingProject", "PackagingProject\PackagingProject.wapproj", "{F92CFA96-C42F-4FB1-9C76-01C6BE22EA26}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "KeepScoreSetup", "KeepScoreSetup\KeepScoreSetup.vdproj", "{261AA179-4040-4E29-A7C0-F93CF126B6A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,9 +79,22 @@ Global
 		{F92CFA96-C42F-4FB1-9C76-01C6BE22EA26}.Release|x86.ActiveCfg = Release|x86
 		{F92CFA96-C42F-4FB1-9C76-01C6BE22EA26}.Release|x86.Build.0 = Release|x86
 		{F92CFA96-C42F-4FB1-9C76-01C6BE22EA26}.Release|x86.Deploy.0 = Release|x86
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Debug|Any CPU.ActiveCfg = Debug
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Debug|ARM.ActiveCfg = Debug
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Debug|ARM64.ActiveCfg = Debug
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Debug|x64.ActiveCfg = Debug
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Debug|x86.ActiveCfg = Debug
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Release|Any CPU.ActiveCfg = Release
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Release|ARM.ActiveCfg = Release
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Release|ARM64.ActiveCfg = Release
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Release|x64.ActiveCfg = Release
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{261AA179-4040-4E29-A7C0-F93CF126B6A9} = {1B554141-1A11-4F96-82D4-DDAB62D49733}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F757FF71-1E10-4792-B4D3-FDB3804AAF13}

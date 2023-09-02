@@ -1,14 +1,24 @@
-﻿namespace KeepScore
+﻿using System.Text.Json.Serialization;
+
+namespace KeepScore
 {
     internal class BowlingString
     {
+        [JsonInclude]
         public List<Box> game;
+        [JsonInclude]
+        public int HDCP = 0;
+        [JsonInclude]
+        public int boxesPerTurn = 1;
 
         public TextBox stringTotal = new TextBox();
         public TextBox totalHDCP = new TextBox();
-        public int HDCP = 0;
-        public int boxesPerTurn = 1;
+
         public Boolean eventHandled = false;
+
+        [JsonConstructor]
+        public BowlingString(List<Box> game, int HDCP, int boxesPerTurn) =>
+            (this.game, this.HDCP, this.boxesPerTurn) = (game, HDCP, boxesPerTurn);
 
         public BowlingString()
         {
@@ -70,11 +80,11 @@
             Boolean error = false;
             string errMsg = "";
 
-            if (in_box.Text != "")
+            if (in_box.DisplayBox.Text != "")
             {
                 //if we are resetting the box and this box is a spare or strike we have some decisions to make
                 //Otherwise we'll let this box reset itself
-                if (in_box.Text.ToUpper() == "R" && (in_box.isSpare || in_box.isStrike))
+                if (in_box.DisplayBox.Text.ToUpper() == "R" && (in_box.isSpare || in_box.isStrike))
                 {
                     //if the previous box is spare or strike we need to subtract ten from the markLoad prop and give that box focus.
                     //Unless this is the first box of the string, then we just reset this box.
@@ -86,43 +96,43 @@
                         if (in_box.boxNumber > 1 && this.game[in_box.boxNumber - 1].isStrike && this.game[in_box.boxNumber - 2].isStrike && in_box.isStrike)
                         {
                             //reset the box we are on
-                            in_box.setBaseScore(in_box.Text);
+                            in_box.setBaseScore(in_box.DisplayBox.Text);
 
                             //reset the previous box
                             this.game[in_box.boxNumber - 1].markLoad = 0;
                             this.eventHandled = true;
-                            this.game[in_box.boxNumber - 1].Text = "";
+                            this.game[in_box.boxNumber - 1].DisplayBox.Text = "";
                             this.eventHandled = false;
                             this.game[in_box.boxNumber - 1].calcBoxTotal();
 
                             //reset the box before that
                             this.game[in_box.boxNumber - 2].markLoad = 10;
                             this.eventHandled = true;
-                            this.game[in_box.boxNumber - 1].Text = "";
+                            this.game[in_box.boxNumber - 1].DisplayBox.Text = "";
                             this.eventHandled = false;
                             this.game[in_box.boxNumber - 2].calcBoxTotal();
-                            this.game[in_box.boxNumber - 2].Focus();
+                            this.game[in_box.boxNumber - 2].DisplayBox.Focus();
                         }
                         //the previous box is a spare so just deal with that.
                         else
                         {
                             //reset the box we are on
-                            in_box.setBaseScore(in_box.Text);
+                            in_box.setBaseScore(in_box.DisplayBox.Text);
 
                             //reset the previous box
                             //this.game[in_box.boxNumber - 1].setBaseScore("-10");
                             this.game[in_box.boxNumber - 1].markLoad = 0;
                             this.eventHandled = true;
-                            this.game[in_box.boxNumber - 1].Text = "";
+                            this.game[in_box.boxNumber - 1].DisplayBox.Text = "";
                             this.eventHandled = false;
                             this.game[in_box.boxNumber - 1].calcBoxTotal();
-                            this.game[in_box.boxNumber - 1].Focus();
+                            this.game[in_box.boxNumber - 1].DisplayBox.Focus();
                         }
                     }
                     else
                     {
                         //reset the previous box
-                        in_box.setBaseScore(in_box.Text);
+                        in_box.setBaseScore(in_box.DisplayBox.Text);
                     }
                 }
                 //else if (in_box.isSpare && in_box.isStrike && in_box.Text == "*")
@@ -135,7 +145,7 @@
                 //    in_box.Focus();
                 //}
                 //are we on a spare and they loaded it with a strike or a strike and they loaded it with a spare?
-                else if ((in_box.isSpare && in_box.Text.ToUpper() == "X") || (in_box.isStrike && in_box.Text.ToUpper() == "/"))
+                else if ((in_box.isSpare && in_box.DisplayBox.Text.ToUpper() == "X") || (in_box.isStrike && in_box.DisplayBox.Text.ToUpper() == "/"))
                 {
                     //is this the last box of the string?
                     if (in_box.boxNumber == 9)
@@ -145,13 +155,13 @@
                     else
                     {
                         //set the score for the next box
-                        this.game[in_box.boxNumber + 1].setBaseScore(in_box.Text);
+                        this.game[in_box.boxNumber + 1].setBaseScore(in_box.DisplayBox.Text);
                         //set this boxes base score, this should already be set, but let's be sure
                         in_box.setBaseScore("10");
                     }
                 }
                 //are we on a strike and they loaded it with another strike? AKA double/triple strike
-                else if (in_box.isStrike && in_box.Text.ToUpper() == "X")
+                else if (in_box.isStrike && in_box.DisplayBox.Text.ToUpper() == "X")
                 {
                     //if this is the last box of the string we need to do special stuff as there isn't another box to worry about
                     if (in_box.boxNumber == 9)
@@ -164,18 +174,18 @@
                         {
                             this.eventHandled = true;
                             in_box.setBaseScore("10");
-                            in_box.Text = "";
+                            in_box.DisplayBox.Text = "";
                             this.eventHandled = false;
                             in_box.DbleStrikeRightImglabel.Show();
                             in_box.DbleStrikeLeftImglabel.Show();
-                            in_box.Focus();
+                            in_box.DisplayBox.Focus();
                         }
 
                         //if mark load is greater than 10, then the string is over, put the load value in the box and move focus to the string total
                         if (in_box.markLoad > 10)
                         {
                             this.eventHandled = true;
-                            in_box.Text = (in_box.markLoad - 10).ToString();
+                            in_box.DisplayBox.Text = (in_box.markLoad - 10).ToString();
                             this.eventHandled = false;
                             this.stringTotal.Focus();
                         }
@@ -188,11 +198,11 @@
                         if (in_box.markLoad == 0)
                         {
                             this.eventHandled = true;
-                            in_box.setBaseScore(in_box.Text);
+                            in_box.setBaseScore(in_box.DisplayBox.Text);
                             this.game[in_box.boxNumber + 1].setBaseScore("X");
-                            in_box.Text = "";
+                            in_box.DisplayBox.Text = "";
                             this.eventHandled = false;
-                            in_box.Focus();
+                            in_box.DisplayBox.Focus();
                         }
                         //The mark load is not 0 so this must be a triple strike 
                         //so call the set base score for this and the next box
@@ -201,14 +211,14 @@
                         else
                         {
                             this.eventHandled = true;
-                            in_box.setBaseScore(in_box.Text);
+                            in_box.setBaseScore(in_box.DisplayBox.Text);
                             this.game[in_box.boxNumber + 1].setBaseScore("X");
-                            this.game[in_box.boxNumber + 1].Text = "";
+                            this.game[in_box.boxNumber + 1].DisplayBox.Text = "";
                             this.game[in_box.boxNumber + 1].DbleStrikeRightImglabel.Show();
                             this.game[in_box.boxNumber + 1].DbleStrikeLeftImglabel.Show();
-                            in_box.Text = in_box.markLoad.ToString();
+                            in_box.DisplayBox.Text = in_box.markLoad.ToString();
                             this.eventHandled = false;
-                            this.game[in_box.boxNumber + 1].Focus();
+                            this.game[in_box.boxNumber + 1].DisplayBox.Focus();
                         }
                     }
                     //This isn't the last box, nor the next to last box, but the next box already has a strike, so this is a triple strike situation.
@@ -221,10 +231,10 @@
                         if (in_box.boxNumber < 8)
                         {
                             this.eventHandled = true;
-                            this.game[in_box.boxNumber + 2].setBaseScore(in_box.Text);
-                            this.game[in_box.boxNumber + 1].setBaseScore(in_box.Text);
-                            this.game[in_box.boxNumber + 1].Text = "";
-                            this.game[in_box.boxNumber + 1].Focus();
+                            this.game[in_box.boxNumber + 2].setBaseScore(in_box.DisplayBox.Text);
+                            this.game[in_box.boxNumber + 1].setBaseScore(in_box.DisplayBox.Text);
+                            this.game[in_box.boxNumber + 1].DisplayBox.Text = "";
+                            this.game[in_box.boxNumber + 1].DisplayBox.Focus();
                             in_box.setBaseScore("10");
                             this.eventHandled = false;
                         }
@@ -235,7 +245,7 @@
                             this.eventHandled = true;
                             this.game[in_box.boxNumber + 1].setBaseScore("10");
                             in_box.setBaseScore("10");
-                            in_box.Text = "";
+                            in_box.DisplayBox.Text = "";
                             this.eventHandled = false;
                         }
 
@@ -243,7 +253,7 @@
                         //so the user can enter the last ball of this box
                         if (in_box.markLoad < 11)
                         {
-                            in_box.Focus();
+                            in_box.DisplayBox.Focus();
                         }
                     }
                     //This must a double strike with no special conditions
@@ -252,11 +262,11 @@
                     else
                     {
                         this.eventHandled = true;
-                        this.game[in_box.boxNumber + 1].setBaseScore(in_box.Text);
+                        this.game[in_box.boxNumber + 1].setBaseScore(in_box.DisplayBox.Text);
                         in_box.setBaseScore("10");
-                        in_box.Text = "";
+                        in_box.DisplayBox.Text = "";
                         this.eventHandled = false;
-                        in_box.Focus();
+                        in_box.DisplayBox.Focus();
                     }
                 }
                 //so we aren't resetting the box and this isn't a strike on a spare, spare on a strike or a double/triple strike
@@ -266,12 +276,12 @@
                     //then the user has made a mistake and we need to let them know.
                     if (
                         (in_box.boxNumber > 0)
-                        && ((in_box.Text.ToUpper() == "X" && (this.game[in_box.boxNumber - 1].isSpare || this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0) 
-                        || (in_box.Text.ToUpper() == "/" && (this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0))
+                        && ((in_box.DisplayBox.Text.ToUpper() == "X" && (this.game[in_box.boxNumber - 1].isSpare || this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0) 
+                        || (in_box.DisplayBox.Text.ToUpper() == "/" && (this.game[in_box.boxNumber - 1].isStrike) && this.game[in_box.boxNumber - 1].markLoad > 0))
                         )
                     {
                         //figure out the appropriate error message to display to the user/
-                        if (in_box.Text.ToUpper() == "/")
+                        if (in_box.DisplayBox.Text.ToUpper() == "/")
                         {
                             errMsg = "The previous box has a strike with a load on it, this box must be an open box.";
                         }
@@ -282,9 +292,9 @@
 
                         MessageBox.Show(errMsg, "Score Entry Error", MessageBoxButtons.OK);
                         this.eventHandled = true;
-                        in_box.Text = "";
+                        in_box.DisplayBox.Text = "";
                         this.eventHandled = false;
-                        in_box.Focus();
+                        in_box.DisplayBox.Focus();
                         error = true;
                     }
                     //all is good, call the set base score method we update everything ok.
@@ -310,14 +320,14 @@
                             this.eventHandled = true;
                         }
 
-                        in_box.setBaseScore(in_box.Text);
+                        in_box.setBaseScore(in_box.DisplayBox.Text);
                         this.eventHandled = false;
                     }
 
                     //if there was no error and this box is done set the focus to the next box.
-                    if (!error && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.Text != "")) && in_box.boxNumber < 9)
+                    if (!error && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.DisplayBox.Text != "")) && in_box.boxNumber < 9)
                     {
-                        this.game[in_box.boxNumber + 1].Focus();
+                        this.game[in_box.boxNumber + 1].DisplayBox.Focus();
                     }
                     //if there was no error and this is the last box and we are done with it, set the focus to the string total text box.
                     else if (!error && in_box.boxNumber == 9 && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isStrike || in_box.isSpare) && in_box.markLoad != 0)))
@@ -334,17 +344,17 @@
             int outParse;
 
             if (!eventHandled) { 
-                if ((in_box.Text == "/" || in_box.Text.ToUpper() == "X" || in_box.Text.ToUpper() == "R" || in_box.Text.ToUpper() == "S" || in_box.Text.ToUpper() == "*") || int.TryParse(in_box.Text, out outParse))
+                if ((in_box.DisplayBox.Text == "/" || in_box.DisplayBox.Text.ToUpper() == "X" || in_box.DisplayBox.Text.ToUpper() == "R" || in_box.DisplayBox.Text.ToUpper() == "S" || in_box.DisplayBox.Text.ToUpper() == "*") || int.TryParse(in_box.DisplayBox.Text, out outParse))
                 {
-                    if ((in_box.isSpare || in_box.isStrike) && in_box.Text == "*") {
-                        in_box.Text = "";
+                    if ((in_box.isSpare || in_box.isStrike) && in_box.DisplayBox.Text == "*") {
+                        in_box.DisplayBox.Text = "";
                         MessageBox.Show("10 is not valid as a load, please enter a / for a spare or an X for a strike.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        in_box.Focus();
+                        in_box.DisplayBox.Focus();
                     }
                     else {
-                        if (in_box.Text == "*")
+                        if (in_box.DisplayBox.Text == "*")
                         {
-                            in_box.Text = "10";
+                            in_box.DisplayBox.Text = "10";
                         }
                         String_BoxTextChanged(sender, new EventArgs(), in_box);
                         BowlingString_CalcTotal(sender, new EventArgs());
@@ -352,12 +362,12 @@
                 }
                 else
                 {
-                    if (in_box.Text != "")
+                    if (in_box.DisplayBox.Text != "")
                     { 
                         in_box.baseScore = 0;
-                        in_box.Text = "";
+                        in_box.DisplayBox.Text = "";
                         MessageBox.Show("Please enter a number less than ten, * for a 10, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        in_box.Focus();
+                        in_box.DisplayBox.Focus();
                     }
                 }
             }

@@ -1,17 +1,27 @@
 ﻿using System.Windows.Forms;
+using System.Text.Json;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace KeepScore
 {
     internal class Team
     {
+        [JsonInclude]
         public string name;
+        [JsonInclude]
         public List<Bowler> bowlers;
         public TextBox teamTotal = new TextBox();
         public TextBox teamTotalHDCP = new TextBox();
         public TextBox teamStringTotal = new TextBox();
         public TextBox teamStringTotalHDCP = new TextBox();
+        [JsonInclude]
         public int teamNumber = 0;
         public Boolean scoreCorrect = false;
+
+        [JsonConstructor]
+        public Team(string name, List<Bowler> bowlers, int teamNumber) =>
+            (this.name, this.bowlers, this.teamNumber) = (name, bowlers, teamNumber);
 
         public Team()
         {
@@ -48,8 +58,11 @@ namespace KeepScore
             //iterate through all the bowlers match totals to get the team's total.
             for (int i = 0; i < bowlers.Count; i++)
             {
-                temp_teamTotal += int.Parse(this.bowlers[i].matchTotal.Text);
-                temp_teamTotalHDCP += int.Parse(this.bowlers[i].matchTotalHDCP.Text);
+                if (this.bowlers[i].matchTotal.Text != "")
+                {
+                    temp_teamTotal += int.Parse(this.bowlers[i].matchTotal.Text);
+                    temp_teamTotalHDCP += int.Parse(this.bowlers[i].matchTotalHDCP.Text);
+                }
             }
 
             this.teamTotal.Text = temp_teamTotal.ToString();
@@ -91,7 +104,7 @@ namespace KeepScore
                 //  or this is the last box of the bowler's turn and it's not a mark (strike or spare)
                 if (    (((boxIndex + 1) % boxesPerTurn == 0) && 
                         ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) || (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)) &&
-                        (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text == "")) ||
+                        (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text == "")) ||
                         (((boxIndex + 1) % boxesPerTurn == 0) && 
                         ((!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) && (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)))
                 )
@@ -100,17 +113,17 @@ namespace KeepScore
                     if (boxIndex == 9)
                     {
                         if ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare || this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike) &&
-                            this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text != "")
+                            this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "")
                         {
                             if (bowlerIndex + 1 < this.bowlers.Count) {
                                 boxesToMove = Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn);
 
                                 if ( !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isSpare && 
                                      !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isStrike &&
-                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Text == ""
+                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Text == ""
                                    ) 
                                 {
-                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Focus();
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Focus();
                                 }
                             }
                         }
@@ -119,7 +132,7 @@ namespace KeepScore
                             if (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare && !this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike){
                                 //is this the last bowler on the team?
                                 if (bowlerIndex + 1 < this.bowlers.Count) {
-                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].DisplayBox.Focus();
                                 }
                                 else
                                 {
@@ -154,7 +167,7 @@ namespace KeepScore
 
                                 if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].boxTotal == 0)
                                 {
-                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].Focus();
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Focus();
                                 }  
                             }
                             else
@@ -165,15 +178,15 @@ namespace KeepScore
                                 {
                                     //if the box we are supposed to be moving too already has a value in it, then are are starting the next turn, not finishing a turn
                                     if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].boxTotal == 0) {
-                                        this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].Focus();
+                                        this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].DisplayBox.Focus();
                                     }
                                 }
-                                else if (isDoubleStrike && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].Text != "")
+                                else if (isDoubleStrike && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex - 1].DisplayBox.Text != "")
                                 {
-                                    this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Focus();
+                                    this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Focus();
                                 }
                                 else {
-                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].Focus();
+                                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].DisplayBox.Focus();
                                 }
                             }
                         }
@@ -183,31 +196,31 @@ namespace KeepScore
                             //if it's a spare, put the focus on the same box we ended on
                             if (this.bowlers[0].strings[currentString].game[boxIndex].isSpare)
                             {
-                                this.bowlers[0].strings[currentString].game[(boxIndex)].Focus();
+                                this.bowlers[0].strings[currentString].game[(boxIndex)].DisplayBox.Focus();
                             }
                             //if it's a strike, we need to know of the box before that was also a strike
                             else if (this.bowlers[0].strings[currentString].game[boxIndex].isStrike)
                             {
                                 if (boxIndex - 1 > -1 && this.bowlers[0].strings[currentString].game[boxIndex - 1].isStrike)
                                 {
-                                    this.bowlers[0].strings[currentString].game[(boxIndex - 1)].Focus();
+                                    this.bowlers[0].strings[currentString].game[(boxIndex - 1)].DisplayBox.Focus();
                                 }
                                 else
                                 {
-                                    this.bowlers[0].strings[currentString].game[boxIndex].Focus();
+                                    this.bowlers[0].strings[currentString].game[boxIndex].DisplayBox.Focus();
                                 }
                             }
                             else
                             {
-                                this.bowlers[0].strings[currentString].game[(boxIndex + 1)].Focus();
+                                this.bowlers[0].strings[currentString].game[(boxIndex + 1)].DisplayBox.Focus();
                             }
                         }
                     }
                 }
                 //fail safe, if there is text in the box and this is the last box, we need to move onto the next bowler.
-                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].Text != "")
+                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "")
                 {
-                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].Focus();
+                    this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].DisplayBox.Focus();
                 }
             }
         }
@@ -242,13 +255,13 @@ namespace KeepScore
 
         public void toggleScoreCorrectMode(object sender, EventArgs e, Box in_box)
         {
-            if (in_box.Text.ToUpper() == "S")
+            if (in_box.DisplayBox.Text.ToUpper() == "S")
             {
                 if (scoreCorrect)
                 {
                     scoreCorrect = false;
-                    in_box.Text = "";
-                    in_box.Focus();
+                    in_box.DisplayBox.Text = "";
+                    in_box.DisplayBox.Focus();
                 }
                 else
                 {
@@ -261,34 +274,54 @@ namespace KeepScore
         {
             if (in_bowlerIndex == this.bowlers.Count - 1 && e.KeyCode == Keys.Down)
             {
-                this.bowlers[0].strings[in_currentString].game[in_boxIndex].Focus();
+                this.bowlers[0].strings[in_currentString].game[in_boxIndex].DisplayBox.Focus();
             }
             else if (in_bowlerIndex == 0 && e.KeyCode == Keys.Up)
             {
-                this.bowlers[this.bowlers.Count -1].strings[in_currentString].game[in_boxIndex].Focus();
+                this.bowlers[this.bowlers.Count -1].strings[in_currentString].game[in_boxIndex].DisplayBox.Focus();
             }
             else if (in_boxIndex == 9 && e.KeyCode == Keys.Right)
             {
-                this.bowlers[in_bowlerIndex].strings[in_currentString].game[0].Focus();
+                this.bowlers[in_bowlerIndex].strings[in_currentString].game[0].DisplayBox.Focus();
             }
             else if (in_boxIndex == 0 && e.KeyCode == Keys.Left)
             {
-                this.bowlers[in_bowlerIndex].strings[in_currentString].game[9].Focus();
+                this.bowlers[in_bowlerIndex].strings[in_currentString].game[9].DisplayBox.Focus();
             }
             else
             {
                 switch (e.KeyCode)
                 {
-                    case Keys.Left: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex - 1].Focus();
+                    case Keys.Left: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex - 1].DisplayBox.Focus();
                         break;
-                    case Keys.Right: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex + 1].Focus();
+                    case Keys.Right: this.bowlers[in_bowlerIndex].strings[in_currentString].game[in_boxIndex + 1].DisplayBox.Focus();
                         break;
-                    case Keys.Up: this.bowlers[in_bowlerIndex -1].strings[in_currentString].game[in_boxIndex].Focus();
+                    case Keys.Up: this.bowlers[in_bowlerIndex -1].strings[in_currentString].game[in_boxIndex].DisplayBox.Focus();
                         break;
-                    case Keys.Down: this.bowlers[in_bowlerIndex + 1].strings[in_currentString].game[in_boxIndex].Focus();
+                    case Keys.Down: this.bowlers[in_bowlerIndex + 1].strings[in_currentString].game[in_boxIndex].DisplayBox.Focus();
                         break;
                 }
             }
+
+
+        }
+
+        public void saveTeamStats(object sender, EventArgs e)
+        {
+            String team_json = null;
+            String stringPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDoc‌​uments), "KeepScore");
+            JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+
+            team_json = JsonSerializer.Serialize(this, options);
+
+            if (!Directory.Exists(stringPath))
+            {
+                System.IO.Directory.CreateDirectory(stringPath);
+            }
+
+            stringPath = Path.Combine(stringPath, "Inprogress.json");
+            File.WriteAllText(stringPath, team_json);
+
 
 
         }

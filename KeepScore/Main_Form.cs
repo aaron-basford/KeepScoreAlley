@@ -3,42 +3,152 @@ namespace KeepScore
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Security.Cryptography.X509Certificates;
+    using System.Text.Json;
+    using System.Windows.Forms.VisualStyles;
 
     public partial class Main_Form : Form
     {
         private Team firstTeam;
         private Control teamOne;
         private int currentString;
+        private Boolean foundJson;
 
         public Main_Form()
         {
             InitializeComponent();
 
-            //Set up the form.
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.BackColor = Color.White;
-            this.ForeColor = Color.Black;
-            this.Size = new System.Drawing.Size(1300, 400);
-            this.FormBorderStyle = FormBorderStyle.Sizable;
-            this.StartPosition = FormStartPosition.CenterScreen;
+            foundJson = false;
 
-            firstTeam = new Team();
+            string fileName = "";
+            int bowler_count = -1;
+            int string_count = -1;
 
-            currentString = 0;
+            fileName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "Inprogress.json");
 
-            this.numBoxesPerTurn.SelectedIndex = 0;
-            this.NumStrings.SelectedIndex = 0;
-
-            this.Show();
-
-            Form startMenuInstructions = new startMenuInstr();
-            startMenuInstructions.Show();
-
-            foreach (Control ctrl in this.Controls)
+            if (File.Exists(fileName))
             {
-                ctrl.GotFocus += highLightField;
-                ctrl.LostFocus += unHighLightField;
+                foundJson = true;
+                string jsonString = File.ReadAllText(fileName);
+                firstTeam = new Team();
+                firstTeam = JsonSerializer.Deserialize<Team>(jsonString)!;
+
+                this.numBoxesPerTurn.Text = firstTeam.bowlers[0].strings[0].boxesPerTurn.ToString();
+                this.NumStrings.Text = firstTeam.bowlers[0].strings.Count.ToString();
+
+                if (this.numBoxesPerTurn.Text == "")
+                {
+                    this.numBoxesPerTurn.Text = "1";
+                }
+
+                //now that we have all our teams set up, create the match form
+                CreateMatchForm();
+
+                if (foundJson)
+                {
+                    foreach (Bowler teamBowler in firstTeam.bowlers)
+                    {
+                        bowler_count++;
+                        string_count = -1;
+
+                        teamBowler.matchTotal.Size = new Size(100, 50);
+                        teamBowler.matchTotal.TextAlign = HorizontalAlignment.Center;
+                        teamBowler.matchTotal.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+
+                        teamBowler.matchTotalHDCP.Size = new Size(100, 50);
+                        teamBowler.matchTotalHDCP.TextAlign = HorizontalAlignment.Center;
+                        teamBowler.matchTotalHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+
+                        teamBowler.handicap.Size = new Size(100, 50);
+                        teamBowler.handicap.TextAlign = HorizontalAlignment.Center;
+                        teamBowler.handicap.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+                        teamBowler.handicap.Text = teamBowler.int_handicap.ToString();
+
+                        foreach (BowlingString strings in teamBowler.strings)
+                        {
+                            string_count++;
+
+                            strings.stringTotal.Size = new Size(100, 50);
+                            strings.stringTotal.TextAlign = HorizontalAlignment.Center;
+                            strings.stringTotal.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+
+                            strings.totalHDCP.Size = new Size(100, 50);
+                            strings.totalHDCP.TextAlign = HorizontalAlignment.Center;
+                            strings.totalHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+
+                            foreach (Box box in strings.game)
+                            {
+                                box.formatBox();
+
+                                if (box.baseScore > 0 || box.boxTotal > 0)
+                                {
+                                    if (currentString < string_count)
+                                    {
+                                        if(currentString == 0 && string_count == 1)
+                                        {
+                                            showNextString(teamOne, firstTeam);
+                                        }
+                                        currentString = string_count;
+                                        hidePreviousString(firstTeam);
+                                        showNextString(teamOne, firstTeam);
+
+                                    }
+
+                                    if (box.isSpare)
+                                    {
+                                        box.spareImgLabel.Show();
+                                        box.DisplayBox.Text = box.markLoad.ToString();
+                                    }
+                                    else if (box.isStrike)
+                                    {
+                                        box.spareImgLabel.Show();
+                                        box.strikeImgLabel.Show();
+                                        box.DisplayBox.Text = box.markLoad.ToString();
+                                    }
+                                    else
+                                    {
+                                        box.DisplayBox.Text = box.boxTotal.ToString();
+                                    }
+
+                                    box.DisplayBox.Focus();
+                                }
+                            }
+
+                            strings.stringTotal.Text = strings.Calc_Total().ToString();
+                            strings.totalHDCP.Text = (strings.Calc_Total() + teamBowler.int_handicap).ToString();
+                        }
+                    }
+                }
+
+                foundJson = false;
+            }
+            else {
+
+                //Set up the form.
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+                this.BackColor = Color.White;
+                this.ForeColor = Color.Black;
+                this.Size = new System.Drawing.Size(1300, 400);
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+                this.StartPosition = FormStartPosition.CenterScreen;
+
+                firstTeam = new Team();
+
+                currentString = 0;
+
+                this.numBoxesPerTurn.SelectedIndex = 0;
+                this.NumStrings.SelectedIndex = 0;
+
+                this.Show();
+
+                Form startMenuInstructions = new startMenuInstr();
+                startMenuInstructions.Show();
+
+                foreach (Control ctrl in this.Controls)
+                {
+                    ctrl.GotFocus += highLightField;
+                    ctrl.LostFocus += unHighLightField;
+                }
             }
 
         }
@@ -201,10 +311,18 @@ namespace KeepScore
 
             
 
-            firstTeam.bowlers[0].strings[currentString].game[0].Focus();
+            firstTeam.bowlers[0].strings[currentString].game[0].DisplayBox.Focus();
 
-            Form scoreSheetInstructions = new scoreSheetInstr();
-            scoreSheetInstructions.Show();
+            if (!foundJson)
+            {
+                Form scoreSheetInstructions = new scoreSheetInstr();
+                scoreSheetInstructions.Show();
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Minimized;
+                match.BringToFront();
+            }
         }
 
         private void displayTeam(Control teamArea, Team team)
@@ -224,7 +342,7 @@ namespace KeepScore
                 bowlerHDCP.Size = new Size(200, 40);
                 bowlerHDCP.Location = new Point(355, 10);
                 bowlerHDCP.Text = "HDCP";
-                bowlerHDCP.TextAlign = ContentAlignment.MiddleCenter;
+                bowlerHDCP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 bowlerHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerHDCP);
                 bowlerHDCP.Enabled = false;
@@ -236,7 +354,7 @@ namespace KeepScore
                     BoxNumLbl.Location = new Point((535 + (x * 106)), 10);
                     BoxNumLbl.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                     BoxNumLbl.Text = (x + 1).ToString();
-                    BoxNumLbl.TextAlign = ContentAlignment.MiddleCenter;
+                    BoxNumLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     BoxNumLbl.Enabled = false;
                     teamArea.Controls.Add(BoxNumLbl);
                 }
@@ -246,7 +364,7 @@ namespace KeepScore
                 stringTotalLabel.Size = new Size(120, 40);
                 stringTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.825), 10);
                 stringTotalLabel.Text = "Total";
-                stringTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
+                stringTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 stringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalLabel);
                 stringTotalLabel.Enabled = false;
@@ -256,7 +374,7 @@ namespace KeepScore
                 stringTotalHDCPLabel.Size = new Size(150, 40);
                 stringTotalHDCPLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.895), 10);
                 stringTotalHDCPLabel.Text = "HDCP";
-                stringTotalHDCPLabel.TextAlign = ContentAlignment.MiddleLeft;
+                stringTotalHDCPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 stringTotalHDCPLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalHDCPLabel);
                 stringTotalHDCPLabel.Enabled = false;
@@ -266,7 +384,7 @@ namespace KeepScore
                 prevStringsLabel.Size = new Size(400, 60);
                 prevStringsLabel.Location = new Point(10, Convert.ToInt32(teamArea.Height * 0.60));
                 prevStringsLabel.Text = "Previous Strings";
-                prevStringsLabel.TextAlign = ContentAlignment.MiddleCenter;
+                prevStringsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 prevStringsLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(prevStringsLabel);
                 prevStringsLabel.Enabled = false;
@@ -276,7 +394,7 @@ namespace KeepScore
                 bowlerTotalLabel.Size = new Size(400, 60);
                 bowlerTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.83), Convert.ToInt32(teamArea.Height * 0.60));
                 bowlerTotalLabel.Text = "Match Totals";
-                bowlerTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
+                bowlerTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 bowlerTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerTotalLabel);
                 bowlerTotalLabel.Enabled = false;
@@ -289,7 +407,7 @@ namespace KeepScore
                     teamTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
                     teamTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.60), Convert.ToInt32(teamArea.Height * 0.45));
                     teamTotalLabel.Text = "Team Match Totals";
-                    teamTotalLabel.TextAlign = ContentAlignment.MiddleCenter;
+                    teamTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     teamArea.Controls.Add(teamTotalLabel);
                     teamTotalLabel.Enabled = false;
 
@@ -298,7 +416,7 @@ namespace KeepScore
                     teamStringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
                     teamStringTotalLabel.Location = new Point(Convert.ToInt32(teamArea.Width * 0.60), Convert.ToInt32(teamArea.Height * 0.38));
                     teamStringTotalLabel.Text = "Team String Totals";
-                    teamStringTotalLabel.TextAlign = ContentAlignment.MiddleCenter;
+                    teamStringTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     teamArea.Controls.Add(teamStringTotalLabel);
                     teamStringTotalLabel.Enabled = false;
                 }
@@ -320,7 +438,10 @@ namespace KeepScore
                 {
                     bowlerName.Location = new Point(0, 70);
                     prevStringsBowlerName.Location = new Point(20, (Convert.ToInt32(teamOne.Height * 0.60) + (60 * bowlerCount)));
-                    teamBowler.handicap.Text = Team2_Bowler1.Text;
+                    if (!foundJson){                    
+                        teamBowler.handicap.Text = Team2_Bowler1.Text;
+                        teamBowler.int_handicap = int.Parse(Team2_Bowler1.Text);
+                    }
 
                     //set the display of the bowler's handicap
                     teamBowler.handicap.Location = new Point(400, 85);
@@ -334,7 +455,12 @@ namespace KeepScore
 
                     controlName = "Team2_Bowler" + bowlerCount;
                     tempTextBox = (TextBox)this.Controls.Find(controlName, true)[0];
-                    teamBowler.handicap.Text = tempTextBox.Text;
+
+                    if (!foundJson)
+                    {
+                        teamBowler.handicap.Text = tempTextBox.Text;
+                        teamBowler.int_handicap = int.Parse(tempTextBox.Text);
+                    }
 
                     //set the display of the bowler's handicap
                     teamBowler.handicap.Location = new Point(400, (25 + (60 * bowlerCount)));
@@ -346,8 +472,8 @@ namespace KeepScore
                 //set up the label for the bowlers name
                 bowlerName.Size = new Size(300, 70);
                 prevStringsBowlerName.Size = new Size(300, 70);
-                bowlerName.TextAlign = ContentAlignment.MiddleLeft;
-                prevStringsBowlerName.TextAlign = ContentAlignment.MiddleLeft;
+                bowlerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+                prevStringsBowlerName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 bowlerName.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold);
                 prevStringsBowlerName.Font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold);
                 bowlerName.AutoSize = false;
@@ -439,15 +565,18 @@ namespace KeepScore
             nextString.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold, GraphicsUnit.Pixel);
             nextString.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.55));
             nextString.Text = "Next String";
-            nextString.TextAlign = ContentAlignment.MiddleCenter;
+            nextString.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             nextString.Click += new System.EventHandler(NextString_OnClick);
             nextString.Show();
             teamArea.Controls.Add(nextString);
 
-            //add the strings for all the bowlers on team to the team area
-            showNextString(teamArea, team);
+            if (!foundJson)
+            {
+                //add the strings for all the bowlers on team to the team area
+                showNextString(teamArea, team);
 
-            team.bowlers[0].strings[currentString].game[0].Focus();
+                team.bowlers[0].strings[currentString].game[0].DisplayBox.Focus();
+            }
         }
 
         //call back for the next string button
@@ -480,7 +609,7 @@ namespace KeepScore
                 //iterate through the boxes of the string just finished for the bowler and hide them
                 for (int y = 0; y < in_team.bowlers[i].strings[currentString - 1].game.Count; y++)
                 {
-                    in_team.bowlers[i].strings[currentString - 1].game[y].Hide();
+                    in_team.bowlers[i].strings[currentString - 1].game[y].DisplayBox.Hide();
                 }
 
                 //move the string total for the bowler to the previous string area
@@ -504,7 +633,7 @@ namespace KeepScore
                     int boxIndex = x;
                     //we need to calculate where the location of each box will be displayed on the control.
                     //we will use the the bowlers number (i) and the box number (x) to calculate the offset we need
-                    in_team.bowlers[i].strings[currentString].game[boxIndex].Location = new Point(510 + (108 * x), (25 + (60 * (i + 1))));
+                    in_team.bowlers[i].strings[currentString].game[boxIndex].DisplayBox.Location = new Point(510 + (108 * x), (25 + (60 * (i + 1))));
 
                     //set up the call backs for each box so we can validate and calculate the boxes score, the string total, bowler's match total and the team's match total
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_BoxTextChanged(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
@@ -515,19 +644,24 @@ namespace KeepScore
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
                     //in_team.bowlers[i].strings[currentString].game[x].Validated += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
 
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(in_team.Team_CalcTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler(this.Team_CalcStringTotal);
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
-                    in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
-                    in_team.bowlers[i].strings[currentString].game[x].KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.handleArrowsToNav(s, e, boxIndex, bowlerIndex, currentString));
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler((s, e) => in_team.bowlers[bowlerIndex].strings[currentString].String_KeyPress(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].strings[currentString].BowlingString_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler(in_team.bowlers[bowlerIndex].calcBowlerMatchTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler(in_team.Team_CalcTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler(this.Team_CalcStringTotal);
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler((s, e) => in_team.toggleScoreCorrectMode(s, e, in_team.bowlers[bowlerIndex].strings[currentString].game[boxIndex]));
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler((s, e) => in_team.Team_NextBowlersTurn(s, e, boxIndex, bowlerIndex, currentString, int.Parse(this.numBoxesPerTurn.Text)));
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.KeyDown += new System.Windows.Forms.KeyEventHandler((s, e) => in_team.handleArrowsToNav(s, e, boxIndex, bowlerIndex, currentString));
+                    //in_team.bowlers[i].strings[currentString].game[x].TextChanged += new System.EventHandler((s, e) => in_team.saveTeamStats(s, e, in_team));
+                    in_team.bowlers[i].strings[currentString].game[x].DisplayBox.TextChanged += new System.EventHandler(in_team.saveTeamStats);
 
                     //add the box to the team control
-                    in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x]);
+                    in_control.Controls.Add(in_team.bowlers[i].strings[currentString].game[x].DisplayBox);
 
-                    in_team.bowlers[i].strings[currentString].boxesPerTurn = int.Parse(this.numBoxesPerTurn.Text);
+                    if (!foundJson)
+                    {
+                        in_team.bowlers[i].strings[currentString].boxesPerTurn = int.Parse(this.numBoxesPerTurn.Text);
+                    }
                 }
 
                 //set up the display information for the string total of the new string.
@@ -557,11 +691,11 @@ namespace KeepScore
                     this.Team_CalcStringTotal(new Object(), new EventArgs());
                 }
 
-                in_team.bowlers[in_team.bowlers.Count - 1].strings[currentString].game[9].Validated += new System.EventHandler(this.Activate_NextStringButton);
+                in_team.bowlers[in_team.bowlers.Count - 1].strings[currentString].game[9].DisplayBox.Validated += new System.EventHandler(this.Activate_NextStringButton);
             }
 
             Team_CalcStringTotal(new object(), new EventArgs());
-            in_team.bowlers[0].strings[currentString].game[0].Focus();
+            in_team.bowlers[0].strings[currentString].game[0].DisplayBox.Focus();
         }
 
         public void Team_CalcStringTotal(object sender, EventArgs e)
@@ -572,8 +706,11 @@ namespace KeepScore
             //iterate through all the bowlers match totals to get the team's total.
             for (int i = 0; i < firstTeam.bowlers.Count; i++)
             {
-                temp_teamStringTotal += int.Parse(firstTeam.bowlers[i].strings[currentString].stringTotal.Text);
-                temp_teamStringTotalHDCP += int.Parse(firstTeam.bowlers[i].strings[currentString].totalHDCP.Text);
+                if (firstTeam.bowlers[i].strings[currentString].stringTotal.Text != "")
+                {
+                    temp_teamStringTotal += int.Parse(firstTeam.bowlers[i].strings[currentString].stringTotal.Text);
+                    temp_teamStringTotalHDCP += int.Parse(firstTeam.bowlers[i].strings[currentString].totalHDCP.Text);
+                }
             }
 
             firstTeam.teamStringTotal.Text = temp_teamStringTotal.ToString();
@@ -583,7 +720,7 @@ namespace KeepScore
 
         public void Activate_NextStringButton(object sender, EventArgs e)
         {
-            if (firstTeam.bowlers[firstTeam.bowlers.Count - 1].strings[currentString].game[9].Text != "") {
+            if (firstTeam.bowlers[firstTeam.bowlers.Count - 1].strings[currentString].game[9].DisplayBox.Text != "") {
                 string controlName = "NextStringBtn";
                 Button tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
                 tempButton.Focus();

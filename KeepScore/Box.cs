@@ -1,6 +1,9 @@
-﻿namespace KeepScore
+﻿using System.Text.Json.Serialization;
+
+namespace KeepScore
 {
-    internal class Box : TextBox
+    [Serializable]
+    internal class Box
     {
         public Label spareImgLabel = new Label();
         public Label strikeImgLabel = new Label();
@@ -12,12 +15,24 @@
         Image dblStrikeLeft = KeepScore.Properties.Resources.Dbl_Strike_Left;
         Image dblStrikeRight = KeepScore.Properties.Resources.Dbl_Strike_Right;
 
+        [JsonInclude]
         public int baseScore;
+        [JsonInclude]
         public int boxTotal;
+        [JsonInclude]
         public Boolean isStrike;
+        [JsonInclude]
         public Boolean isSpare;
+        [JsonInclude]
         public int markLoad;
+        [JsonInclude]
         public int boxNumber;
+
+        public TextBox DisplayBox = new TextBox();
+
+        [JsonConstructor]
+        public Box(int baseScore, int boxTotal, Boolean isStrike, Boolean isSpare, int markLoad, int boxNumber) =>
+            (this.baseScore, this.boxTotal, this.isStrike, this.isSpare, this.markLoad, this.boxNumber) = (baseScore, boxTotal, isStrike, isSpare, markLoad, boxNumber);
 
         public Box(int baseScore, int markLoad, int boxTotal, bool isStrike, bool isSpare)
         {
@@ -27,7 +42,7 @@
             this.isStrike = isStrike;
             this.isSpare = isSpare;
 
-            this.Size = new Size(100, 50);
+            DisplayBox.Size = new Size(100, 50);
         }
 
         public Box(int in_boxNumber)
@@ -40,10 +55,15 @@
             this.markLoad = 0;
             this.boxNumber = in_boxNumber;
 
+            formatBox();
+        }
+
+        public void formatBox()
+        {
             //set the display size, font and alignment
-            this.Size = new Size(100, 50);
-            this.TextAlign = HorizontalAlignment.Center;
-            this.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold, GraphicsUnit.Point);
+            this.DisplayBox.Size = new Size(100, 50);
+            this.DisplayBox.TextAlign = HorizontalAlignment.Center;
+            this.DisplayBox.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold, GraphicsUnit.Point);
 
             //set up the image for a spare
             spareImgLabel.Image = spareImg;
@@ -52,7 +72,7 @@
             spareImgLabel.ImageAlign = ContentAlignment.MiddleCenter;
             spareImgLabel.Text = "";
             spareImgLabel.BackColor = Color.Transparent;
-            spareImgLabel.Parent = this;
+            spareImgLabel.Parent = this.DisplayBox;
             spareImgLabel.Location = new Point(0, 0);
 
             //set up the image for the strike
@@ -62,7 +82,7 @@
             strikeImgLabel.ImageAlign = ContentAlignment.MiddleCenter;
             strikeImgLabel.Text = "";
             strikeImgLabel.BackColor = Color.Transparent;
-            strikeImgLabel.Parent = this;
+            strikeImgLabel.Parent = this.DisplayBox;
             strikeImgLabel.Location = new Point(75, 27);
 
             //set up the image for a double strike (only used in the last box)
@@ -72,7 +92,7 @@
             DbleStrikeRightImglabel.ImageAlign = ContentAlignment.MiddleCenter;
             DbleStrikeRightImglabel.Text = "";
             DbleStrikeRightImglabel.BackColor = Color.Transparent;
-            DbleStrikeRightImglabel.Parent = this;
+            DbleStrikeRightImglabel.Parent = this.DisplayBox;
             DbleStrikeRightImglabel.Location = new Point(75, 0);
 
             //set up the image for a double strike (only used in the last box)
@@ -82,7 +102,7 @@
             DbleStrikeLeftImglabel.ImageAlign = ContentAlignment.MiddleCenter;
             DbleStrikeLeftImglabel.Text = "";
             DbleStrikeLeftImglabel.BackColor = Color.Transparent;
-            DbleStrikeLeftImglabel.Parent = this;
+            DbleStrikeLeftImglabel.Parent = this.DisplayBox;
             DbleStrikeLeftImglabel.Location = new Point(0, 27);
 
             //hide all the images so the box will displayed as blank.
@@ -95,7 +115,7 @@
         public void setBaseScore(string in_score)
         {
             //if we are just cursoring through the boxes, don't process it again.
-            if (markLoad.ToString() != this.Text) { 
+            if (markLoad.ToString() != DisplayBox.Text) { 
                 //if the entered value is an R or an r then we need to reset the box to default values and hide images.
                 if (in_score.ToUpper() == "R")
                 {
@@ -107,8 +127,8 @@
                     this.strikeImgLabel.Hide();
                     this.DbleStrikeLeftImglabel.Hide();
                     this.DbleStrikeRightImglabel.Hide();
-                    this.Text = "";
-                    this.Focus();
+                    DisplayBox.Text = "";
+                    DisplayBox.Focus();
                 }
                 else
                 {
@@ -124,8 +144,8 @@
                                 isSpare = false;
                                 this.spareImgLabel.Show();
                                 this.strikeImgLabel.Show();
-                                this.Text = "";
-                                this.Focus();
+                                DisplayBox.Text = "";
+                                DisplayBox.Focus();
                                 break;
                             //if it's a spare set the base score to 10, so the spare image and set the spare flag
                             case "/":
@@ -133,8 +153,8 @@
                                 isStrike = false;
                                 isSpare = true;
                                 this.spareImgLabel.Show();
-                                this.Text = "";
-                                this.Focus();
+                                DisplayBox.Text = "";
+                                DisplayBox.Focus();
                                 break;
                             case "S":
                                 //this is score correct mode, don't do anything
@@ -150,8 +170,8 @@
                                     if (this.baseScore > 10 || this.baseScore < 0)
                                     {
                                         this.baseScore = 0;
-                                        this.Text = "";
-                                        this.Focus();
+                                        DisplayBox.Text = "";
+                                        DisplayBox.Focus();
                                         MessageBox.Show("Please enter a number that is 10 or less but greater than or equal to zero.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
@@ -161,9 +181,9 @@
                                     if (in_score != "")
                                     {
                                         this.baseScore = 0;
-                                        this.Text = "";
+                                        DisplayBox.Text = "";
                                         MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        this.Focus();
+                                        DisplayBox.Focus();
                                     }
                                 }
 
@@ -189,7 +209,7 @@
                                 if (int.Parse(in_score) < 11 && ((this.isStrike && this.markLoad < 20) || (this.isSpare && this.markLoad < 10)))
                                 {
                                     this.markLoad += int.Parse(in_score);
-                                    this.Text = markLoad.ToString();
+                                    DisplayBox.Text = markLoad.ToString();
                                 }
                                 else
                                 {
@@ -198,21 +218,21 @@
                                     if (int.Parse(in_score) != markLoad)
                                     {
                                         this.markLoad = 0;
-                                        this.Text = "";
-                                        this.Focus();
+                                        DisplayBox.Text = "";
+                                        DisplayBox.Focus();
                                     }
                                     //everything is good, box is over so let's set the text of this box to the mark load value
                                     else
                                     {
-                                        this.Text = this.markLoad.ToString();
+                                        DisplayBox.Text = this.markLoad.ToString();
                                     }
                                 }
                             }
                             else
                             {
-                                this.Text = "";
+                                DisplayBox.Text = "";
                                 MessageBox.Show("The load must be between 0 and 9, or an X or / or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                this.Focus();
+                                DisplayBox.Focus();
                             }
                         }
                         catch (Exception e)
@@ -221,7 +241,7 @@
                             {
                                 this.baseScore = 0;
                                 MessageBox.Show("Please enter a number less than ten, an X (strike), a / (spare) or an R to reset the box.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                this.Focus();
+                                DisplayBox.Focus();
                             }
                         }
                     }
@@ -248,11 +268,10 @@
 
         public void Box_TextChanged(object sender, EventArgs e)
         {
-            if (this.Text != "")
+            if (DisplayBox.Text != "")
             {
-                this.setBaseScore(this.Text);
+                this.setBaseScore(DisplayBox.Text);
             }
         }
-
     }
 }
