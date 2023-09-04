@@ -48,6 +48,8 @@
             this.lbl_BowlersHDCP = new System.Windows.Forms.Label();
             this.lbl_numBoxesTurn = new System.Windows.Forms.Label();
             this.numBoxesPerTurn = new System.Windows.Forms.ComboBox();
+            this.PrintSummary = new System.Windows.Forms.ComboBox();
+            this.PrintSummaryLbl = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -166,10 +168,10 @@
             // CreateMatch
             // 
             this.CreateMatch.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CreateMatch.Location = new System.Drawing.Point(474, 305);
+            this.CreateMatch.Location = new System.Drawing.Point(475, 359);
             this.CreateMatch.Name = "CreateMatch";
             this.CreateMatch.Size = new System.Drawing.Size(436, 70);
-            this.CreateMatch.TabIndex = 12;
+            this.CreateMatch.TabIndex = 13;
             this.CreateMatch.Text = "Create Score Sheet";
             this.CreateMatch.Click += new System.EventHandler(this.CreateButton_OnClick);
             // 
@@ -247,6 +249,30 @@
             this.numBoxesPerTurn.Size = new System.Drawing.Size(121, 62);
             this.numBoxesPerTurn.TabIndex = 11;
             // 
+            // PrintSummary
+            // 
+            this.PrintSummary.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PrintSummary.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.PrintSummary.FormattingEnabled = true;
+            this.PrintSummary.ItemHeight = 54;
+            this.PrintSummary.Items.AddRange(new object[] {
+            "No",
+            "Yes"});
+            this.PrintSummary.Location = new System.Drawing.Point(776, 286);
+            this.PrintSummary.Name = "PrintSummary";
+            this.PrintSummary.Size = new System.Drawing.Size(121, 62);
+            this.PrintSummary.TabIndex = 12;
+            // 
+            // PrintSummaryLbl
+            // 
+            this.PrintSummaryLbl.AutoSize = true;
+            this.PrintSummaryLbl.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.PrintSummaryLbl.Location = new System.Drawing.Point(475, 286);
+            this.PrintSummaryLbl.Name = "PrintSummaryLbl";
+            this.PrintSummaryLbl.Size = new System.Drawing.Size(282, 54);
+            this.PrintSummaryLbl.TabIndex = 38;
+            this.PrintSummaryLbl.Text = "Print Summary";
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -254,6 +280,8 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1267, 450);
+            this.Controls.Add(this.PrintSummaryLbl);
+            this.Controls.Add(this.PrintSummary);
             this.Controls.Add(this.numBoxesPerTurn);
             this.Controls.Add(this.lbl_numBoxesTurn);
             this.Controls.Add(this.lbl_BowlersHDCP);
@@ -304,5 +332,7 @@
         private Label lbl_BowlersHDCP;
         private Label lbl_numBoxesTurn;
         private ComboBox numBoxesPerTurn;
+        private ComboBox PrintSummary;
+        private Label PrintSummaryLbl;
     }
 }
