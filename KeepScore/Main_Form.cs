@@ -18,6 +18,10 @@ namespace KeepScore
         private Control teamOne;
         private int currentString;
         private Boolean foundJson;
+        private Boolean stringFinished;
+        private Boolean stringStarted;
+
+        private Match match;
 
         public Main_Form()
         {
@@ -41,10 +45,13 @@ namespace KeepScore
             }
 
             foundJson = false;
+            stringFinished = false;
+            stringStarted = false;
 
             string fileName = "";
             int bowler_count = -1;
             int string_count = -1;
+            int stringInProg = -1;
 
             fileName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "Inprogress.json");
 
@@ -104,17 +111,27 @@ namespace KeepScore
 
                                 if (box.baseScore > 0 || box.boxTotal > 0)
                                 {
-                                    if (currentString < string_count)
-                                    {
-                                        if(currentString == 0 && string_count == 1)
-                                        {
-                                            showNextString(teamOne, firstTeam);
-                                        }
-                                        currentString = string_count;
-                                        hidePreviousString(firstTeam);
-                                        showNextString(teamOne, firstTeam);
-
+                                    if (stringInProg < string_count) {
+                                        stringInProg = string_count;
                                     }
+                                    //if the last bowler has completed the string, then the next string is the one in progress
+                                    else if (firstTeam.bowlers.Count - 1 == bowler_count && box.boxNumber == 9)
+                                    {
+                                        //if we are in the last string, don't advance count beyond the array bounds
+                                        if (string_count < teamBowler.strings.Count - 1 && string_count >= stringInProg)
+                                        {
+                                            stringInProg++;
+                                        }
+                                    }
+
+                                    //if (box.boxNumber == 0)
+                                    //{
+                                    //    stringStarted = true;
+                                    //}
+                                    //else if (box.boxNumber == 9)
+                                    //{
+                                    //    stringFinished = true;
+                                    //}
 
                                     if (box.isSpare)
                                     {
@@ -132,15 +149,46 @@ namespace KeepScore
                                         box.DisplayBox.Text = box.boxTotal.ToString();
                                     }
 
+                                    box.DisplayBox.Show();
                                     box.DisplayBox.Focus();
                                 }
                             }
 
                             strings.stringTotal.Text = strings.Calc_Total().ToString();
                             strings.totalHDCP.Text = (strings.Calc_Total() + teamBowler.int_handicap).ToString();
+                            strings.eventHandled = false;
+
+                            //stringFinished = false;
+                            //stringStarted = false;
                         }
                     }
                 }
+
+                if (stringInProg > 0)
+                {
+                    while (currentString <= stringInProg && firstTeam.bowlers[0].strings.Count - 1 >= currentString)
+                    {
+                        if (currentString == 0)
+                        {
+                            showNextString(teamOne, firstTeam);
+                        }
+                        else
+                        {
+                            hidePreviousString(firstTeam);
+                            showNextString(teamOne, firstTeam);
+                        }
+
+                        currentString++;
+                    }
+                }
+                else
+                {
+                    showNextString(teamOne, firstTeam);
+                    currentString++;
+                }
+
+                //reset current string to the actual current string. We actually advanced it beyond the current string in the while loop, so fix it.
+                currentString--;
 
                 foundJson = false;
             }
@@ -239,7 +287,7 @@ namespace KeepScore
                     if (tempTextBox.Text != "") {
                         nameCount = int.Parse(tempTextBox.Text);
 
-                        if (nameCount > 51 || nameCount < 0)
+                        if (nameCount > 91 || nameCount < 0)
                         {
                             bowlerErrMsg = "Bowler " + y + " has a handicap that is out of bounds, please enter a value between 0 and 50.\n\n";
                         }
@@ -281,19 +329,19 @@ namespace KeepScore
         private void CreateMatchForm()
         {
             //create a new match form
-            Match match = new Match();
-            match.Name = "MatchForm";
+            this.match = new Match();
+            this.match.Name = "MatchForm";
             teamOne = new Control();
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-            match.Location = new Point(0, 0);
+            this.match.Location = new Point(0, 0);
             int w = screen.Width;
             int h = Convert.ToInt32(screen.Height * 0.96);
-            match.Size = new Size(w, h);
-            match.MaximizeBox = true;
-            match.AutoScroll = true;
+            this.match.Size = new Size(w, h);
+            this.match.MaximizeBox = true;
+            this.match.AutoScroll = true;
 
-            match.FormClosed += printSummary;
-            match.FormClosed += resetMainForm;
+            this.match.FormClosed += printSummary;
+            this.match.FormClosed += resetMainForm;
 
             //if the first team has bowlers then set up the team name label and display the team on the match form we just created
             if (firstTeam.bowlers.Count > 0)
@@ -301,9 +349,9 @@ namespace KeepScore
                 //depending on the number of bowlers, the size of the fields will change
                 this.teamOne.Size = match.Size;
                 this.teamOne.Location = new Point(0, 20);
-                this.teamOne.BackColor = Color.Red;
+                this.teamOne.BackColor = Color.CadetBlue;
                 displayTeam(teamOne, firstTeam);
-                match.Controls.Add(teamOne);
+                this.match.Controls.Add(teamOne);
 
                 if (foundJson)
                 {
@@ -326,7 +374,7 @@ namespace KeepScore
             }
 
             //show the form
-            match.Show();
+            this.match.Show();
 
             //disable all the controls on the form except the next string button
             foreach (Control c in this.Controls)
@@ -347,7 +395,7 @@ namespace KeepScore
             else
             {
                 this.WindowState = FormWindowState.Minimized;
-                match.BringToFront();
+                this.match.BringToFront();
             }
         }
 
@@ -464,9 +512,17 @@ namespace KeepScore
                 {
                     bowlerName.Location = new Point(0, 70);
                     prevStringsBowlerName.Location = new Point(20, (Convert.ToInt32(teamOne.Height * 0.60) + (60 * bowlerCount)));
-                    if (!foundJson){                    
+                    if (!foundJson) {
                         teamBowler.handicap.Text = Team2_Bowler1.Text;
-                        teamBowler.int_handicap = int.Parse(Team2_Bowler1.Text);
+
+                        try
+                        {
+                            teamBowler.int_handicap = int.Parse(Team2_Bowler1.Text);
+                        }
+                        catch
+                        {
+                            teamBowler.int_handicap = 0;
+                        }
                     }
 
                     //set the display of the bowler's handicap
@@ -485,7 +541,15 @@ namespace KeepScore
                     if (!foundJson)
                     {
                         teamBowler.handicap.Text = tempTextBox.Text;
-                        teamBowler.int_handicap = int.Parse(tempTextBox.Text);
+
+                        try
+                        {
+                            teamBowler.int_handicap = int.Parse(tempTextBox.Text);
+                        }
+                        catch
+                        {
+                            teamBowler.int_handicap = 0;
+                        }
                     }
 
                     //set the display of the bowler's handicap
@@ -596,6 +660,19 @@ namespace KeepScore
             nextString.Show();
             teamArea.Controls.Add(nextString);
 
+            //add a button to show the close the form when done bowling.
+            Button doneBowling = new Button();
+            doneBowling.Name = "DoneBowlingBtn";
+            doneBowling.Size = new Size(300, 50);
+            doneBowling.BackColor = Color.Yellow;
+            doneBowling.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold, GraphicsUnit.Pixel);
+            doneBowling.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.55));
+            doneBowling.Text = "Done Bowling";
+            doneBowling.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            doneBowling.Click += new System.EventHandler(CloseMatchForm_Onclick);
+            doneBowling.Hide();
+            teamArea.Controls.Add(doneBowling);
+
             if (!foundJson)
             {
                 //add the strings for all the bowlers on team to the team area
@@ -617,7 +694,6 @@ namespace KeepScore
                 if (firstTeam.bowlers.Count > 0)
                 {
                     hidePreviousString(firstTeam);
-
                     showNextString(teamOne, firstTeam);
                 }
             }
@@ -625,6 +701,12 @@ namespace KeepScore
             {
                 MessageBox.Show("There are no more strings to bowl.", "Match Errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        //close the form from a button.
+        private void CloseMatchForm_Onclick(object sender, EventArgs e)
+        {
+            this.match.Close();
         }
 
         private void hidePreviousString(Team in_team)
@@ -643,6 +725,8 @@ namespace KeepScore
                 in_team.bowlers[i].strings[currentString - 1].totalHDCP.Hide();
                 in_team.teamStringTotalHDCP.Text = "0";
                 in_team.teamStringTotal.Text = "0";
+
+                in_team.bowlers[i].strings[currentString - 1].stringTotal.Show();
             }
         }
 
@@ -747,9 +831,23 @@ namespace KeepScore
         public void Activate_NextStringButton(object sender, EventArgs e)
         {
             if (firstTeam.bowlers[firstTeam.bowlers.Count - 1].strings[currentString].game[9].DisplayBox.Text != "") {
-                string controlName = "NextStringBtn";
-                Button tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
-                tempButton.Focus();
+                if (currentString < NumStrings.SelectedIndex)
+                {
+                    string controlName = "NextStringBtn";
+                    Button tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
+                    tempButton.Focus();
+                }
+                else
+                {
+                    string controlName = "NextStringBtn";
+                    Button tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
+                    tempButton.Hide();
+
+                    controlName = "DoneBowlingBtn";
+                    tempButton = (Button)teamOne.Controls.Find(controlName, false)[0];
+                    tempButton.Show();
+                    tempButton.Focus();
+                }
             }
         }
 
@@ -865,24 +963,26 @@ namespace KeepScore
 
             String stringPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "SummaryFiles", fileName);
 
-            string output = "NAME       HDCP    1    2    3    4    5    6    7    8    9   10      TOTAL   HDCP\n";
-            output = output + "===================================================================================\n";
+            string output = "NAME\tHDCP\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\tTOTAL\tHDCP\n";
+            output = output + "======================================================================================================================\n";
 
             if (firstTeam.printSummary)
             {
                 foreach(Bowler bowler in firstTeam.bowlers)
                 {
                     currentLine = currentLine + bowler.name;
-                    currentLine = padString(currentLine, fieldTarget);
+                    currentLine = currentLine + "\t";
+                    //currentLine = padString(currentLine, fieldTarget);
                     currentLine = currentLine + bowler.int_handicap.ToString();
 
                     teamHDCP = teamHDCP + bowler.int_handicap;
 
                     //advance the field target by 7 to set the place for the first string total
-                    fieldTarget = fieldTarget + 7;
-                    currentLine = padString(currentLine, fieldTarget);
+                    //fieldTarget = fieldTarget + 7;
+                    //currentLine = padString(currentLine, fieldTarget);
+                    currentLine = currentLine + "\t";
 
-                    foreach(BowlingString strings in bowler.strings)
+                    foreach (BowlingString strings in bowler.strings)
                     {
                         foreach(Box box in strings.game)
                         {
@@ -897,22 +997,28 @@ namespace KeepScore
                         currentLine = currentLine + stringTotal.ToString();
 
                         //advance the output field by 5 spaces for the next string
-                        fieldTarget = fieldTarget + 5;
+                        //fieldTarget = fieldTarget + 5;
 
-                        currentLine = padString(currentLine, fieldTarget);
+                        //currentLine = padString(currentLine, fieldTarget);
+                        currentLine = currentLine + "\t";
 
                         stringCount++;
                         stringTotal = 0;
                     }
 
                     //write out the scratch total for the bowler's match
-                    fieldTarget = fieldTarget + (((10 - bowler.strings.Count) * 5) + 3);
-                    currentLine = padString(currentLine, fieldTarget);
+                    //fieldTarget = fieldTarget + (((10 - bowler.strings.Count) * 5) + 3);
+                    //currentLine = padString(currentLine, fieldTarget);
+                    for (int x = stringCount; x < 10; x++)
+                    {
+                        currentLine = currentLine + "\t";
+                    }
                     currentLine = currentLine + bowlerMatchTotal.ToString();
 
                     //write out the handicapped total for the bowler's match
-                    fieldTarget = fieldTarget + 8;
-                    currentLine = padString(currentLine, fieldTarget);
+                    //fieldTarget = fieldTarget + 8;
+                    //currentLine = padString(currentLine, fieldTarget);
+                    currentLine = currentLine + "\t";
                     bowlerMatchTotal = bowlerMatchTotal + (bowler.strings.Count * bowler.int_handicap);
                     currentLine = currentLine + bowlerMatchTotal.ToString();
 
@@ -929,32 +1035,42 @@ namespace KeepScore
                     currentLine = "";
                 }
 
-                output = output + "===================================================================================\n";
+                output = output + "======================================================================================================================\n";
 
-                fieldTarget = 18;
-                teamScratchLine = padString(teamScratchLine, fieldTarget);
-                teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                //fieldTarget = 18;
+                //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                teamScratchLine = "Total Scratch\t\t";
+                teamHDCPLine = "Total HDCP\t\t";
 
                 for (int x = 0; x < teamStringTotal.Length; x++)
                 {
                     teamScratchLine = teamScratchLine + teamStringTotal[x].ToString();
                     teamHDCPLine = teamHDCPLine + (teamStringTotal[x] + teamHDCP).ToString();
 
-                    fieldTarget = fieldTarget + 5;
+                    //fieldTarget = fieldTarget + 5;
+                    teamScratchLine = teamScratchLine + "\t";
+                    teamHDCPLine = teamHDCPLine + "\t";
 
-                    teamScratchLine = padString(teamScratchLine, fieldTarget);
-                    teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                    //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                    //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
                 }
 
                 //write out the scrarch total for the team's match
-                fieldTarget = fieldTarget + (((10 - teamStringTotal.Length) * 5) + 3);
-                teamScratchLine = padString(teamScratchLine, fieldTarget);
+                //fieldTarget = fieldTarget + (((10 - teamStringTotal.Length) * 5) + 3);
+                //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                for (int x = teamStringTotal.Length; x < 10; x++)
+                {
+                    teamScratchLine = teamScratchLine + "\t";
+                    teamHDCPLine = teamHDCPLine + "\t";
+                }
                 teamScratchLine = teamScratchLine + teamMatchTotal.ToString();
                 teamScratchLine = teamScratchLine + "\n";
 
                 //write out the handicapped total for the teams match
-                fieldTarget = fieldTarget + 8;
-                teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                //fieldTarget = fieldTarget + 8;
+                //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                teamHDCPLine = teamHDCPLine + "\t";
                 teamHDCPLine = teamHDCPLine + (teamMatchTotal + teamHDCP).ToString();
                 teamHDCPLine = teamHDCPLine + "\n";
 
@@ -962,7 +1078,7 @@ namespace KeepScore
                 output = output + teamHDCPLine;
 
                 output = output + "Mark points won \n";
-                output = output + "with an X         __   __   __   __   __   __   __   __   __   __       __      __";
+                output = output + "with an X\t\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__";
 
                 File.WriteAllText(stringPath, output);
 
@@ -1028,9 +1144,14 @@ namespace KeepScore
             float linesPerPage = 0;
             float yPos = 0;
             int count = 0;
-            float leftMargin = ev.MarginBounds.Left;
+            float leftMargin = 0.118f;
             float topMargin = ev.MarginBounds.Top;
             string line = null;
+            float[] tabStops = { 150.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f };
+            StringFormat myStringFormat = new StringFormat();
+
+            myStringFormat.SetTabStops(0.0f, tabStops);
+            ev.PageSettings.Landscape = true;
 
             // Calculate the number of lines per page.
             linesPerPage = ev.MarginBounds.Height / printFont.GetHeight(ev.Graphics);
@@ -1039,7 +1160,7 @@ namespace KeepScore
             while (count < linesPerPage && ((line = streamToPrint.ReadLine()) != null))
             {
                 yPos = topMargin + (count * printFont.GetHeight(ev.Graphics));
-                ev.Graphics.DrawString(line, printFont, Brushes.Black, leftMargin, yPos, new StringFormat());
+                ev.Graphics.DrawString(line, printFont, Brushes.Black, leftMargin, yPos, myStringFormat);
                 count++;
             }
 
