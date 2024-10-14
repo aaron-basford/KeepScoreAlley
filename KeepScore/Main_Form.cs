@@ -3,6 +3,7 @@ namespace KeepScore
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Drawing.Printing;
+    using System.IO;
     using System.Linq.Expressions;
     using System.Security.Cryptography.X509Certificates;
     using System.Text.Json;
@@ -18,13 +19,17 @@ namespace KeepScore
         private Control teamOne;
         private int currentString;
         private Boolean foundJson;
-        private Boolean stringFinished;
-        private Boolean stringStarted;
+        //private Boolean stringFinished;
+        //private Boolean stringStarted;
 
         private Match match;
 
         public Main_Form()
         {
+            string fileName = "";
+            string fileLine = "";
+            string[] strArray = {};
+
             InitializeComponent();
 
             checkDirectories();
@@ -38,17 +43,68 @@ namespace KeepScore
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.WindowState = FormWindowState.Maximized;
+
+            fileName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "keepscore.ini");
+
+            if (File.Exists(fileName))
+            {
+                FileStream myFileStream = File.Open(fileName, FileMode.Open);
+                StreamReader file = new System.IO.StreamReader(myFileStream, System.Text.Encoding.UTF8, true, 128);
+
+                while ((fileLine = file.ReadLine()) != null)
+                {
+                    strArray = fileLine.Split("::");
+
+                    if (strArray[0] == "Welcome")
+                    {
+                        this.Welcome.Text = strArray[1];
+                    }
+                    else if (strArray[0] == "BoxesPerTurn")
+                    {
+                        //this.numBoxesPerTurn.Text = strArray[1];
+                        this.numBoxesPerTurn.SelectedItem = strArray[1];
+                    }
+                    else if (strArray[0] == "PrintSummary"){
+                        this.printSummary.SelectedItem = strArray[1];
+                    }
+                }
+
+                file.Close();
+            }
+
+            if (this.Welcome.Text == "")
+            {
+                this.Welcome.Text = "Welcome to Our Bowling Center";
+            }
+
+            if (this.numBoxesPerTurn.SelectedItem == null)
+            {
+                this.numBoxesPerTurn.SelectedIndex = 0;
+            }
+
+            if (this.printSummary.SelectedItem == null)
+            {
+                this.printSummary.SelectedIndex = 0;
+            }
+
+            this.NumStrings.SelectedIndex = 0;
+
             foreach (Control ctrl in this.Controls)
             {
-                ctrl.GotFocus += highLightField;
-                ctrl.LostFocus += unHighLightField;
+                if (ctrl.GetType() == typeof(Panel))
+                {
+                    foreach (Control ctrl1 in ctrl.Controls) {
+                        ctrl1.GotFocus += highLightField;
+                        ctrl1.LostFocus += unHighLightField;
+                    }
+                }
             }
 
             foundJson = false;
-            stringFinished = false;
-            stringStarted = false;
+            //stringFinished = false;
+            //stringStarted = false;
 
-            string fileName = "";
             int bowler_count = -1;
             int string_count = -1;
             int stringInProg = -1;
@@ -198,13 +254,10 @@ namespace KeepScore
 
                 currentString = 0;
 
-                this.numBoxesPerTurn.SelectedIndex = 0;
-                this.NumStrings.SelectedIndex = 0;
-
                 this.Show();
 
-                Form startMenuInstructions = new startMenuInstr();
-                startMenuInstructions.Show();
+                //Form startMenuInstructions = new startMenuInstr();
+                //startMenuInstructions.Show();
             }
 
         }
@@ -340,7 +393,7 @@ namespace KeepScore
             this.match.MaximizeBox = true;
             this.match.AutoScroll = true;
 
-            this.match.FormClosed += printSummary;
+            this.match.FormClosed += PrintSummary;
             this.match.FormClosed += resetMainForm;
 
             //if the first team has bowlers then set up the team name label and display the team on the match form we just created
@@ -355,20 +408,32 @@ namespace KeepScore
 
                 if (foundJson)
                 {
-                    if (firstTeam.printSummary)
+                    if (firstTeam.printSummary == "League Summary")
                     {
-                        PrintSummary.Text = "Yes";
+                        printSummary.Text = "League Summary";
+                    }
+                    else if(firstTeam.printSummary == "Detailed (Strings)")
+                    {
+                        printSummary.Text = "Detailed (Strings)";
+                    }
+                    else
+                    {
+                        printSummary.Text = "None";
                     }
                 }
                 else
                 {
-                    if (PrintSummary.Text == "Yes")
+                    if (printSummary.Text == "None")
                     {
-                        firstTeam.printSummary = true;
+                        firstTeam.printSummary = "None";
+                    }
+                    else if (printSummary.Text == "Detailed (Strings)")
+                    {
+                        firstTeam.printSummary = "Detailed (Strings)";
                     }
                     else
                     {
-                        firstTeam.printSummary = false;
+                        firstTeam.printSummary = "League Summary";
                     }
                 }
             }
@@ -872,6 +937,8 @@ namespace KeepScore
 
             string DoneFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "CompletedMatches", fileName);
 
+            this.currentString = 0;
+
             foreach (Control c in this.Controls)
             {
                 if (c is TextBox)
@@ -916,8 +983,8 @@ namespace KeepScore
 
             this.WindowState = FormWindowState.Normal;
 
-            Form startMenuInstructions = new startMenuInstr();
-            startMenuInstructions.Show();
+            //Form startMenuInstructions = new startMenuInstr();
+            //startMenuInstructions.Show();
         }
 
         public void highLightField(object sender, EventArgs e)
@@ -944,8 +1011,9 @@ namespace KeepScore
             }
         }
 
-        public void printSummary(object sender, FormClosedEventArgs e)
+        public void PrintSummary(object sender, FormClosedEventArgs e)
         {
+            
             int stringTotal = 0;
             int bowlerMatchTotal = 0;
             int[] teamStringTotal = new int[5];
@@ -954,6 +1022,7 @@ namespace KeepScore
             int teamHDCP = 0;
 
             int stringCount = 0;
+            int bowlerCount = 0;
 
             string teamScratchLine = "Team Total Scr.";
             string teamHDCPLine = "Team Total HDCP";
@@ -961,14 +1030,16 @@ namespace KeepScore
 
             string fileName = "BowlingMatch_" + DateTime.Now.Year + "_" + DateTime.Now.Month + "_" + DateTime.Now.Day + "_" + DateTime.Now.Hour + "_" + DateTime.Now.Minute + ".txt";
 
-            String stringPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "SummaryFiles", fileName);
+            String stringPath = "";
 
             string output = "NAME\tHDCP\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\tTOTAL\tHDCP\n";
             output = output + "======================================================================================================================\n";
 
-            if (firstTeam.printSummary)
+            if (firstTeam.printSummary == "League Summary")
             {
-                foreach(Bowler bowler in firstTeam.bowlers)
+                stringPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "SummaryFiles", fileName);
+
+                foreach (Bowler bowler in firstTeam.bowlers)
                 {
                     currentLine = currentLine + bowler.name;
                     currentLine = currentLine + "\t";
@@ -984,7 +1055,7 @@ namespace KeepScore
 
                     foreach (BowlingString strings in bowler.strings)
                     {
-                        foreach(Box box in strings.game)
+                        foreach (Box box in strings.game)
                         {
                             stringTotal = stringTotal + box.boxTotal;
                         }
@@ -1040,8 +1111,8 @@ namespace KeepScore
                 //fieldTarget = 18;
                 //teamScratchLine = padString(teamScratchLine, fieldTarget);
                 //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
-                teamScratchLine = "Total Scratch\t\t";
-                teamHDCPLine = "Total HDCP\t\t";
+                teamScratchLine = "Total Scratch\t";
+                teamHDCPLine = "Total HDCP\t";
 
                 for (int x = 0; x < teamStringTotal.Length; x++)
                 {
@@ -1078,14 +1149,190 @@ namespace KeepScore
                 output = output + teamHDCPLine;
 
                 output = output + "Mark points won \n";
-                output = output + "with an X\t\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__";
+                output = output + "with an X\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__";
 
                 File.WriteAllText(stringPath, output);
+            }
+            else if (firstTeam.printSummary == "Detailed (Strings)")
+            {
+                stringPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "DetailedFiles", fileName);
 
-                //print the file we just created.
-                try
+                foreach (Bowler bowler in firstTeam.bowlers)
+                {
+                    currentLine = currentLine + bowler.name;
+                    currentLine = currentLine + "\t";
+                    //currentLine = padString(currentLine, fieldTarget);
+                    currentLine = currentLine + bowler.int_handicap.ToString();
+
+                    teamHDCP = teamHDCP + bowler.int_handicap;
+
+                    //advance the field target by 7 to set the place for the first string total
+                    //fieldTarget = fieldTarget + 7;
+                    //currentLine = padString(currentLine, fieldTarget);
+                    currentLine = currentLine + "\t";
+
+                    foreach (BowlingString strings in bowler.strings)
+                    {
+                        //write out each box of the string
+                        foreach (Box box in strings.game)
+                        {
+                            currentLine = currentLine + "|";
+                            if (box.isSpare)
+                            {
+                                currentLine = currentLine + "/";
+
+                                if (box.markLoad < 10)
+                                {
+                                    currentLine = currentLine + "     " + box.markLoad;
+                                }
+                                else
+                                {
+                                    currentLine = currentLine + "    " + box.markLoad;
+                                }
+                            }
+                            else if (box.isStrike)
+                            {
+                                currentLine = currentLine + "X";
+
+                                if (box.markLoad < 10)
+                                {
+                                    currentLine = currentLine + "     " + box.markLoad;
+                                }
+                                else
+                                {
+                                    currentLine = currentLine + "    " + box.markLoad;
+                                }
+                            }
+                            else
+                            {
+                                currentLine = currentLine + " ";
+
+                                if (box.baseScore < 10)
+                                {
+                                    currentLine = currentLine + "     " + box.baseScore;
+                                }
+                                else
+                                {
+                                    currentLine = currentLine + "    " + box.baseScore;
+                                }
+                            }
+
+                            
+
+                            if (box.boxNumber == 9)
+                            {
+                                currentLine = currentLine + "|";
+                            }
+
+                            stringTotal = stringTotal + box.boxTotal;
+                        }
+
+                        //write out the string total for this bowler's stringCount string.
+                        currentLine = currentLine + "  " + stringTotal.ToString();
+
+                        //write out the bowler's HDCP string total
+                        currentLine = currentLine + "\t";
+                        bowlerMatchTotal = bowlerMatchTotal + stringTotal;
+                        currentLine = currentLine + (bowler.int_handicap + stringTotal).ToString();
+
+                        stringCount++;
+                        stringTotal = 0;
+
+                        if (bowler.strings.Count != stringCount)
+                        {
+                            currentLine = currentLine + "\t\n\t\t";
+                        }
+                        else
+                        {
+                            currentLine = currentLine + "\n";
+                        }
+                    }
+
+                    currentLine = currentLine + "======================================================================================================================\n";
+                    currentLine = currentLine + "\t\t\t\t\t\t\t\t\t\t\t\t  ";
+                    //write out the scratch total for the bowler's match
+                    currentLine = currentLine + bowlerMatchTotal.ToString();
+
+                    //write out the handicapped total for the bowler's match
+                    currentLine = currentLine + "\t";
+                    bowlerMatchTotal = bowlerMatchTotal + (bowler.strings.Count * bowler.int_handicap);
+                    currentLine = currentLine + bowlerMatchTotal.ToString();
+
+                    currentLine = currentLine + "\n\n\n";
+
+                    //Add current line to the output
+                    output = output + currentLine;
+
+                    bowlerCount++;
+
+                    if (firstTeam.bowlers.Count > bowlerCount) {
+                        output = output + "NAME\tHDCP\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\tTOTAL\tHDCP\n";
+                        output = output + "======================================================================================================================\n";
+                    }
+
+                    //reinit vars to the starting values
+                    stringCount = 0;
+                    stringTotal = 0;
+                    bowlerMatchTotal = 0;
+                    fieldTarget = 11;
+                    currentLine = "";
+                }
+
+                //output = output + "======================================================================================================================\n";
+
+                //fieldTarget = 18;
+                //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                //teamScratchLine = "Total Scratch\t\t";
+                //teamHDCPLine = "Total HDCP\t\t";
+
+                //for (int x = 0; x < teamStringTotal.Length; x++)
+                //{
+                //    teamScratchLine = teamScratchLine + teamStringTotal[x].ToString();
+                //    teamHDCPLine = teamHDCPLine + (teamStringTotal[x] + teamHDCP).ToString();
+
+                    //fieldTarget = fieldTarget + 5;
+                    //teamScratchLine = teamScratchLine + "\t";
+                    //teamHDCPLine = teamHDCPLine + "\t";
+
+                    //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                    //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                //}
+
+                //write out the scrarch total for the team's match
+                //fieldTarget = fieldTarget + (((10 - teamStringTotal.Length) * 5) + 3);
+                //teamScratchLine = padString(teamScratchLine, fieldTarget);
+                //for (int x = teamStringTotal.Length; x < 10; x++)
+                //{
+                //    teamScratchLine = teamScratchLine + "\t";
+                //    teamHDCPLine = teamHDCPLine + "\t";
+                //}
+                //teamScratchLine = teamScratchLine + teamMatchTotal.ToString();
+                //teamScratchLine = teamScratchLine + "\n";
+
+                //write out the handicapped total for the teams match
+                //fieldTarget = fieldTarget + 8;
+                //teamHDCPLine = padString(teamHDCPLine, fieldTarget);
+                //teamHDCPLine = teamHDCPLine + "\t";
+                //teamHDCPLine = teamHDCPLine + (teamMatchTotal + teamHDCP).ToString();
+                //teamHDCPLine = teamHDCPLine + "\n";
+
+                //output = output + teamScratchLine;
+                //output = output + teamHDCPLine;
+
+                //output = output + "Mark points won \n";
+                //output = output + "with an X\t\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__\t__";
+
+                File.WriteAllText(stringPath, output);
+            }
+
+            //print the file we just created.
+            try
+            {
+                if (stringPath != "")
                 {
                     streamToPrint = new StreamReader(stringPath);
+
                     try
                     {
                         printFont = new Font("Arial", 10);
@@ -1098,12 +1345,13 @@ namespace KeepScore
                         streamToPrint.Close();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
+        
 
         /*Function will append spaces to string. spacing is the total spaces from start of one field to the start of the next field.*/
         private string padString(string in_string, int target)
@@ -1121,6 +1369,8 @@ namespace KeepScore
             string RootPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore");
             string DonePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "CompletedMatches");
             string SummaryPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "SummaryFiles");
+            string DetailedPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KeepScore", "DetailedFiles");
+           
 
             if (!Directory.Exists(RootPath))
             {
@@ -1135,6 +1385,11 @@ namespace KeepScore
             if (!Directory.Exists(SummaryPath))
             {
                 Directory.CreateDirectory(SummaryPath);
+            }
+
+            if (!Directory.Exists(DetailedPath))
+            {
+                Directory.CreateDirectory(DetailedPath);
             }
         }
 

@@ -60,4 +60,16 @@
   <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="Instructions.Text" xml:space="preserve">
+    <value>*   Use the TAB key to go to the next field. Up and down arrows can be used in drop down fields.
+*   Enter the names of the bowlers, if fewer than 5, leave fields blank.
+*   Enter the handicap for each bowler bowling, if this is open bowling, you can leave them blank.
+*   Select the number of strings to be bowled in the match.
+*   Select the number of boxes each bowler will bowl during their turn.
+*   When the information is correct, click/press enter on the Create Score Sheet button.
+*   When done with each string, load the next string's score sheet using the Next String button.</value>
+  </data>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>25</value>
+  </metadata>
 </root>

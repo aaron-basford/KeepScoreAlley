@@ -19,10 +19,10 @@ namespace KeepScore
         public int teamNumber = 0;
         public Boolean scoreCorrect = false;
         [JsonInclude]
-        public Boolean printSummary = false;
+        public String printSummary = "None";
 
         [JsonConstructor]
-        public Team(string name, List<Bowler> bowlers, int teamNumber, bool printSummary) =>
+        public Team(string name, List<Bowler> bowlers, int teamNumber, String printSummary) =>
             (this.name, this.bowlers, this.teamNumber, this.printSummary) = (name, bowlers, teamNumber, printSummary);
 
         public Team()
