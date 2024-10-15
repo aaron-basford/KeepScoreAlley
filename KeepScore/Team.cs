@@ -323,9 +323,6 @@ namespace KeepScore
 
             stringPath = Path.Combine(stringPath, "Inprogress.json");
             File.WriteAllText(stringPath, team_json);
-
-
-
         }
     }
 }

@@ -32,7 +32,8 @@
             this.CreateMatch = new System.Windows.Forms.Button();
             this.NextString = new System.Windows.Forms.Button();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.adminToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Welcome = new System.Windows.Forms.TextBox();
             this.lbl_NumStrings = new System.Windows.Forms.Label();
             this.NumStrings = new System.Windows.Forms.ComboBox();
@@ -54,6 +55,8 @@
             this.Instructions = new System.Windows.Forms.RichTextBox();
             this.printSummary = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.laneNumberlbl = new System.Windows.Forms.Label();
+            this.laneNumberTxt = new System.Windows.Forms.TextBox();
             this.menuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +64,7 @@
             // CreateMatch
             // 
             this.CreateMatch.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CreateMatch.Location = new System.Drawing.Point(435, 655);
+            this.CreateMatch.Location = new System.Drawing.Point(433, 737);
             this.CreateMatch.Name = "CreateMatch";
             this.CreateMatch.Size = new System.Drawing.Size(436, 70);
             this.CreateMatch.TabIndex = 13;
@@ -70,7 +73,7 @@
             // 
             // NextString
             // 
-            this.NextString.Location = new System.Drawing.Point(942, 692);
+            this.NextString.Location = new System.Drawing.Point(940, 774);
             this.NextString.Name = "NextString";
             this.NextString.Size = new System.Drawing.Size(187, 23);
             this.NextString.TabIndex = 30;
@@ -81,29 +84,37 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem});
+            this.menuToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(1267, 24);
             this.menuStrip.TabIndex = 2;
             this.menuStrip.Text = "menuStrip";
             // 
-            // helpToolStripMenuItem
+            // menuToolStripMenuItem
             // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.Help_OnClick);
+            this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.adminToolStripMenuItem});
+            this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
+            this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.menuToolStripMenuItem.Text = "Menu";
+            // 
+            // adminToolStripMenuItem
+            // 
+            this.adminToolStripMenuItem.Name = "adminToolStripMenuItem";
+            this.adminToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.adminToolStripMenuItem.Text = "Admin";
+            this.adminToolStripMenuItem.Click += new System.EventHandler(this.adminToolStripMenuItem_Click);
             // 
             // Welcome
             // 
-            this.Welcome.BackColor = System.Drawing.SystemColors.Window;
+            this.Welcome.BackColor = System.Drawing.Color.CadetBlue;
             this.Welcome.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Welcome.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.Welcome.Location = new System.Drawing.Point(33, 10);
+            this.Welcome.Font = new System.Drawing.Font("Segoe UI", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.Welcome.Location = new System.Drawing.Point(31, 111);
             this.Welcome.Name = "Welcome";
             this.Welcome.ReadOnly = true;
-            this.Welcome.Size = new System.Drawing.Size(1194, 64);
+            this.Welcome.Size = new System.Drawing.Size(1194, 86);
             this.Welcome.TabIndex = 40;
             this.Welcome.TabStop = false;
             this.Welcome.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -112,7 +123,7 @@
             // 
             this.lbl_NumStrings.AutoSize = true;
             this.lbl_NumStrings.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_NumStrings.Location = new System.Drawing.Point(18, 508);
+            this.lbl_NumStrings.Location = new System.Drawing.Point(16, 590);
             this.lbl_NumStrings.Name = "lbl_NumStrings";
             this.lbl_NumStrings.Size = new System.Drawing.Size(349, 54);
             this.lbl_NumStrings.TabIndex = 4;
@@ -135,7 +146,7 @@
             "8",
             "9",
             "10"});
-            this.NumStrings.Location = new System.Drawing.Point(383, 500);
+            this.NumStrings.Location = new System.Drawing.Point(381, 582);
             this.NumStrings.Name = "NumStrings";
             this.NumStrings.Size = new System.Drawing.Size(121, 62);
             this.NumStrings.TabIndex = 10;
@@ -143,7 +154,7 @@
             // Team1_Bowler1
             // 
             this.Team1_Bowler1.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team1_Bowler1.Location = new System.Drawing.Point(327, 362);
+            this.Team1_Bowler1.Location = new System.Drawing.Point(325, 444);
             this.Team1_Bowler1.Name = "Team1_Bowler1";
             this.Team1_Bowler1.Size = new System.Drawing.Size(186, 61);
             this.Team1_Bowler1.TabIndex = 0;
@@ -151,7 +162,7 @@
             // Team1_Bowler2
             // 
             this.Team1_Bowler2.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team1_Bowler2.Location = new System.Drawing.Point(519, 362);
+            this.Team1_Bowler2.Location = new System.Drawing.Point(517, 444);
             this.Team1_Bowler2.Name = "Team1_Bowler2";
             this.Team1_Bowler2.Size = new System.Drawing.Size(182, 61);
             this.Team1_Bowler2.TabIndex = 1;
@@ -159,7 +170,7 @@
             // Team1_Bowler3
             // 
             this.Team1_Bowler3.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team1_Bowler3.Location = new System.Drawing.Point(707, 362);
+            this.Team1_Bowler3.Location = new System.Drawing.Point(705, 444);
             this.Team1_Bowler3.Name = "Team1_Bowler3";
             this.Team1_Bowler3.Size = new System.Drawing.Size(163, 61);
             this.Team1_Bowler3.TabIndex = 2;
@@ -167,7 +178,7 @@
             // Team1_Bowler4
             // 
             this.Team1_Bowler4.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team1_Bowler4.Location = new System.Drawing.Point(876, 362);
+            this.Team1_Bowler4.Location = new System.Drawing.Point(874, 444);
             this.Team1_Bowler4.Name = "Team1_Bowler4";
             this.Team1_Bowler4.Size = new System.Drawing.Size(182, 61);
             this.Team1_Bowler4.TabIndex = 3;
@@ -175,7 +186,7 @@
             // Team1_Bowler5
             // 
             this.Team1_Bowler5.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team1_Bowler5.Location = new System.Drawing.Point(1064, 362);
+            this.Team1_Bowler5.Location = new System.Drawing.Point(1062, 444);
             this.Team1_Bowler5.Name = "Team1_Bowler5";
             this.Team1_Bowler5.Size = new System.Drawing.Size(163, 61);
             this.Team1_Bowler5.TabIndex = 4;
@@ -183,7 +194,7 @@
             // Team2_Bowler1
             // 
             this.Team2_Bowler1.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team2_Bowler1.Location = new System.Drawing.Point(327, 429);
+            this.Team2_Bowler1.Location = new System.Drawing.Point(325, 511);
             this.Team2_Bowler1.Name = "Team2_Bowler1";
             this.Team2_Bowler1.Size = new System.Drawing.Size(186, 61);
             this.Team2_Bowler1.TabIndex = 5;
@@ -191,7 +202,7 @@
             // Team2_Bowler2
             // 
             this.Team2_Bowler2.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team2_Bowler2.Location = new System.Drawing.Point(519, 429);
+            this.Team2_Bowler2.Location = new System.Drawing.Point(517, 511);
             this.Team2_Bowler2.Name = "Team2_Bowler2";
             this.Team2_Bowler2.Size = new System.Drawing.Size(182, 61);
             this.Team2_Bowler2.TabIndex = 6;
@@ -199,7 +210,7 @@
             // Team2_Bowler3
             // 
             this.Team2_Bowler3.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team2_Bowler3.Location = new System.Drawing.Point(707, 429);
+            this.Team2_Bowler3.Location = new System.Drawing.Point(705, 511);
             this.Team2_Bowler3.Name = "Team2_Bowler3";
             this.Team2_Bowler3.Size = new System.Drawing.Size(163, 61);
             this.Team2_Bowler3.TabIndex = 7;
@@ -207,7 +218,7 @@
             // Team2_Bowler4
             // 
             this.Team2_Bowler4.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team2_Bowler4.Location = new System.Drawing.Point(876, 429);
+            this.Team2_Bowler4.Location = new System.Drawing.Point(874, 511);
             this.Team2_Bowler4.Name = "Team2_Bowler4";
             this.Team2_Bowler4.Size = new System.Drawing.Size(182, 61);
             this.Team2_Bowler4.TabIndex = 8;
@@ -215,7 +226,7 @@
             // Team2_Bowler5
             // 
             this.Team2_Bowler5.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Team2_Bowler5.Location = new System.Drawing.Point(1064, 429);
+            this.Team2_Bowler5.Location = new System.Drawing.Point(1062, 511);
             this.Team2_Bowler5.Name = "Team2_Bowler5";
             this.Team2_Bowler5.Size = new System.Drawing.Size(163, 61);
             this.Team2_Bowler5.TabIndex = 9;
@@ -224,7 +235,7 @@
             // 
             this.lbl_BowlersNames.AutoSize = true;
             this.lbl_BowlersNames.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_BowlersNames.Location = new System.Drawing.Point(22, 362);
+            this.lbl_BowlersNames.Location = new System.Drawing.Point(20, 444);
             this.lbl_BowlersNames.Name = "lbl_BowlersNames";
             this.lbl_BowlersNames.Size = new System.Drawing.Size(285, 54);
             this.lbl_BowlersNames.TabIndex = 35;
@@ -234,7 +245,7 @@
             // 
             this.lbl_BowlersHDCP.AutoSize = true;
             this.lbl_BowlersHDCP.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_BowlersHDCP.Location = new System.Drawing.Point(22, 429);
+            this.lbl_BowlersHDCP.Location = new System.Drawing.Point(20, 511);
             this.lbl_BowlersHDCP.Name = "lbl_BowlersHDCP";
             this.lbl_BowlersHDCP.Size = new System.Drawing.Size(283, 54);
             this.lbl_BowlersHDCP.TabIndex = 36;
@@ -244,7 +255,7 @@
             // 
             this.lbl_numBoxesTurn.AutoSize = true;
             this.lbl_numBoxesTurn.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_numBoxesTurn.Location = new System.Drawing.Point(599, 508);
+            this.lbl_numBoxesTurn.Location = new System.Drawing.Point(597, 590);
             this.lbl_numBoxesTurn.Name = "lbl_numBoxesTurn";
             this.lbl_numBoxesTurn.Size = new System.Drawing.Size(488, 54);
             this.lbl_numBoxesTurn.TabIndex = 37;
@@ -262,7 +273,7 @@
             "2",
             "5",
             "10"});
-            this.numBoxesPerTurn.Location = new System.Drawing.Point(1097, 500);
+            this.numBoxesPerTurn.Location = new System.Drawing.Point(1095, 582);
             this.numBoxesPerTurn.Name = "numBoxesPerTurn";
             this.numBoxesPerTurn.Size = new System.Drawing.Size(121, 62);
             this.numBoxesPerTurn.TabIndex = 11;
@@ -271,7 +282,7 @@
             // 
             this.PrintSummaryLbl.AutoSize = true;
             this.PrintSummaryLbl.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.PrintSummaryLbl.Location = new System.Drawing.Point(363, 576);
+            this.PrintSummaryLbl.Location = new System.Drawing.Point(361, 658);
             this.PrintSummaryLbl.Name = "PrintSummaryLbl";
             this.PrintSummaryLbl.Size = new System.Drawing.Size(282, 54);
             this.PrintSummaryLbl.TabIndex = 38;
@@ -279,13 +290,13 @@
             // 
             // Instructions
             // 
-            this.Instructions.BackColor = System.Drawing.SystemColors.Window;
+            this.Instructions.BackColor = System.Drawing.Color.CadetBlue;
             this.Instructions.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Instructions.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Instructions.Location = new System.Drawing.Point(33, 80);
+            this.Instructions.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.Instructions.Location = new System.Drawing.Point(31, 203);
             this.Instructions.Name = "Instructions";
             this.Instructions.ReadOnly = true;
-            this.Instructions.Size = new System.Drawing.Size(1194, 279);
+            this.Instructions.Size = new System.Drawing.Size(1194, 238);
             this.Instructions.TabIndex = 39;
             this.Instructions.TabStop = false;
             this.Instructions.Text = resources.GetString("Instructions.Text");
@@ -300,7 +311,7 @@
             "None",
             "Detailed (Strings)",
             "League Summary"});
-            this.printSummary.Location = new System.Drawing.Point(651, 576);
+            this.printSummary.Location = new System.Drawing.Point(649, 658);
             this.printSummary.Name = "printSummary";
             this.printSummary.Size = new System.Drawing.Size(368, 62);
             this.printSummary.TabIndex = 12;
@@ -308,6 +319,8 @@
             // panel1
             // 
             this.panel1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panel1.Controls.Add(this.laneNumberlbl);
+            this.panel1.Controls.Add(this.laneNumberTxt);
             this.panel1.Controls.Add(this.CreateMatch);
             this.panel1.Controls.Add(this.NextString);
             this.panel1.Controls.Add(this.printSummary);
@@ -330,10 +343,32 @@
             this.panel1.Controls.Add(this.Team2_Bowler1);
             this.panel1.Controls.Add(this.Team1_Bowler4);
             this.panel1.Controls.Add(this.Team1_Bowler5);
-            this.panel1.Location = new System.Drawing.Point(20, 24);
+            this.panel1.Location = new System.Drawing.Point(20, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1242, 742);
+            this.panel1.Size = new System.Drawing.Size(1242, 814);
             this.panel1.TabIndex = 41;
+            // 
+            // laneNumberlbl
+            // 
+            this.laneNumberlbl.AutoSize = true;
+            this.laneNumberlbl.Font = new System.Drawing.Font("Segoe UI", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.laneNumberlbl.Location = new System.Drawing.Point(361, 9);
+            this.laneNumberlbl.Name = "laneNumberlbl";
+            this.laneNumberlbl.Size = new System.Drawing.Size(445, 86);
+            this.laneNumberlbl.TabIndex = 42;
+            this.laneNumberlbl.Text = "Lane Number";
+            // 
+            // laneNumberTxt
+            // 
+            this.laneNumberTxt.BackColor = System.Drawing.Color.CadetBlue;
+            this.laneNumberTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.laneNumberTxt.Font = new System.Drawing.Font("Segoe UI", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.laneNumberTxt.Location = new System.Drawing.Point(812, 3);
+            this.laneNumberTxt.Name = "laneNumberTxt";
+            this.laneNumberTxt.ReadOnly = true;
+            this.laneNumberTxt.Size = new System.Drawing.Size(73, 86);
+            this.laneNumberTxt.TabIndex = 41;
+            this.laneNumberTxt.TabStop = false;
             // 
             // Main_Form
             // 
@@ -341,7 +376,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1267, 784);
+            this.BackColor = System.Drawing.Color.CadetBlue;
+            this.ClientSize = new System.Drawing.Size(1267, 843);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
@@ -359,7 +395,6 @@
         private Button CreateMatch;
         private Button NextString;
         private MenuStrip menuStrip;
-        private ToolStripMenuItem helpToolStripMenuItem;
         private TextBox Welcome;
         private Label lbl_NumStrings;
         private ComboBox NumStrings;
@@ -381,5 +416,9 @@
         private RichTextBox Instructions;
         private ComboBox printSummary;
         private Panel panel1;
+        private ToolStripMenuItem menuToolStripMenuItem;
+        private ToolStripMenuItem adminToolStripMenuItem;
+        private Label laneNumberlbl;
+        private TextBox laneNumberTxt;
     }
 }

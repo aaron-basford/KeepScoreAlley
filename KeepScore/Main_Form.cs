@@ -6,6 +6,7 @@ namespace KeepScore
     using System.IO;
     using System.Linq.Expressions;
     using System.Security.Cryptography.X509Certificates;
+    using System.Security.Permissions;
     using System.Text.Json;
     using System.Windows.Forms.VisualStyles;
 
@@ -19,10 +20,13 @@ namespace KeepScore
         private Control teamOne;
         private int currentString;
         private Boolean foundJson;
+        private int laneNumber;
+        private string welcomeStr;
         //private Boolean stringFinished;
         //private Boolean stringStarted;
 
         private Match match;
+        private AdminLogin adminLogin;
 
         public Main_Form()
         {
@@ -37,7 +41,7 @@ namespace KeepScore
             //Set up the form.
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.BackColor = Color.White;
+            this.BackColor = Color.CadetBlue;
             this.ForeColor = Color.Black;
             this.Size = new System.Drawing.Size(1300, 400);
             this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -59,14 +63,28 @@ namespace KeepScore
                     if (strArray[0] == "Welcome")
                     {
                         this.Welcome.Text = strArray[1];
+                        this.welcomeStr = strArray[1];
                     }
                     else if (strArray[0] == "BoxesPerTurn")
                     {
                         //this.numBoxesPerTurn.Text = strArray[1];
                         this.numBoxesPerTurn.SelectedItem = strArray[1];
                     }
-                    else if (strArray[0] == "PrintSummary"){
+                    else if (strArray[0] == "PrintSummary")
+                    {
                         this.printSummary.SelectedItem = strArray[1];
+                    }
+                    else if (strArray[0] == "LaneNumber")
+                    {
+                        try
+                        {
+                            this.laneNumber = Int32.Parse(strArray[1]);
+                            this.laneNumberTxt.Text = strArray[1];
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("The lane number found is not valid, please correct it.", "Error", MessageBoxButtons.OK);
+                        }
                     }
                 }
 
@@ -455,6 +473,7 @@ namespace KeepScore
             if (!foundJson)
             {
                 Form scoreSheetInstructions = new scoreSheetInstr();
+                scoreSheetInstructions.WindowState = FormWindowState.Maximized;
                 scoreSheetInstructions.Show();
             }
             else
@@ -484,7 +503,7 @@ namespace KeepScore
                 bowlerHDCP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 bowlerHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerHDCP);
-                bowlerHDCP.Enabled = false;
+                //bowlerHDCP.Enabled = false;
 
                 for (int x = 0; x < 10; x++)
                 {
@@ -494,7 +513,7 @@ namespace KeepScore
                     BoxNumLbl.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                     BoxNumLbl.Text = (x + 1).ToString();
                     BoxNumLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-                    BoxNumLbl.Enabled = false;
+                    //BoxNumLbl.Enabled = false;
                     teamArea.Controls.Add(BoxNumLbl);
                 }
 
@@ -506,7 +525,7 @@ namespace KeepScore
                 stringTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 stringTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalLabel);
-                stringTotalLabel.Enabled = false;
+                //stringTotalLabel.Enabled = false;
 
                 //set up the label for the string total w/hdcp
                 Label stringTotalHDCPLabel = new Label();
@@ -516,7 +535,7 @@ namespace KeepScore
                 stringTotalHDCPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 stringTotalHDCPLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(stringTotalHDCPLabel);
-                stringTotalHDCPLabel.Enabled = false;
+                //stringTotalHDCPLabel.Enabled = false;
 
                 //set up the label for the previous strings area
                 Label prevStringsLabel = new Label();
@@ -526,7 +545,7 @@ namespace KeepScore
                 prevStringsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 prevStringsLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(prevStringsLabel);
-                prevStringsLabel.Enabled = false;
+                //prevStringsLabel.Enabled = false;
 
                 //set up the label for the bowler match total
                 Label bowlerTotalLabel = new Label();
@@ -536,7 +555,7 @@ namespace KeepScore
                 bowlerTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 bowlerTotalLabel.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
                 teamArea.Controls.Add(bowlerTotalLabel);
-                bowlerTotalLabel.Enabled = false;
+                //bowlerTotalLabel.Enabled = false;
 
                 //if the team has more than one bowler we need to change the size of the box and the font so it stands out
                 if (team.bowlers.Count > 1)
@@ -548,7 +567,7 @@ namespace KeepScore
                     teamTotalLabel.Text = "Team Match Totals";
                     teamTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     teamArea.Controls.Add(teamTotalLabel);
-                    teamTotalLabel.Enabled = false;
+                    //teamTotalLabel.Enabled = false;
 
                     Label teamStringTotalLabel = new Label();
                     teamStringTotalLabel.Size = new Size(400, 60);
@@ -557,7 +576,7 @@ namespace KeepScore
                     teamStringTotalLabel.Text = "Team String Totals";
                     teamStringTotalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                     teamArea.Controls.Add(teamStringTotalLabel);
-                    teamStringTotalLabel.Enabled = false;
+                    //teamStringTotalLabel.Enabled = false;
                 }
             }
 
@@ -634,8 +653,8 @@ namespace KeepScore
                 bowlerName.AutoSize = false;
                 prevStringsBowlerName.AutoSize = false;
 
-                bowlerName.Enabled = false;
-                prevStringsBowlerName.Enabled = false;
+                //bowlerName.Enabled = false;
+                //prevStringsBowlerName.Enabled = false;
 
                 //add the label to the team control.
                 teamArea.Controls.Add(bowlerName);
@@ -709,7 +728,7 @@ namespace KeepScore
             scoreInstructions.Location = new Point(20, Convert.ToInt32(teamArea.Height * 0.38)); ;
             scoreInstructions.Size = new Size(1100, 150);
             scoreInstructions.Font = new Font(FontFamily.GenericSansSerif, 25, FontStyle.Bold);
-            scoreInstructions.Enabled = false;
+            //scoreInstructions.Enabled = false;
             teamArea.Controls.Add(scoreInstructions);
 
             //add a button to show the next string.
@@ -939,49 +958,63 @@ namespace KeepScore
 
             this.currentString = 0;
 
-            foreach (Control c in this.Controls)
+            foreach (Control ctrl in this.Controls)
             {
-                if (c is TextBox)
+                if (ctrl.GetType() == typeof(Panel))
                 {
-                    c.Text = "";
-                    c.Enabled = true;
+                    ctrl.Enabled = true;
 
-                    if (c.Name == "Team1_Bowler1")
+                    foreach (Control c in ctrl.Controls)
                     {
-                        c.Focus();
+                        if (c is TextBox)
+                        {
+                            c.Text = "";
+                            c.Enabled = true;
+
+                            if (c.Name == "Team1_Bowler1")
+                            {
+                                c.Focus();
+                            }
+                        }
+
+                        if (c is ComboBox)
+                        {
+                            ComboBox comboBox = (ComboBox)c;
+
+                            comboBox.SelectedIndex = 0;
+                            comboBox.Enabled = true;
+                        }
+
+                        if (c is Button)
+                        {
+                            c.Enabled = true;
+                        }
+
+                        if (c is Label)
+                        {
+                            c.Enabled = true;
+                        }
                     }
-                }
-
-                if (c is ComboBox)
-                {
-                    ComboBox comboBox = (ComboBox)c;
-
-                    comboBox.SelectedIndex = 0;
-                    comboBox.Enabled = true;
-                }
-
-                if (c is Button)
-                {
-                    c.Enabled = true;
-                }
-
-                if (c is Label)
-                {
-                    c.Enabled = true;
                 }
             }
 
+            this.Welcome.Text = this.welcomeStr;
+            this.laneNumberTxt.Text = this.laneNumber.ToString();
+
             try
             {
-                File.Copy(InprogressFile, DoneFile);
-                File.Delete(InprogressFile);
+                if (File.Exists(InprogressFile))
+                {
+                    File.Copy(InprogressFile, DoneFile);
+                    File.Delete(InprogressFile);
+                }
             }
             catch(Exception ex)
             {
                 MessageBox.Show("File clean up failed, please notify front desk: \n" + ex.Message);
             }
 
-            this.WindowState = FormWindowState.Normal;
+            this.WindowState = FormWindowState.Maximized;
 
             //Form startMenuInstructions = new startMenuInstr();
             //startMenuInstructions.Show();
@@ -1428,6 +1461,12 @@ namespace KeepScore
             {
                 ev.HasMorePages = false;
             }
+        }
+
+        private void adminToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            adminLogin = new AdminLogin();
+            adminLogin.Show();
         }
     }
 }
