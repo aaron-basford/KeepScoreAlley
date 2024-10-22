@@ -43,6 +43,10 @@ namespace KeepScore
                     {
                         this.printSummary.SelectedItem = strArray[1];
                     }
+                    else if (strArray[0] == "LaneNumber")
+                    {
+                        this.laneNumber.Text = strArray[1];
+                    }
                 }
 
                 file.Close();

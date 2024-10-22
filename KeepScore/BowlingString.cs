@@ -27,11 +27,13 @@ namespace KeepScore
             this.stringTotal.TextAlign = HorizontalAlignment.Center;
             this.stringTotal.Text = "0";
             this.stringTotal.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+            this.stringTotal.TabStop = false;
 
             this.totalHDCP.Size = new Size(100, 50);
             this.totalHDCP.TextAlign = HorizontalAlignment.Center;
             this.totalHDCP.Text = "0";
             this.totalHDCP.Font = new Font(FontFamily.GenericSansSerif, 30, FontStyle.Bold);
+            this.totalHDCP.TabStop = false;
 
             game = new List<Box>();
 
@@ -330,10 +332,10 @@ namespace KeepScore
                         this.game[in_box.boxNumber + 1].DisplayBox.Focus();
                     }
                     //if there was no error and this is the last box and we are done with it, set the focus to the string total text box.
-                    else if (!error && in_box.boxNumber == 9 && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isStrike || in_box.isSpare) && in_box.markLoad != 0)))
-                    {
-                        this.stringTotal.Focus();
-                    }
+                    //else if (!error && in_box.boxNumber == 9 && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isStrike || in_box.isSpare) && in_box.markLoad != 0)))
+                    //{
+                        //this.stringTotal.Focus();
+                    //}
                 }
             }
         }

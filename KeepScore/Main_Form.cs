@@ -22,8 +22,7 @@ namespace KeepScore
         private Boolean foundJson;
         private int laneNumber;
         private string welcomeStr;
-        //private Boolean stringFinished;
-        //private Boolean stringStarted;
+        private string numBoxesTurn;
 
         private Match match;
         private AdminLogin adminLogin;
@@ -67,7 +66,7 @@ namespace KeepScore
                     }
                     else if (strArray[0] == "BoxesPerTurn")
                     {
-                        //this.numBoxesPerTurn.Text = strArray[1];
+                        this.numBoxesTurn = strArray[1];
                         this.numBoxesPerTurn.SelectedItem = strArray[1];
                     }
                     else if (strArray[0] == "PrintSummary")
@@ -198,15 +197,6 @@ namespace KeepScore
                                         }
                                     }
 
-                                    //if (box.boxNumber == 0)
-                                    //{
-                                    //    stringStarted = true;
-                                    //}
-                                    //else if (box.boxNumber == 9)
-                                    //{
-                                    //    stringFinished = true;
-                                    //}
-
                                     if (box.isSpare)
                                     {
                                         box.spareImgLabel.Show();
@@ -232,8 +222,6 @@ namespace KeepScore
                             strings.totalHDCP.Text = (strings.Calc_Total() + teamBowler.int_handicap).ToString();
                             strings.eventHandled = false;
 
-                            //stringFinished = false;
-                            //stringStarted = false;
                         }
                     }
                 }
@@ -1000,6 +988,7 @@ namespace KeepScore
 
             this.Welcome.Text = this.welcomeStr;
             this.laneNumberTxt.Text = this.laneNumber.ToString();
+            this.numBoxesPerTurn.SelectedItem = this.numBoxesTurn;
 
             try
             {
