@@ -76,10 +76,11 @@ namespace KeepScore
             int boxesToMove = 0;
             Boolean isDoubleStrike = false;
 
-            if (boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled && this.bowlers.Count() > 1)
+            //if boxes per turn is zero or we are in score correct mode or the event has been handled, then skip all this
+            if (boxesPerTurn > 0 && (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].scoreCorrectMode) && !this.bowlers[bowlerIndex].strings[currentString].eventHandled && this.bowlers.Count() > 1)
             {
                 //if this box is a mark and the next box is a mark, check to see if the next box would trigger the end of a turn.
-                if ( (boxIndex < 9) && boxesPerTurn > 1 &&
+                if ((boxIndex < 9) && boxesPerTurn > 1 &&
                      (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isSpare || this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isStrike) &&
                      ((boxIndex + 2) % boxesPerTurn == 0)
                    )
@@ -92,38 +93,40 @@ namespace KeepScore
                     }
                 }
                 //special case for triple strike and end of turn
-                else if (boxIndex < 8 && boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled 
+                else if (boxIndex < 8 && boxesPerTurn > 0 && !scoreCorrect && !this.bowlers[bowlerIndex].strings[currentString].eventHandled
                         && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)
                         && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 1].isStrike)
                         && (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex + 2].isStrike)
-                        && ((boxIndex+3) % boxesPerTurn == 0))
+                        && ((boxIndex + 3) % boxesPerTurn == 0))
                 {
                     boxIndex = boxIndex + 2;
-                    isDoubleStrike=true;
+                    isDoubleStrike = true;
                 }
 
                 //if this is the last box of this bowler's turn and it's a mark (strike or spare) and there's no load
                 //  or this is the last box of the bowler's turn and it's not a mark (strike or spare)
-                if (    (((boxIndex + 1) % boxesPerTurn == 0) && 
+                if ((((boxIndex + 1) % boxesPerTurn == 0) &&
                         ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) || (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)) &&
                         (this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text == "")) ||
-                        (((boxIndex + 1) % boxesPerTurn == 0) && 
+                        (((boxIndex + 1) % boxesPerTurn == 0) &&
                         ((!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare) && (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)))
                 )
                 {
                     //is this the last box of the string?
                     if (boxIndex == 9)
                     {
+                        //are they on a spare or strike?
                         if ((this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare || this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike) &&
                             this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "")
                         {
-                            if (bowlerIndex + 1 < this.bowlers.Count) {
+                            if (bowlerIndex + 1 < this.bowlers.Count)
+                            {
                                 boxesToMove = Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn);
 
-                                if ( !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isSpare && 
+                                if (!this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isSpare &&
                                      !this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].isStrike &&
                                      this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Text == ""
-                                   ) 
+                                   )
                                 {
                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Focus();
                                 }
@@ -131,9 +134,12 @@ namespace KeepScore
                         }
                         else
                         {
-                            if (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare && !this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike){
+                            //if they aren't on a spare or strike
+                            if (!this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isSpare && !this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike)
+                            {
                                 //is this the last bowler on the team?
-                                if (bowlerIndex + 1 < this.bowlers.Count) {
+                                if (bowlerIndex + 1 < this.bowlers.Count)
+                                {
                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].DisplayBox.Focus();
                                 }
                                 else
@@ -157,7 +163,8 @@ namespace KeepScore
                             }
                         }
                     }
-                    else {
+                    else
+                    {
                         //is this the last bowler on the team?
                         //if not advance to next bowler
                         if (bowlerIndex + 1 < this.bowlers.Count)
@@ -170,7 +177,7 @@ namespace KeepScore
                                 if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].boxTotal == 0)
                                 {
                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesToMove].DisplayBox.Focus();
-                                }  
+                                }
                             }
                             else
                             {
@@ -179,7 +186,8 @@ namespace KeepScore
                                     && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].isStrike && (boxIndex + 1) % boxesPerTurn == 0)
                                 {
                                     //if the box we are supposed to be moving too already has a value in it, then are are starting the next turn, not finishing a turn
-                                    if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].boxTotal == 0) {
+                                    if (this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].boxTotal == 0)
+                                    {
                                         this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].DisplayBox.Focus();
                                     }
                                 }
@@ -187,7 +195,8 @@ namespace KeepScore
                                 {
                                     this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Focus();
                                 }
-                                else {
+                                else
+                                {
                                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - boxesPerTurn].DisplayBox.Focus();
                                 }
                             }
@@ -225,6 +234,30 @@ namespace KeepScore
                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].DisplayBox.Focus();
                 }
             }
+            //we only have one bowler
+            else
+            {
+                //see if this is the last box
+                if (boxIndex == 9 && this.bowlers[0].strings[currentString].game[boxIndex].boxTotal > 0 && this.bowlers[0].strings[currentString].game[boxIndex].DisplayBox.Text != "")
+                {
+                    Form form1 = Application.OpenForms["MatchForm"];
+                    foreach (Control control in form1.Controls)
+                    {
+                        foreach (Control control1 in control.Controls)
+                        {
+                            if (control1.GetType() == typeof(Button))
+                            {
+                                Button button = control1 as Button;
+                                if (button.Name == "NextStringBtn")
+                                {
+                                    button.BackColor = Color.Yellow;
+                                    button.Focus();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private int Team_calcNumBoxesToMoveTo( int boxIndex, int bowlerIndex, int currentString, int boxesPerTurn)
@@ -232,9 +265,9 @@ namespace KeepScore
             int numBoxes = 0;
 
             if (this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].isSpare)
-            {
-                numBoxes = boxesPerTurn + 1;
-            }
+                {
+                    numBoxes = boxesPerTurn + 1;
+                }
             else if (this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 1].isStrike) {
                 //is this a double strike
                 if (boxIndex > 1 && this.bowlers[bowlerIndex + 1].strings[currentString].game[((boxIndex + 1) - boxesPerTurn) - 2].isStrike)
@@ -251,25 +284,7 @@ namespace KeepScore
                 numBoxes = boxesPerTurn;
             }
 
-
             return numBoxes;
-        }
-
-        public void toggleScoreCorrectMode(object sender, EventArgs e, Box in_box)
-        {
-            if (in_box.DisplayBox.Text.ToUpper() == "S")
-            {
-                if (scoreCorrect)
-                {
-                    scoreCorrect = false;
-                    in_box.DisplayBox.Text = "";
-                    in_box.DisplayBox.Focus();
-                }
-                else
-                {
-                    scoreCorrect = true;
-                }
-            }
         }
 
         public void handleArrowsToNav(object sender, KeyEventArgs e, int in_boxIndex, int in_bowlerIndex, int in_currentString)

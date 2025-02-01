@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using System.Xml.Schema;
 
 namespace KeepScore
 {
@@ -86,7 +87,7 @@ namespace KeepScore
             {
                 //if we are resetting the box and this box is a spare or strike we have some decisions to make
                 //Otherwise we'll let this box reset itself
-                if (in_box.DisplayBox.Text.ToUpper() == "R" && (in_box.isSpare || in_box.isStrike))
+                if (in_box.scoreCorrectMode && (in_box.isSpare || in_box.isStrike))
                 {
                     //if the previous box is spare or strike we need to subtract ten from the markLoad prop and give that box focus.
                     //Unless this is the first box of the string, then we just reset this box.
@@ -131,21 +132,19 @@ namespace KeepScore
                             this.game[in_box.boxNumber - 1].DisplayBox.Focus();
                         }
                     }
+                    //either this is the first box, or the previous box isn't a spare or strike
                     else
                     {
-                        //reset the previous box
+                        //reset the this box
                         in_box.setBaseScore(in_box.DisplayBox.Text);
                     }
                 }
-                //else if (in_box.isSpare && in_box.isStrike && in_box.Text == "*")
-                //{
-                //    errMsg = "10 is not a valid load for a spare or strike, please enter either / for spare or an X for a strike.";
-                //    Form errorMessage = new Form();
-                //    errorMessage.Text = errMsg;
-                //    errorMessage.ShowDialog();
-                //    in_box.Text = "";
-                //    in_box.Focus();
-                //}
+                //are we in score correct mode for an open box?
+                else if (in_box.scoreCorrectMode)
+                {
+                    //reset the this box
+                    in_box.setBaseScore(in_box.DisplayBox.Text);
+                }
                 //are we on a spare and they loaded it with a strike or a strike and they loaded it with a spare?
                 else if ((in_box.isSpare && in_box.DisplayBox.Text.ToUpper() == "X") || (in_box.isStrike && in_box.DisplayBox.Text.ToUpper() == "/"))
                 {
@@ -327,15 +326,12 @@ namespace KeepScore
                     }
 
                     //if there was no error and this box is done set the focus to the next box.
-                    if (!error && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.DisplayBox.Text != "")) && in_box.boxNumber < 9)
+                    if (!error && !in_box.scoreCorrectMode && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isSpare || in_box.isStrike) && in_box.DisplayBox.Text != "")) && in_box.boxNumber < 9)
                     {
                         this.game[in_box.boxNumber + 1].DisplayBox.Focus();
                     }
-                    //if there was no error and this is the last box and we are done with it, set the focus to the string total text box.
-                    //else if (!error && in_box.boxNumber == 9 && ((!in_box.isSpare && !in_box.isStrike) || ((in_box.isStrike || in_box.isSpare) && in_box.markLoad != 0)))
-                    //{
-                        //this.stringTotal.Focus();
-                    //}
+
+                    //in_box.scoreCorrectMode = false;
                 }
             }
         }
@@ -346,8 +342,17 @@ namespace KeepScore
             int outParse;
 
             if (!eventHandled) { 
-                if ((in_box.DisplayBox.Text == "/" || in_box.DisplayBox.Text.ToUpper() == "X" || in_box.DisplayBox.Text.ToUpper() == "R" || in_box.DisplayBox.Text.ToUpper() == "S" || in_box.DisplayBox.Text.ToUpper() == "*") || int.TryParse(in_box.DisplayBox.Text, out outParse))
+                if ((in_box.DisplayBox.Text == "/" || in_box.DisplayBox.Text.ToUpper() == "X" || in_box.DisplayBox.Text.Contains("R") || in_box.DisplayBox.Text.Contains("r") || in_box.DisplayBox.Text.ToUpper() == "*") || int.TryParse(in_box.DisplayBox.Text, out outParse))
                 {
+                    if (in_box.DisplayBox.Text.Contains("R") || in_box.DisplayBox.Text.Contains("r"))
+                    {
+                        in_box.scoreCorrectMode = true;
+                    }
+                    else
+                    {
+                        in_box.scoreCorrectMode = false;
+                    }
+
                     if ((in_box.isSpare || in_box.isStrike) && in_box.DisplayBox.Text == "*") {
                         in_box.DisplayBox.Text = "";
                         MessageBox.Show("10 is not valid as a load, please enter a / for a spare or an X for a strike.", "Score Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

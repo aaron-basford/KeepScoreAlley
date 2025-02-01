@@ -29,6 +29,7 @@ namespace KeepScore
         public int boxNumber;
 
         public TextBox DisplayBox = new TextBox();
+        public Boolean scoreCorrectMode = false;
 
         [JsonConstructor]
         public Box(int baseScore, int boxTotal, Boolean isStrike, Boolean isSpare, int markLoad, int boxNumber) =>
@@ -117,7 +118,7 @@ namespace KeepScore
             //if we are just cursoring through the boxes, don't process it again.
             if (markLoad.ToString() != DisplayBox.Text) { 
                 //if the entered value is an R or an r then we need to reset the box to default values and hide images.
-                if (in_score.ToUpper() == "R")
+                if (this.scoreCorrectMode)
                 {
                     this.baseScore = 0;
                     this.markLoad = 0;
@@ -197,7 +198,7 @@ namespace KeepScore
                     {
                         try
                         {
-                            if (in_score.ToUpper() == "R" || in_score.ToUpper() == "X" || in_score.ToUpper() == "/" || (int.Parse(in_score) > -1 && int.Parse(in_score) < 21)) {
+                            if (in_score.Contains("R") || in_score.Contains("r") || in_score.ToUpper() == "X" || in_score.ToUpper() == "/" || (int.Parse(in_score) > -1 && int.Parse(in_score) < 21)) {
                             //if this a strike or spare and they put a strike or spare on it then set the mark load to 10
                                 if (in_score.ToUpper() == "X" || in_score.ToUpper() == "/")
                                 {

@@ -81,7 +81,16 @@ namespace KeepScore
                 fileLine = fileLine + "PrintSummary::" + this.printSummary.SelectedItem + "\n";
                 fileLine = fileLine + "LaneNumber::" + this.laneNumber.Text + "\n";
 
-                File.WriteAllText(destFileName, fileLine);
+                try
+                {
+                    File.WriteAllText(destFileName, fileLine);
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show("There was an error when saving the settings file, please try again.", "Error", MessageBoxButtons.OK);
+                }
+
+                MessageBox.Show("The settings file was saved successfully.", "Success", MessageBoxButtons.OK);
             }
         }
     }
