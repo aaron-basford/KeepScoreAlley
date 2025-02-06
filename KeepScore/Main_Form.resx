@@ -122,7 +122,7 @@
   </metadata>
   <data name="Instructions.Text" xml:space="preserve">
     <value>*   Use the TAB key to go to the next field. Up and down arrows can be used in drop down fields.
-*   Enter the names of the bowlers, if fewer than 5, leave fields blank.
+*   Enter the names of the bowlers, if fewer than 7, leave fields blank.
 *   Enter the handicap for each bowler bowling, if this is open bowling, you can leave them blank.
 *   Select the number of strings to be bowled in the match.
 *   Select the number of boxes each bowler will bowl during their turn.

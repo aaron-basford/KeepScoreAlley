@@ -24,7 +24,7 @@ namespace KeepScore
             Button close = new Button();
 
             string Message = "*   Use the TAB key to go to the next field. Up and down arrows can be used in drop down fields.\n";
-            Message += "*   Enter the names of the bowlers, if fewer than 5, leave fields blank.\n";
+            Message += "*   Enter the names of the bowlers, if fewer than 7, leave fields blank.\n";
             Message += "*   Enter the handicap for each bowler bowling, if this is open bowling, you can leave them blank.\n";
             Message += "*   Select the number of strings to be bowled in the match.\n";
             Message += "*   Select the number of boxes each bowler will bowl during their turn.\n";

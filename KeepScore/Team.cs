@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.IO;
 using System.Text.Json.Serialization;
+using System.Web;
 
 namespace KeepScore
 {
@@ -154,6 +155,7 @@ namespace KeepScore
                                                 Button button = control1 as Button;
                                                 if (button.Name == "NextStringBtn")
                                                 {
+                                                    //button.BackColor = Color.Yellow;
                                                     button.Focus();
                                                 }
                                             }
@@ -229,33 +231,26 @@ namespace KeepScore
                     }
                 }
                 //fail safe, if there is text in the box and this is the last box, we need to move onto the next bowler.
-                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "")
+                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "" && bowlerIndex + 1 < this.bowlers.Count())
                 {
                     this.bowlers[bowlerIndex + 1].strings[currentString].game[(boxIndex + 1) - Team_calcNumBoxesToMoveTo(boxIndex, bowlerIndex, currentString, boxesPerTurn)].DisplayBox.Focus();
+                }
+                else if (boxIndex == 9 && this.bowlers[bowlerIndex].strings[currentString].game[boxIndex].DisplayBox.Text != "" && bowlerIndex + 1 == this.bowlers.Count() && this.bowlers[bowlerIndex].strings.Count() == currentString)
+                {
+                    Activate_DoneStringButton("DoneBowlingBtn");
                 }
             }
             //we only have one bowler
             else
             {
-                //see if this is the last box
-                if (boxIndex == 9 && this.bowlers[0].strings[currentString].game[boxIndex].boxTotal > 0 && this.bowlers[0].strings[currentString].game[boxIndex].DisplayBox.Text != "")
+                //see if this is the last box of the last string
+                if (boxIndex == 9 && this.bowlers[0].strings[currentString].game[boxIndex].boxTotal > 0 && this.bowlers[0].strings[currentString].game[boxIndex].DisplayBox.Text != "" && this.bowlers[0].strings.Count() == currentString + 1)
                 {
-                    Form form1 = Application.OpenForms["MatchForm"];
-                    foreach (Control control in form1.Controls)
-                    {
-                        foreach (Control control1 in control.Controls)
-                        {
-                            if (control1.GetType() == typeof(Button))
-                            {
-                                Button button = control1 as Button;
-                                if (button.Name == "NextStringBtn")
-                                {
-                                    button.BackColor = Color.Yellow;
-                                    button.Focus();
-                                }
-                            }
-                        }
-                    }
+                    Activate_DoneStringButton("DoneBowlingBtn");
+                }
+                else if (boxIndex == 9 && this.bowlers[0].strings[currentString].game[boxIndex].boxTotal > 0 && this.bowlers[0].strings[currentString].game[boxIndex].DisplayBox.Text != "" && this.bowlers[0].strings.Count() > currentString + 1)
+                {
+                    Activate_DoneStringButton("NextStringBtn");
                 }
             }
         }
@@ -319,8 +314,6 @@ namespace KeepScore
                         break;
                 }
             }
-
-
         }
 
         public void saveTeamStats(object sender, EventArgs e)
@@ -338,6 +331,27 @@ namespace KeepScore
 
             stringPath = Path.Combine(stringPath, "Inprogress.json");
             File.WriteAllText(stringPath, team_json);
+        }
+
+        void Activate_DoneStringButton(string in_button)
+        {
+            Form form1 = Application.OpenForms["MatchForm"];
+            foreach (Control control in form1.Controls)
+            {
+                foreach (Control control1 in control.Controls)
+                {
+                    if (control1.GetType() == typeof(Button))
+                    {
+                        Button button = control1 as Button;
+                        if (button.Name == in_button)
+                        {
+                            //button.BackColor = Color.Yellow;
+                            button.Show();
+                            button.Focus();
+                        }
+                    }
+                }
+            }
         }
     }
 }

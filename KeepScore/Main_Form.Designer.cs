@@ -55,13 +55,13 @@
             Instructions = new RichTextBox();
             printSummary = new ComboBox();
             panel1 = new Panel();
-            laneNumberlbl = new Label();
-            laneNumberTxt = new TextBox();
-            Team2_Bowler6 = new TextBox();
-            Team1_Bowler6 = new TextBox();
+            LeagueOnly = new Label();
             Team2_Bowler7 = new TextBox();
             Team1_Bowler7 = new TextBox();
-            LeagueOnly = new Label();
+            Team2_Bowler6 = new TextBox();
+            Team1_Bowler6 = new TextBox();
+            laneNumberlbl = new Label();
+            laneNumberTxt = new TextBox();
             menuStrip.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -69,7 +69,7 @@
             // CreateMatch
             // 
             CreateMatch.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            CreateMatch.Location = new Point(649, 741);
+            CreateMatch.Location = new Point(548, 734);
             CreateMatch.Name = "CreateMatch";
             CreateMatch.Size = new Size(436, 70);
             CreateMatch.TabIndex = 17;
@@ -114,7 +114,7 @@
             Welcome.BackColor = Color.CadetBlue;
             Welcome.BorderStyle = BorderStyle.None;
             Welcome.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point);
-            Welcome.Location = new Point(31, 111);
+            Welcome.Location = new Point(111, 98);
             Welcome.Name = "Welcome";
             Welcome.ReadOnly = true;
             Welcome.Size = new Size(1194, 86);
@@ -126,7 +126,7 @@
             // 
             lbl_NumStrings.AutoSize = true;
             lbl_NumStrings.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            lbl_NumStrings.Location = new Point(121, 585);
+            lbl_NumStrings.Location = new Point(178, 585);
             lbl_NumStrings.Name = "lbl_NumStrings";
             lbl_NumStrings.Size = new Size(349, 54);
             lbl_NumStrings.TabIndex = 4;
@@ -139,7 +139,7 @@
             NumStrings.FormattingEnabled = true;
             NumStrings.ItemHeight = 54;
             NumStrings.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
-            NumStrings.Location = new Point(482, 582);
+            NumStrings.Location = new Point(533, 582);
             NumStrings.Name = "NumStrings";
             NumStrings.Size = new Size(121, 62);
             NumStrings.TabIndex = 14;
@@ -248,7 +248,7 @@
             // 
             lbl_numBoxesTurn.AutoSize = true;
             lbl_numBoxesTurn.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            lbl_numBoxesTurn.Location = new Point(690, 585);
+            lbl_numBoxesTurn.Location = new Point(675, 585);
             lbl_numBoxesTurn.Name = "lbl_numBoxesTurn";
             lbl_numBoxesTurn.Size = new Size(488, 54);
             lbl_numBoxesTurn.TabIndex = 37;
@@ -261,7 +261,7 @@
             numBoxesPerTurn.FormattingEnabled = true;
             numBoxesPerTurn.ItemHeight = 54;
             numBoxesPerTurn.Items.AddRange(new object[] { "0", "1", "2", "5", "10" });
-            numBoxesPerTurn.Location = new Point(1184, 582);
+            numBoxesPerTurn.Location = new Point(1169, 582);
             numBoxesPerTurn.Name = "numBoxesPerTurn";
             numBoxesPerTurn.Size = new Size(121, 62);
             numBoxesPerTurn.TabIndex = 15;
@@ -270,7 +270,7 @@
             // 
             PrintSummaryLbl.AutoSize = true;
             PrintSummaryLbl.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            PrintSummaryLbl.Location = new Point(460, 661);
+            PrintSummaryLbl.Location = new Point(431, 660);
             PrintSummaryLbl.Name = "PrintSummaryLbl";
             PrintSummaryLbl.Size = new Size(282, 54);
             PrintSummaryLbl.TabIndex = 38;
@@ -281,7 +281,7 @@
             Instructions.BackColor = Color.CadetBlue;
             Instructions.BorderStyle = BorderStyle.None;
             Instructions.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
-            Instructions.Location = new Point(155, 190);
+            Instructions.Location = new Point(178, 190);
             Instructions.Name = "Instructions";
             Instructions.ReadOnly = true;
             Instructions.Size = new Size(1194, 238);
@@ -296,7 +296,7 @@
             printSummary.FormattingEnabled = true;
             printSummary.ItemHeight = 54;
             printSummary.Items.AddRange(new object[] { "None", "Detailed (Strings)", "League Summary" });
-            printSummary.Location = new Point(756, 658);
+            printSummary.Location = new Point(727, 657);
             printSummary.Name = "printSummary";
             printSummary.Size = new Size(368, 62);
             printSummary.TabIndex = 16;
@@ -337,45 +337,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1450, 814);
             panel1.TabIndex = 41;
-            panel1.Paint += panel1_Paint;
             // 
-            // laneNumberlbl
+            // LeagueOnly
             // 
-            laneNumberlbl.AutoSize = true;
-            laneNumberlbl.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point);
-            laneNumberlbl.Location = new Point(381, 22);
-            laneNumberlbl.Name = "laneNumberlbl";
-            laneNumberlbl.Size = new Size(445, 86);
-            laneNumberlbl.TabIndex = 42;
-            laneNumberlbl.Text = "Lane Number";
-            // 
-            // laneNumberTxt
-            // 
-            laneNumberTxt.BackColor = Color.CadetBlue;
-            laneNumberTxt.BorderStyle = BorderStyle.None;
-            laneNumberTxt.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point);
-            laneNumberTxt.Location = new Point(809, 22);
-            laneNumberTxt.Name = "laneNumberTxt";
-            laneNumberTxt.ReadOnly = true;
-            laneNumberTxt.Size = new Size(73, 86);
-            laneNumberTxt.TabIndex = 41;
-            laneNumberTxt.TabStop = false;
-            // 
-            // Team2_Bowler6
-            // 
-            Team2_Bowler6.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            Team2_Bowler6.Location = new Point(1139, 495);
-            Team2_Bowler6.Name = "Team2_Bowler6";
-            Team2_Bowler6.Size = new Size(152, 61);
-            Team2_Bowler6.TabIndex = 12;
-            // 
-            // Team1_Bowler6
-            // 
-            Team1_Bowler6.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            Team1_Bowler6.Location = new Point(1139, 428);
-            Team1_Bowler6.Name = "Team1_Bowler6";
-            Team1_Bowler6.Size = new Size(152, 61);
-            Team1_Bowler6.TabIndex = 5;
+            LeagueOnly.AutoSize = true;
+            LeagueOnly.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            LeagueOnly.Location = new Point(64, 542);
+            LeagueOnly.Name = "LeagueOnly";
+            LeagueOnly.Size = new Size(141, 30);
+            LeagueOnly.TabIndex = 43;
+            LeagueOnly.Text = "(League Only)";
             // 
             // Team2_Bowler7
             // 
@@ -393,15 +364,43 @@
             Team1_Bowler7.Size = new Size(152, 61);
             Team1_Bowler7.TabIndex = 6;
             // 
-            // LeagueOnly
+            // Team2_Bowler6
             // 
-            LeagueOnly.AutoSize = true;
-            LeagueOnly.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            LeagueOnly.Location = new Point(64, 542);
-            LeagueOnly.Name = "LeagueOnly";
-            LeagueOnly.Size = new Size(141, 30);
-            LeagueOnly.TabIndex = 43;
-            LeagueOnly.Text = "(League Only)";
+            Team2_Bowler6.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
+            Team2_Bowler6.Location = new Point(1139, 495);
+            Team2_Bowler6.Name = "Team2_Bowler6";
+            Team2_Bowler6.Size = new Size(152, 61);
+            Team2_Bowler6.TabIndex = 12;
+            // 
+            // Team1_Bowler6
+            // 
+            Team1_Bowler6.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
+            Team1_Bowler6.Location = new Point(1139, 428);
+            Team1_Bowler6.Name = "Team1_Bowler6";
+            Team1_Bowler6.Size = new Size(152, 61);
+            Team1_Bowler6.TabIndex = 5;
+            // 
+            // laneNumberlbl
+            // 
+            laneNumberlbl.AutoSize = true;
+            laneNumberlbl.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point);
+            laneNumberlbl.Location = new Point(460, 22);
+            laneNumberlbl.Name = "laneNumberlbl";
+            laneNumberlbl.Size = new Size(445, 86);
+            laneNumberlbl.TabIndex = 42;
+            laneNumberlbl.Text = "Lane Number";
+            // 
+            // laneNumberTxt
+            // 
+            laneNumberTxt.BackColor = Color.CadetBlue;
+            laneNumberTxt.BorderStyle = BorderStyle.None;
+            laneNumberTxt.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point);
+            laneNumberTxt.Location = new Point(911, 22);
+            laneNumberTxt.Name = "laneNumberTxt";
+            laneNumberTxt.ReadOnly = true;
+            laneNumberTxt.Size = new Size(73, 86);
+            laneNumberTxt.TabIndex = 41;
+            laneNumberTxt.TabStop = false;
             // 
             // Main_Form
             // 
